@@ -1,3 +1,4 @@
+/* untuk format tabel dilayar hp */
 @media only screen and (max-width: 600px) and (orientation: portrait) {
     table {
         width: 100%;
