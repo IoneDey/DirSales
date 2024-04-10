@@ -13,11 +13,17 @@
             flex-shrink: 0;
             width: 3px;
             height: 100vh;
+            ;
+            overflow-y: auto;
         }
 
-        @media (max-width: 768px) {
-            .sidebar .nav-link span {
-                display: none;
+        @media (max-width: 360px) {
+
+            .b-example-vr {
+                flex-shrink: 0;
+                width: 3px;
+                height: calc(100vh - 50px);
+                overflow-y: auto;
             }
         }
 
@@ -39,16 +45,16 @@
         }
 
         .nav-link.active {
-            background-color: green;
-            color: black;
+            background-color: rgba(0, 0, 0, 1);
+            color: white;
         }
     </style>
 </head>
 
 <body>
-    <main class="d-flex flex-nowrap">
+    <main class="nav-link d-flex">
         <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-decoration-none">
-            <p href="#" class="nav-item d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
+            <p href="#" class="nav-item align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
                 <i class="bi bi-menu-up"></i><span class="d-none d-md-inline text-decoration-none"> MAIN MENU</span>
             </p>
             <hr>
@@ -60,39 +66,30 @@
                 </li>
                 <li>
                     <a href="{{ route('main') }}" class="nav-link {{ Request::is('main') ? 'active' : '' }}">
-                        <i class="bi bi-house"></i><span class="d-none d-md-inline"> Pembelian</span>
+                        <i class="bi bi-building"></i><span class="d-none d-md-inline"> Pembelian</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link" text-decoration-none>
-                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Penjualan</span>
+                        <i class="bi bi-cart4"></i><span class="d-none d-md-inline"> Penjualan</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link" text-decoration-none>
-                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Penagihan</span>
+                        <i class="bi bi-receipt"></i><span class="d-none d-md-inline"> Penagihan</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link" text-decoration-none>
-                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Pembayaran</span>
+                        <i class="bi bi-currency-exchange"></i><span class="d-none d-md-inline"> Pembayaran</span>
                     </a>
                 </li>
             </ul>
             <hr>
-            <div class="dropdown">
-                <a href="#" class="nav-link d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-check"></i><span class="d-none d-md-inline"> Helo</span>
+            <div class="nav-link">
+                <a href="#" class="nav-link" text-decoration-none>
+                    <i class="bi bi-person"></i><span class="d-none d-md-inline"> Login</span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
-                </ul>
             </div>
         </div>
         <div class="b-example-divider b-example-vr"></div>
