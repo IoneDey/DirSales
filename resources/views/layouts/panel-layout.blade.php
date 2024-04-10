@@ -14,15 +14,28 @@
             flex-shrink: 0;
             width: 3px;
             height: 100vh;
+            overflow-y: auto;
         }
 
-        @media (max-width: 768px) {
-            .sidebar .nav-link span {
-                display: none;
-            }
+        .sidebar {
+            height: var(--screen-height);
+            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 20px;
+            box-shadow: 0 10px 14px rgba(0, 0, 0, 1);
+        }
 
-            .nav-link.active {
-                color: rgb(225, 255, 55) !important;
+        .content {
+            padding-left: calc(var(--sidebar-width) + 5px);
+            padding-top: 5px;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            .content {
+                padding-left: calc(var(--sidebar-width) + 5px);
+                padding-top: 5px;
             }
         }
     </style>
@@ -48,11 +61,11 @@
                         $isActive = Request::is('barang') || Request::is('kota') || Request::is('pt') || Request::is('user');
                         @endphp
                         <a href="#" class="nav-link dropdown-toggle {{ $isActive ? 'active' : '' }}" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-sliders2-vertical"></i><span class="d-none d-md-inline" text-decoration-none> Setup</span>
+                            <i class="bi bi-list-check"></i><span class="d-none d-md-inline" text-decoration-none> Setup</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
                             <li><a class="dropdown-item {{ Request::is('barang') ? 'active' : '' }}" href="{{ route('barang') }}">Barang</a></li>
-                            <li><a class="dropdown-item" href="#">Kota</a></li>
+                            <li><a class="dropdown-item {{ Request::is('kota') ? 'active' : '' }}" href="{{ route('kota') }}">Kota</a></li>
                             <li><a class="dropdown-item {{ Request::is('pt') ? 'active' : '' }}" href="{{ route('pt') }}">PT</a></li>
                             <li><a class="dropdown-item" href="#">User</a></li>
                         </ul>
@@ -60,7 +73,7 @@
                 </li>
                 <li>
                     <a href="#" class="nav-link text-white" text-decoration-none>
-                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Kembali ke main</span>
+                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Main Menu</span>
                     </a>
                 </li>
             </ul>
@@ -92,6 +105,20 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarWidth = sidebar.offsetWidth;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            document.documentElement.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
+
+
+            document.documentElement.style.setProperty('--screen-width', `${screenWidth}px`);
+            document.documentElement.style.setProperty('--screen-height', `${screenHeight}px`);
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 

@@ -1,120 +1,133 @@
 <div>
-  <style>
-    .input-group-label {
-      flex: 0 0 150px;
-      text-align: left;
-      padding-right: 10px;
-      border: 1px solid #ced4da;
-      border-right: none;
-      border-radius: 0.25rem 0 0 0.25rem;
-      background-color: #98999a;
-    }
-  </style>
-
-  <style>
-    /* CSS untuk menambahkan efek bayangan pada form */
-    form {
-      padding: 20px;
-      /* Beri padding untuk ruang di sekitar konten form */
-      border: 1px solid #ccc;
-      /* Tambahkan border sebagai pemisah dari elemen lain */
-      border-radius: 8px;
-      /* Beri sudut yang melengkung pada form */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      /* Tambahkan efek bayangan */
-    }
-  </style>
-
-  <form action="/panel/barang" method="post">
-    @csrf
-    <div class="input-group input-group-sm mb-1">
-      <div class="input-group-label">Kode</div>
-      <input value="{{ old('kode') }}" name="kode" required type="text" class="form-control @error('kode') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" autofocus>
-      @error('kode')
-      <div class="invalid-feedback">
-        {{ $message }}
-      </div>
-      @enderror
-    </div>
-
-    <div class="input-group input-group-sm mb-1">
-      <div class="input-group-label">Nama</div>
-      <input value="{{ old('nama') }}" name="nama" required type="text" class="form-control @error('nama') is-invalid @enderror" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-      @error('nama')
-      <div class="invalid-feedback">
-        {{ $message }}
-      </div>
-      @enderror
-    </div>
-
-
-    <button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-hand-thumbs-up"></i> Simpan</button>
-  </form>
-
-
-  <form action="">
-    @if($errors->any())
-    <div class="alert alert-danger" id="error-message">
-      {{ $errors->first('msg') }}
-    </div>
-    <script>
-      setTimeout(function() {
-        var errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-          errorMessage.remove();
+    <style>
+        /* CSS untuk menambahkan efek bayangan pada form */
+        form {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-      }, 3500);
-    </script>
-    @endif
+    </style>
 
-    @if(session()->has('ok'))
-    <div class="alert alert-danger" id="ok-message">
-      {{ session('ok') }}
-    </div>
-    <script>
-      setTimeout(function() {
-        var errorMessage = document.getElementById('ok-message');
-        if (errorMessage) {
-          errorMessage.remove();
-        }
-      }, 3500);
-    </script>
-    @endif
+    <div class='container'>
+        @if(session()->has('ok'))
+        <div class="alert alert-danger" id="ok-message">
+            {{ session('ok') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                var errorMessage = document.getElementById('ok-message');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+            }, 3500);
+        </script>
+        @endif
+        <form class='mb-1 p-2'>
+            <div class="row">
+                <div class="col-sm-6 col-md-4">
+                    <div class="form-floating mb-2">
+                        <input wire:model="kode" type="text" class="form-control @error('kode') is-invalid @enderror" id="floatingInputKode" placeholder=" ">
+                        <label for="floatingInput1">Kode</label>
+                        @error('kode')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="form-floating mb-1">
+                        <input wire:model="nama" type="text" class="form-control @error('nama') is-invalid @enderror" id="floatingInput2" placeholder=" ">
+                        <label for="floatingInput2">Nama</label>
+                        @error('nama')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex justify-content-start align-items-center">
+                    @if ( $isUpdate == false)
+                    <button wire:loading.attr="disabled" type="button" name='btnsimpan' class="btn btn-primary mr-5 w-150" wire:click="store()">Simpan</button>
+                    @else
+                    <button type="button" name='btnupdate' class="btn btn-primary mr-5 w-150" wire:click="update()">Update</button>
+                    @endif
+                    <span>.</span>
+                    <button type="button" name='btnclear' class="btn btn-secondary mr-5 w-150" wire:click="clear()">Clear</button>
+                </div>
+            </div>
+        </form>
 
-    <table class="table table-sm table-striped table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Kode</th>
-          <th scope="col">Nama</th>
-          <th class="rata-kanan" scope="col">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        foreach ( $barangs as $barang )
-        <tr>
-          <th scope="row">1</th>
-          <td>kode</td>
-          <td>nama</td>
-          <td class="rata-kanan">
-            <a class="badge bg-warning" href="/panel/barang/edit"><i class="bi bi-pencil-fill"></i></a>
-            <form action="/panel/barang/" method="POST" style="display: inline;">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="badge bg-danger border-0" onclick="return confirm('Apakah Anda yakin ingin menghapus data barang->kode?')"><i class="bi bi-eraser"></i></button>
+
+        <div>
+            <form class='p-2'>
+                <div class="row">
+                    <h3>Daftar Barang</h>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 position-relative d-flex align-items-end">
+                        @if ($selected_id)
+                        <a wire:click="delete_confirm('')" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; cursor: pointer;"><i class="bi bi-eraser"></i>Hapus {{ count($selected_id) }} data.</a>
+                        @endif
+                    </div>
+                    <div class="col-md-3 offset-md-7">
+                        <div class="form-floating">
+                            <input wire:model.live="textcari" style="width: 100%;" type="text" name="search" id="floatingInputcari" placeholder=" " class="form-control mb-2">
+                            <label for="floatingInputcari"> Cari</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{ $dataBarang->links() }}
+                        <table class="table table-sm table-striped table-hover table-sortable">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>#</th>
+                                    <th class="sort @if ($sortColumn== 'kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode</th>
+                                    <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                                    <th class="rata-kanan">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ( $dataBarang as $barang=>$value )
+                                <tr>
+                                    <td><input wire:key="{{ $value->id }}" wire:model.live="selected_id" value="{{ $value->id }}" type="checkbox"></td>
+                                    <td>{{ $dataBarang->firstItem() + $barang }}</td>
+                                    <td>{{ $value->kode }}</td>
+                                    <td>{{ $value->nama }}</td>
+                                    <td class="rata-kanan">
+                                        <a wire:click="edit({{ $value->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <a wire:click="delete_confirm({{ $value->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </form>
-          </td>
-        </tr>
-        endforeach
-      </tbody>
-    </table>
-
-    <p>Menampilkan data.</p>
-
-    <div class="text-center" style="margin-top: 10px;">
-      <div class="pagination">
-        $barangs->onEachSide(0)->links()
-      </div>
+        </div>
     </div>
-  </form>
+    <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Anda yakin hapus data {{ $nama }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button wire:click="delete()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

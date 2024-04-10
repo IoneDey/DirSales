@@ -143,6 +143,7 @@ class Index extends Component
             $this->angsuranhari = $data->angsuranhari;
             $this->angsuranperiode = $data->angsuranperiode;
 
+            $this->isUpdate = true;
             $this->temp_id = $id;
         } else {
             $this->selectedCount = count($this->selected_id);
@@ -182,14 +183,14 @@ class Index extends Component
                 ->orWhere('nama', 'like', '%' . $this->textcari . '%')
                 ->orWhere('angsuranhari', '=', $this->textcari)
                 ->orWhere('angsuranperiode', '=', $this->textcari)
-                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
+                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(15);
         } else {
-            $data = ModelsPT::orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
+            $data = ModelsPT::orderBy($this->sortColumn, $this->sortDirection)->paginate(15);
         }
 
         return view('livewire.panel.pt.index', [
             'dataPT' => $data,
-        ])->layout('layouts.panel-layout', [
+        ])->layout('layouts.dashboard-layout', [
             'title' => $this->title,
         ]);
     }

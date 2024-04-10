@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Users;
 use App\Models\Pts;
+use App\Models\Barangs;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +47,32 @@ class DatabaseSeeder extends Seeder
             'userid' => 1,
         ]);
 
+        DB::table('barangs')->insert([
+            'kode' => 'SLBaja260',
+            'nama' => 'Selang Baja',
+            'userid' => 1,
+        ]);
+
+        DB::table('barangs')->insert([
+            'kode' => 'SLBaja300',
+            'nama' => 'Selang Baja',
+            'userid' => 1,
+        ]);
+
+        DB::table('barangs')->insert([
+            'kode' => 'SLBaja',
+            'nama' => 'Selang Baja',
+            'userid' => 1,
+        ]);
+
+        DB::table('barangs')->insert([
+            'kode' => 'KP',
+            'nama' => 'KIPAS',
+            'userid' => 1,
+        ]);
+
         Users::factory(10)->create();
         Pts::factory(5)->create();
+        Barangs::factory(10)->create();
     }
 }

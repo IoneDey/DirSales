@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Panel\Pt;
+namespace App\Livewire\Panel\Barang;
 
 use Livewire\Component;
 use App\Models\Barangs as ModelsBarang;
@@ -9,13 +9,11 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
-    public $title = 'Panel - PT';
+    public $title = 'Panel - Barang';
 
     //untuk deklaras filed2x database
     public $kode;
     public $nama;
-    public $angsuranhari;
-    public $angsuranperiode;
 
     //untuk status create datau edit
     public $isUpdate = false;
@@ -41,8 +39,6 @@ class Index extends Component
     {
         $this->kode = "";
         $this->nama = "";
-        $this->angsuranhari = "";
-        $this->angsuranperiode = "";
         $this->isUpdate = false;
         $this->temp_id = "";
         $this->selected_id = [];
@@ -54,40 +50,30 @@ class Index extends Component
         $rules = [
             'kode' => ['required', 'min:3', 'max:10', 'unique:pts'],
             'nama' => ['required', 'min:5', 'max:255'],
-            'angsuranhari' => ['required', 'integer', 'min:3', 'max:31'],
-            'angsuranperiode' => ['required', 'integer', 'min:3', 'max:12']
         ];
         $pesan = [
             'kode.required' => 'Kode wajib diisi.',
-            'nama.required' => 'Nama wajib diisi.',
-            'angsuranhari.required' => 'Angsuran-Hari wajib diisi.',
-            'angsuranperiode.required' => 'Angsuran-Peride wajib diisi.',
             'kode.min' => 'Kode min 3 karakter.',
-            'nama.min' => 'Nama min 5 karakter.',
             'kode.max' => 'Kode maximum 10 karakter',
-            'nama.max' => 'Nama maximum 255 karakter',
-            'angsuranhari.min' => 'Angusran min 3',
-            'angsuranperiode.min' => 'Angusran min 3',
-            'angsuranhari.max' => 'Angusran max 31',
-            'angsuranperiode.max' => 'Angusran max 12',
             'kode.unique' => 'Kode sudah ada didata.',
+            'nama.required' => 'Nama wajib diisi.',
+            'nama.min' => 'Nama min 5 karakter.',
+            'nama.max' => 'Nama maximum 255 karakter',
         ];
 
         $validatedData = $this->validate($rules, $pesan);
         $validatedData['userid'] = 1;
         //$validatedData['userid'] = auth()->user()->id;
-        ModelsPT::create($validatedData);
+        ModelsBarang::create($validatedData);
         session()->flash('ok', 'Data ' . $this->kode . ' berhasil disimpan.');
         $this->clear();
     }
 
     public function edit($id)
     {
-        $data = ModelsPT::find($id);
+        $data = ModelsBarang::find($id);
         $this->kode = $data->kode;
         $this->nama = $data->nama;
-        $this->angsuranhari = $data->angsuranhari;
-        $this->angsuranperiode = $data->angsuranperiode;
 
         $this->isUpdate = true;
         $this->temp_id = $id;
@@ -95,23 +81,15 @@ class Index extends Component
 
     public function update()
     {
-        $data = ModelsPT::find($this->temp_id);
+        $data = ModelsBarang::find($this->temp_id);
 
         $rules = [
             'nama' => ['required', 'min:5', 'max:255'],
-            'angsuranhari' => ['required', 'integer', 'min:3', 'max:31'],
-            'angsuranperiode' => ['required', 'integer', 'min:3', 'max:12']
         ];
         $pesan = [
             'nama.required' => 'Nama wajib diisi.',
             'nama.min' => 'Nama min 5 karakter.',
             'nama.max' => 'Nama maximum 255 karakter',
-            'angsuranhari.required' => 'Angsuran-Hari wajib diisi.',
-            'angsuranhari.min' => 'Angusran min 3',
-            'angsuranhari.max' => 'Angusran max 31',
-            'angsuranperiode.required' => 'Angsuran-Peride wajib diisi.',
-            'angsuranperiode.min' => 'Angusran min 3',
-            'angsuranperiode.max' => 'Angusran max 12',
         ];
 
         if ($data->kode != $this->kode) {
@@ -137,12 +115,11 @@ class Index extends Component
     public function delete_confirm($id)
     {
         if ($id != "") {
-            $data = ModelsPT::find($id);
+            $data = ModelsBarang::find($id);
             $this->kode = $data->kode;
             $this->nama = $data->nama;
-            $this->angsuranhari = $data->angsuranhari;
-            $this->angsuranperiode = $data->angsuranperiode;
 
+            $this->isUpdate = true;
             $this->temp_id = $id;
         } else {
             $this->selectedCount = count($this->selected_id);
@@ -153,13 +130,13 @@ class Index extends Component
     {
         $id = $this->temp_id;
         if ($id != '') {
-            $data = ModelsPT::find($id);
+            $data = ModelsBarang::find($id);
             $data->delete();
             $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
         } else {
             if (count($this->selected_id)) {
                 for ($x = 0; $x < count($this->selected_id); $x++) {
-                    $data = ModelsPT::find($this->selected_id[$x]);
+                    $data = ModelsBarang::find($this->selected_id[$x]);
                     $data->delete();
                 }
                 $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
@@ -178,18 +155,16 @@ class Index extends Component
     public function render()
     {
         if ($this->textcari != null) {
-            $data = ModelsPT::where('kode', 'like', '%' . $this->textcari . '%')
+            $data = ModelsBarang::where('kode', 'like', '%' . $this->textcari . '%')
                 ->orWhere('nama', 'like', '%' . $this->textcari . '%')
-                ->orWhere('angsuranhari', '=', $this->textcari)
-                ->orWhere('angsuranperiode', '=', $this->textcari)
                 ->orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
         } else {
-            $data = ModelsPT::orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
+            $data = ModelsBarang::orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
         }
 
         return view('livewire.panel.barang.index', [
-            'dataPT' => $data,
-        ])->layout('layouts.panel-layout', [
+            'dataBarang' => $data,
+        ])->layout('layouts.dashboard-layout', [
             'title' => $this->title,
         ]);
     }

@@ -10,7 +10,7 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.panel.index')->layout('layouts.panel-layout', [
+        return view('livewire.panel.index')->layout('layouts.dashboard-layout', [
             'title' => $this->title,
         ]);
     }
