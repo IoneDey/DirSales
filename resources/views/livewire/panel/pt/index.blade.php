@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-6 col-md-4">
                     <div class="form-floating mb-2">
-                        <input wire:model="kode" autofocus type="text" class="form-control @error('kode') is-invalid @enderror" id="floatingInput1" placeholder=" ">
+                        <input wire:model="kode" type="text" class="form-control @error('kode') is-invalid @enderror" id="floatingInputKode" placeholder=" ">
                         <label for="floatingInput1">Kode</label>
                         @error('kode')
                         <div class="invalid-feedback">
@@ -66,7 +66,7 @@
                 </div>
                 <div class="col-sm-12 col-md-1 d-flex justify-content-center align-items-center">
                     @if ( $isUpdate == false)
-                    <button type="button" name='btnsimpan' class="btn btn-primary mr-0" wire:click="store()">Simpan</button>
+                    <button wire:loading.attr="disabled" type="button" name='btnsimpan' class="btn btn-primary mr-0" wire:click="store()">Simpan</button>
                     @else
                     <button type="button" name='btnupdate' class="btn btn-primary mr-0" wire:click="update()">Update</button>
                     @endif
@@ -98,13 +98,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     {{ $dataPT->links() }}
-                    <table class="table table-sm table-striped table-hover">
+                    <table class="table table-sm table-striped table-hover table-sortable">
                         <thead>
                             <tr>
                                 <th></th>
                                 <th>#</th>
-                                <th>Kode</th>
-                                <th>Nama</th>
+                                <th class="sort @if ($sortColumn== 'kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode</th>
+                                <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
                                 <th class="rata-kanan">Angsuran-Hari</th>
                                 <th class="rata-kanan">Angsuran-Periode</th>
                                 <th class="rata-kanan">Action</th>

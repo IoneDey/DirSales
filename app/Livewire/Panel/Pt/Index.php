@@ -11,16 +11,26 @@ class Index extends Component
     use WithPagination;
     public $title = 'Panel - PT';
 
+    //untuk deklaras filed2x database
     public $kode;
     public $nama;
     public $angsuranhari;
     public $angsuranperiode;
 
+    //untuk status create datau edit
     public $isUpdate = false;
-    public $temp_id;
 
-    public $textcari;
+    //untuk delete row atau bulk
+    public $temp_id;
+    public $selectedCount = 0;
     public $selected_id = [];
+
+    //untuk multi pencarian
+    public $textcari;
+
+    //untuk sort
+    public $sortColumn = "kode";
+    public $sortDirection = "asc";
 
     public function paginationView()
     {
@@ -36,6 +46,7 @@ class Index extends Component
         $this->isUpdate = false;
         $this->temp_id = "";
         $this->selected_id = [];
+        $this->selectedCount = 0;
     }
 
     public function store()
@@ -69,7 +80,6 @@ class Index extends Component
         session()->flash('ok', 'Data ' . $this->kode . ' berhasil disimpan.');
         $this->clear();
     }
-
 
     public function edit($id)
     {
@@ -134,6 +144,8 @@ class Index extends Component
             $this->angsuranperiode = $data->angsuranperiode;
 
             $this->temp_id = $id;
+        } else {
+            $this->selectedCount = count($this->selected_id);
         }
     }
 
@@ -143,16 +155,24 @@ class Index extends Component
         if ($id != '') {
             $data = ModelsPT::find($id);
             $data->delete();
+            $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
         } else {
             if (count($this->selected_id)) {
                 for ($x = 0; $x < count($this->selected_id); $x++) {
                     $data = ModelsPT::find($this->selected_id[$x]);
                     $data->delete();
                 }
+                $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
             }
         }
-        session()->flash('ok', 'Data ' . $this->kode . ' berhasil di-delete.');
+        session()->flash('ok', $msg);
         $this->clear();
+    }
+
+    public function sort($column)
+    {
+        $this->sortColumn = $column;
+        $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
     public function render()
@@ -162,9 +182,9 @@ class Index extends Component
                 ->orWhere('nama', 'like', '%' . $this->textcari . '%')
                 ->orWhere('angsuranhari', '=', $this->textcari)
                 ->orWhere('angsuranperiode', '=', $this->textcari)
-                ->orderBy('updated_at', 'desc')->paginate(7);
+                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
         } else {
-            $data = ModelsPT::orderBy('updated_at', 'desc')->paginate(7);
+            $data = ModelsPT::orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
         }
 
         return view('livewire.panel.pt.index', [
