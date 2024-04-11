@@ -33,7 +33,7 @@
                         </li>
                         <li>
                             @php
-                            $isActive = Request::is('panel/barang') || Request::is('kota') || Request::is('panel/pt') || Request::is('user');
+                            $isActive = Request::is('panel/barang') || Request::is('panel/kota') || Request::is('panel/pt') || Request::is('user');
                             @endphp
                             <a href="#submenu1" data-bs-toggle="collapse" class="{{ $isActive ? 'active' : '' }} nav-link px-0 align-middle dropdown-toggle">
                                 <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Setup</span> </a>
@@ -43,6 +43,9 @@
                                 </li>
                                 <li>
                                     <a href="{{ route('pt') }}" class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link px-0"> <span class="d-none d-sm-inline">-</span> PT </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('kota') }}" class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link px-0"> <span class="d-none d-sm-inline">-</span> Daftar Kota </a>
                                 </li>
                             </ul>
                         </li>
