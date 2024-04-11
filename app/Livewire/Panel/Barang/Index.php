@@ -164,7 +164,7 @@ class Index extends Component
 
         return view('livewire.panel.barang.index', [
             'dataBarang' => $data,
-        ])->layout('layouts.dashboard-layout', [
+        ])->layout('layouts.panel-layout', [
             'title' => $this->title,
         ]);
     }

@@ -4,121 +4,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIRECT SALES</title>
+    <title>Direct Sales - Main - {{ $title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/mystyle.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/tabelsort.css') }}">
     <style>
-        .b-example-vr {
-            flex-shrink: 0;
-            width: 3px;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar {
-            height: var(--screen-height);
-            overflow-y: auto;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-            box-shadow: 0 10px 14px rgba(0, 0, 0, 1);
-        }
-
-        .content {
-            padding-left: calc(var(--sidebar-width) + 5px);
-            padding-top: 5px;
-        }
-
-        @media (max-width: 768px) and (orientation: portrait) {
-            .content {
-                padding-left: calc(var(--sidebar-width) + 5px);
-                padding-top: 5px;
-            }
+        .nav-link.active {
+            background-color: transparent !important;
+            color: white !important;
         }
     </style>
 </head>
 
 <body>
-    <main class="d-flex flex-nowrap">
-        <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <i class="bi bi-gear me-2"></i><span class="d-none d-md-inline">C. PANEL</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="{{ route('panel') }}" class="nav-link {{ Request::is('panel') ? 'active' : '' }}" aria-current="page">
-                        <i class="bi bi-house"></i><span class="d-none d-md-inline"> Home</span>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <span class="fs-5 d-none d-sm-inline">Menu - Panel</span>
                     </a>
-                </li>
-
-                <li>
-                    <div class="dropdown">
-                        @php
-                        $isActive = Request::is('barang') || Request::is('kota') || Request::is('pt') || Request::is('user');
-                        @endphp
-                        <a href="#" class="nav-link dropdown-toggle {{ $isActive ? 'active' : '' }}" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-list-check"></i><span class="d-none d-md-inline" text-decoration-none> Setup</span>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                        <li class="nav-item">
+                            <a href="{{ route('panel') }}" class="{{ Request::is('panel') ? 'active' : '' }} nav-link align-middle px-0">
+                                <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </a>
+                        </li>
+                        <li>
+                            @php
+                            $isActive = Request::is('panel/barang') || Request::is('panel/kota') || Request::is('panel/pt') || Request::is('user');
+                            @endphp
+                            <a href="#submenu1" data-bs-toggle="collapse" class="{{ $isActive ? 'active' : '' }} nav-link px-0 align-middle dropdown-toggle">
+                                <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Setup</span> </a>
+                            <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                                <li class="w-100">
+                                    <a href="{{ route('barang') }}" class="{{ Request::is('panel/barang') ? 'active' : '' }} nav-link px-0"> <span class="d-none d-sm-inline">-</span> Barang </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('pt') }}" class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link px-0"> <span class="d-none d-sm-inline">-</span> PT </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('kota') }}" class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link px-0"> <span class="d-none d-sm-inline">-</span> Daftar Kota </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-table"></i> <span class="ms-1 d-none d-sm-inline">Buat Tim</span></a>
+                        </li>
+                        <li>
+                            <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
+                                <i class="fs-4 bi-bootstrap"></i> <span class="ms-1 d-none d-sm-inline">Bootstrap</span></a>
+                            <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                                <li class="w-100">
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 1</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Item</span> 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Products</span> </a>
+                            <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
+                                <li class="w-100">
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 1</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 2</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 3</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">Product</span> 4</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link px-0 align-middle">
+                                <i class="fs-4 bi-people"></i> <span class="ms-1 d-none d-sm-inline">Customers</span> </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <div class="dropdown pb-4">
+                        <a href="#" class="d-flex align-items-center text-blue text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fs-4 bi-person-check-fill"></i>
+                            <span class="d-none d-sm-inline mx-1">Hi, {{ auth()->User()->username }}</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
-                            <li><a class="dropdown-item {{ Request::is('barang') ? 'active' : '' }}" href="{{ route('barang') }}">Barang</a></li>
-                            <li><a class="dropdown-item {{ Request::is('kota') ? 'active' : '' }}" href="{{ route('kota') }}">Kota</a></li>
-                            <li><a class="dropdown-item {{ Request::is('pt') ? 'active' : '' }}" href="{{ route('pt') }}">PT</a></li>
-                            <li><a class="dropdown-item" href="#">User</a></li>
+                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="{{ route('main') }}">Main</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}">Log out</a></li>
                         </ul>
                     </div>
-                </li>
-                <li>
-                    <a href="#" class="nav-link text-white" text-decoration-none>
-                        <i class="bi bi-backspace"></i><span class="d-none d-md-inline"> Main Menu</span>
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-check"></i><span class="d-none d-md-inline"> Helo</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-dark text-small shadow dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="b-example-divider b-example-vr"></div>
-
-        <div class="content container-fluid">
-            <div class="row">
-                <div class="col">
-                    <h2>{{ $title }}</h2>
-                    {{ $slot }}
                 </div>
             </div>
+
+
+            <div class="col py-3">
+                <h2>{{ $title }}</h2>
+                {{ $slot }}
+            </div>
+
         </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.querySelector('.sidebar');
-            const sidebarWidth = sidebar.offsetWidth;
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-
-            document.documentElement.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
-
-
-            document.documentElement.style.setProperty('--screen-width', `${screenWidth}px`);
-            document.documentElement.style.setProperty('--screen-height', `${screenHeight}px`);
-        });
-    </script>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
