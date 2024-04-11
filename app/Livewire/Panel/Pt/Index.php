@@ -190,7 +190,7 @@ class Index extends Component
 
         return view('livewire.panel.pt.index', [
             'dataPT' => $data,
-        ])->layout('layouts.dashboard-layout', [
+        ])->layout('layouts.panel-layout', [
             'title' => $this->title,
         ]);
     }

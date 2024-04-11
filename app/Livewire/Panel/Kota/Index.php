@@ -34,7 +34,7 @@ class Index extends Component
         if ($this->textcari != null) {
             $data = ModelKota::where('provinsi', 'like', '%' . $this->textcari . '%')
                 ->orWhere('kota_kabupaten', 'like', '%' . $this->textcari . '%')
-                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(7);
+                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(10);
         } else {
             $data = ModelKota::orderBy($this->sortColumn, $this->sortDirection)->paginate(10);
         }
@@ -42,7 +42,7 @@ class Index extends Component
         return view('livewire.panel.kota.index', [
             'dataKota' => $data,
         ])
-            ->layout('layouts.dashboard-layout', [
+            ->layout('layouts.panel-layout', [
                 'title' => $this->title,
             ]);
     }

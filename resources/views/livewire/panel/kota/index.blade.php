@@ -15,7 +15,11 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    {{ $dataKota    ->links() }}
+
+
+                    {{ $dataKota->links() }}
+
+
                     <table class="table table-sm table-striped table-hover table-sortable">
                         <thead>
                             <tr>
