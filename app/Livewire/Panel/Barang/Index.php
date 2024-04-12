@@ -62,8 +62,8 @@ class Index extends Component
         ];
 
         $validatedData = $this->validate($rules, $pesan);
-        $validatedData['userid'] = 1;
-        //$validatedData['userid'] = auth()->user()->id;
+        $validatedData['userid'] = auth()->user()->id;
+
         ModelsBarang::create($validatedData);
         session()->flash('ok', 'Data ' . $this->kode . ' berhasil disimpan.');
         $this->clear();
@@ -102,11 +102,9 @@ class Index extends Component
             ];
         }
         $validatedData = $this->validate($rules, $pesan);
-        $validatedData['userid'] = 1;
-        //$validatedData['userid'] = auth()->user()->id;
+        $validatedData['userid'] = auth()->user()->id;
 
         $data->update($validatedData);
-        //ModelsPT::create($validatedData);
         session()->flash('ok', 'Data ' . $this->kode . ' berhasil di-update.');
 
         $this->clear();

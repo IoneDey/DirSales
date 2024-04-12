@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\PtController;
 
 /*
 Route::get('/', function () {
@@ -14,7 +14,10 @@ route::middleware('auth')->group(function () {
     Route::get('/panel/pt', App\Livewire\Panel\Pt\Index::class)->name('pt');
     Route::get('/panel/barang', App\Livewire\Panel\Barang\Index::class)->name('barang');
     Route::get('/panel/kota', App\Livewire\Panel\Kota\Index::class)->name('kota');
+    Route::get('/panel/tim', App\Livewire\Panel\Tim\Index::class)->name('tim');
     Route::get('/logout', [App\Livewire\Logout::class, 'logout'])->name('logout');
+
+    Route::get('pt', [PtController::class, 'pt'])->name('pt.index');
 });
 
 Route::get('/login', App\Livewire\Login::class)->name('login')->middleware('guest');

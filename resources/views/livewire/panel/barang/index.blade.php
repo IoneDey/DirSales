@@ -90,21 +90,23 @@
                                 <tr>
                                     <th></th>
                                     <th>#</th>
-                                    <th class="sort @if ($sortColumn== 'kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode</th>
-                                    <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                                    <th class="sort @if ($sortColumn=='kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode</th>
+                                    <th class="sort @if ($sortColumn=='nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                                    <th>User Id</th>
                                     <th class="rata-kanan">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ( $dataBarang as $barang=>$value )
+                                @foreach ( $dataBarang as $barang )
                                 <tr>
-                                    <td><input wire:key="{{ $value->id }}" wire:model.live="selected_id" value="{{ $value->id }}" type="checkbox"></td>
-                                    <td>{{ $dataBarang->firstItem() + $barang }}</td>
-                                    <td>{{ $value->kode }}</td>
-                                    <td>{{ $value->nama }}</td>
+                                    <td><input wire:key="{{ $barang->id }}" wire:model.live="selected_id" value="{{ $barang->id }}" type="checkbox"></td>
+                                    <td>{{ (($dataBarang->currentPage()-1)*$dataBarang->perPage()) + $loop->iteration }}</td>
+                                    <td>{{ $barang->kode }}</td>
+                                    <td>{{ $barang->nama }}</td>
+                                    <td>{{ $barang->joinUser->name }}</td>
                                     <td class="rata-kanan">
-                                        <a wire:click="edit({{ $value->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
-                                        <a wire:click="delete_confirm({{ $value->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
+                                        <a wire:click="edit({{ $barang->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <a wire:click="delete_confirm({{ $barang->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

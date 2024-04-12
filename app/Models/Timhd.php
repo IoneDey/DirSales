@@ -4,13 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Kotas;
+use App\Models\User;
 
-class Barangs extends Model
+class Timhd extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $with = ['joinUser'];
+    protected $table = 'timhd';
+    protected $with = ['joinUser', 'joinKota'];
+
+    public function joinKota()
+    {
+        return $this->belongsTo(Kotas::class, 'kotaid', 'id');
+    }
 
     public function joinUser()
     {

@@ -23,6 +23,19 @@
             }, 3500);
         </script>
         @endif
+        @if(session()->has('error'))
+        <div class="alert alert-danger" id="error-message">
+            {{ session('error') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                var errorMessage = document.getElementById('error-message');
+                if (errorMessage) {
+                    errorMessage.remove();
+                }
+            }, 3500);
+        </script>
+        @endif
         <form class='mb-1 p-2'>
             <div class="row">
                 <div class="col-sm-6 col-md-4">

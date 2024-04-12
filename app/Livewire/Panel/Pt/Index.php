@@ -152,22 +152,28 @@ class Index extends Component
 
     public function delete()
     {
-        $id = $this->temp_id;
-        if ($id != '') {
-            $data = ModelsPT::find($id);
-            $data->delete();
-            $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
-        } else {
-            if (count($this->selected_id)) {
-                for ($x = 0; $x < count($this->selected_id); $x++) {
-                    $data = ModelsPT::find($this->selected_id[$x]);
-                    $data->delete();
+        try {
+
+            $id = $this->temp_id;
+            if ($id != '') {
+                $data = ModelsPT::find($id);
+                $data->delete();
+                $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
+            } else {
+                if (count($this->selected_id)) {
+                    for ($x = 0; $x < count($this->selected_id); $x++) {
+                        $data = ModelsPT::find($this->selected_id[$x]);
+                        $data->delete();
+                    }
+                    $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
                 }
-                $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
             }
+            session()->flash('ok', $msg);
+            $this->clear();
+        } catch (\Exception $e) {
+            // Tangani pengecualian yang terjadi
+            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-        session()->flash('ok', $msg);
-        $this->clear();
     }
 
     public function sort($column)

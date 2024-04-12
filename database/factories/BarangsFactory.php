@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +17,7 @@ class BarangsFactory extends Factory
      */
     public function definition(): array
     {
-        $UserId = Users::pluck('id')->random();
+        $UserId = User::pluck('id')->random();
 
         return [
             'kode' => $this->faker->unique()->bothify('BRG-#####??????'),

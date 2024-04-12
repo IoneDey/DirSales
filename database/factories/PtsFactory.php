@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Users;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Pt>
@@ -17,7 +17,7 @@ class PtsFactory extends Factory
      */
     public function definition(): array
     {
-        $UserId = Users::pluck('id')->random();
+        $UserId = User::pluck('id')->random();
 
         $word = $this->faker->unique()->words(1, true);
         if (strlen($word) > 10) {

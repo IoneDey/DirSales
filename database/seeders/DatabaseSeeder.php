@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Users;
+use App\Models\User;
 use App\Models\Pts;
 use App\Models\Barangs;
+use App\Models\Timhd;
+use App\Models\Kotas;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -71,8 +73,19 @@ class DatabaseSeeder extends Seeder
             'userid' => 1,
         ]);
 
-        Users::factory(10)->create();
+        DB::table('kotas')->insert([
+            'provinsi' => 'PROVINSI',
+            'kota_kabupaten' => 'KOTA KABUPATEN 1',
+        ]);
+
+        DB::table('kotas')->insert([
+            'provinsi' => 'PROVINSI',
+            'kota_kabupaten' => 'KOTA KABUPATEN 2',
+        ]);
+
+        User::factory(10)->create();
         Pts::factory(5)->create();
         Barangs::factory(10)->create();
+        Timhd::factory(5)->create();
     }
 }
