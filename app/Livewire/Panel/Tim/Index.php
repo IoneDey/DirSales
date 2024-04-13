@@ -2,11 +2,15 @@
 
 namespace App\Livewire\Panel\Tim;
 
+use App\Models\Barangs as ModelsBarang;
+use App\Models\Kotas as ModelsKota;
+use App\Models\Pts as ModelsPt;
 use App\Models\Timhd as ModelsTimHd;
 use DateTime;
 use Illuminate\Support\Facades\Date;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Ramsey\Uuid\Type\Integer;
 
 class Index extends Component
 {
@@ -22,9 +26,8 @@ class Index extends Component
     public $tglawal;
     public $tglakhir;
     public string $pic;
-
     //data array barang
-    public $dataDetail = [];
+    public $dataBarangDetail = [];
 
     public function paginationView()
     {
@@ -39,7 +42,7 @@ class Index extends Component
         $this->tglawal = "";
         $this->tglakhir = "";
         $this->pic = "";
-        $this->dataDetail = [];
+        $this->dataBarangDetail = [];
     }
 
     public function store()
@@ -60,26 +63,50 @@ class Index extends Component
         $this->tglawal = $data->tglawal;
         $this->tglakhir = $data->tglakhir;
         $this->pic = $data->pic;
+
+        $this->dataBarangDetail = [];
+        $i = 0;
+        foreach ($data->joinTimdt as $timdt) {
+            $item = [
+                'barangid' => $timdt->barangid,
+                'hpp' => $timdt->hpp,
+                'hargajual' => $timdt->hargajual
+            ];
+            $this->dataBarangDetail[] = $item;
+        }
+        //dd($data->joinTimdt->count());
     }
 
     public function addDataArray()
     {
-        $this->dataDetail[] = ['', '', ''];
+        $item = [
+            'barangid' => '',
+            'hpp' => '',
+            'hargajual' => ''
+        ];
+        $this->dataBarangDetail[] = $item;
     }
 
     public function delDataArray($index)
     {
-        unset($this->dataDetail[$index]);
-        $this->dataDetail = array_values($this->dataDetail);
+        unset($this->dataBarangDetail[$index]);
+        $this->dataBarangDetail = array_values($this->dataBarangDetail);
     }
 
     public function render()
     {
         $dbTimHd = ModelsTimHd::orderBy('tglakhir', 'desc')->paginate(5);
+        $dbPT = ModelsPt::orderBy('nama', 'asc')->get();
+        $dbKota = ModelsKota::orderBy('kota_kabupaten', 'asc')->get();
+        $dbBarang = ModelsBarang::orderBy('nama', 'asc')->get();
 
         return view('livewire.panel.tim.index', [
             'timhdLists' => $dbTimHd,
-        ])->layout('layouts.panel-layout', [
+            'ptLists' => $dbPT,
+            'KotaLists' => $dbKota,
+            'BarangLists' => $dbBarang,
+        ])->layout('layouts.app-layout', [
+            'menu' => 'navmenu.panel',
             'title' => $this->title,
         ]);
     }

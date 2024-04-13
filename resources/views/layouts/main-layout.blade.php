@@ -74,7 +74,7 @@
                     @else
                     <div class="dropdown pb-4">
                         <a href="{{ route('login') }}" class="{{ Request::is('login') ? 'active' : '' }} nav-link align-middle px-0">
-                            <i class="fs-4 bi-person"></i> <span class="ms-1 d-none d-sm-inline">Login</span>
+                            <i class="fa-solid fa-right-to-bracket"></i> <span class="ms-1 d-none d-sm-inline">Login</span>
                         </a>
                     </div>
                     @endauth
@@ -92,6 +92,7 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/106cdf4c7e.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

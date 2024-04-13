@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Panel\Barang;
 
-use Livewire\Component;
 use App\Models\Barangs as ModelsBarang;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
@@ -162,7 +162,8 @@ class Index extends Component
 
         return view('livewire.panel.barang.index', [
             'dataBarang' => $data,
-        ])->layout('layouts.panel-layout', [
+        ])->layout('layouts.app-layout', [
+            'menu' => 'navmenu.panel',
             'title' => $this->title,
         ]);
     }

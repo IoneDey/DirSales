@@ -60,6 +60,9 @@
                                 <a wire:click="delete_confirm({{ $timhd->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
                             </td>
                         </tr>
+                        @foreach ($timhd->joinTimdt as $timdt)
+
+                        @endforeach
                         @endforeach
                     </tbody>
                 </table>
@@ -85,9 +88,9 @@
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">PT</span>
                                     <select wire:model='ptid' type='text' class="form-control" id="selectpt">
                                         <option value="">Pilih PT</option>
-                                        <option value="1">Alabama</option>
-                                        <option value="2">Alaska</option>
-                                        <option value="3">Arizona</option>
+                                        @foreach ($ptLists as $ptList)
+                                        <option value="{{ $ptList->id }}">{{ $ptList->nama }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -96,9 +99,9 @@
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Kota</span>
                                     <select wire:model='kotaid' type='text' class="form-control" id="selectkota">
                                         <option value="">Pilih Kota</option>
-                                        <option value="1">Blitar</option>
-                                        <option value="2">Malang</option>
-                                        <option value="3">Surabayar</option>
+                                        @foreach ($KotaLists as $KotaList)
+                                        <option value="{{ $KotaList->id }}">{{ $KotaList->kota_kabupaten }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -141,18 +144,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dataDetail as $index => $row)
+                                @foreach ($dataBarangDetail as $index => $item)
                                 <tr>
                                     <td>
-                                        <select wire:model="dataDetail.{{ $index }}.0" class="form-control" style="width: 100%;" id="selectBarang">
+                                        <select wire:model="dataBarangDetail.{{ $index }}.barangid" class="form-control" style="width: 100%;" id="selectBarang">
                                             <option value="">Pilih Barang</option>
-                                            <option value="1">Barang 1</option>
-                                            <option value="2">Barang 2</option>
-                                            <option value="3">Barang 3</option>
+                                            @foreach ($BarangLists as $BarangList)
+                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }}</option>
+                                            @endforeach
                                         </select>
                                     </td>
-                                    <td><input wire:model="dataDetail.{{ $index }}.1" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
-                                    <td><input wire:model="dataDetail.{{ $index }}.2" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
+                                    <td><input wire:model="dataBarangDetail.{{ $index }}.hpp" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
+                                    <td><input wire:model="dataBarangDetail.{{ $index }}.hargajual" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
                                     <td>
                                         <button wire:click="delDataArray({{ $index }})" type="button" class="btn btn-danger"><i class="bi bi-eraser"></i></button>
                                     </td>

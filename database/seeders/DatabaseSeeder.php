@@ -6,7 +6,8 @@ use App\Models\User;
 use App\Models\Pts;
 use App\Models\Barangs;
 use App\Models\Timhd;
-use App\Models\Kotas;
+use App\Models\Timdt;
+//use App\Models\Kotas;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -74,18 +75,34 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('kotas')->insert([
-            'provinsi' => 'PROVINSI',
-            'kota_kabupaten' => 'KOTA KABUPATEN 1',
+            'provinsi' => 'PROVINSI 1',
+            'kota_kabupaten' => 'KOTA KABUPATEN 11',
         ]);
 
         DB::table('kotas')->insert([
-            'provinsi' => 'PROVINSI',
-            'kota_kabupaten' => 'KOTA KABUPATEN 2',
+            'provinsi' => 'PROVINSI 1',
+            'kota_kabupaten' => 'KOTA KABUPATEN 12',
+        ]);
+
+        DB::table('kotas')->insert([
+            'provinsi' => 'PROVINSI 2',
+            'kota_kabupaten' => 'KOTA KABUPATEN 21',
+        ]);
+
+        DB::table('kotas')->insert([
+            'provinsi' => 'PROVINSI 2',
+            'kota_kabupaten' => 'KOTA KABUPATEN 22',
+        ]);
+
+        DB::table('kotas')->insert([
+            'provinsi' => 'PROVINSI 2',
+            'kota_kabupaten' => 'KOTA KABUPATEN 23',
         ]);
 
         User::factory(10)->create();
         Pts::factory(5)->create();
         Barangs::factory(10)->create();
-        Timhd::factory(5)->create();
+        Timhd::factory(10)->create();
+        Timdt::factory(20)->create();
     }
 }

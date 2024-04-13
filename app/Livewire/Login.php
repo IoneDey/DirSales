@@ -28,7 +28,8 @@ class Login extends Component
 
     public function render()
     {
-        return view('livewire.login')->layout('layouts.main-layout', [
+        return view('livewire.login')->layout('layouts.app-layout', [
+            'menu' => 'navmenu.main',
             'title' => $this->title,
         ]);
     }
