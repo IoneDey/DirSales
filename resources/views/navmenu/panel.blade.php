@@ -10,7 +10,7 @@
                 @php
                 $isActive = Request::is('panel/barang') || Request::is('panel/pt') || Request::is('panel/kota');
                 @endphp
-                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                     Setup
                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>

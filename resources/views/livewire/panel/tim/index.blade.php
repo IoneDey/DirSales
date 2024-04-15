@@ -74,11 +74,14 @@
                         </div>
                         <div class="row mb-1">
                             <div class="col-md-6">
+
+                                {{ $ptid  }}
+
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">PT</span>
-                                    <select wire:model='ptid' type='text' class="form-control" id="_selectpt">
+                                    <select wire:model.change="ptid" type='text' class="form-control" id="selectpt" name="selectpt">
                                         <option value="">Pilih PT</option>
-                                        @foreach ($dbPT as $ptList)
+                                        @foreach($dbPT as $ptList)
                                         <option value="{{ $ptList->id }}">{{ $ptList->nama }}</option>
                                         @endforeach
                                     </select>
@@ -89,8 +92,9 @@
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Kota</span>
                                     <select wire:model='kotaid' type='text' class="form-control" id="selectkota">
                                         <option value="">Pilih Kota</option>
-                                        @foreach ($dbKota as $KotaList)
-                                        <option value="{{ $KotaList->id }}">{{ $KotaList->kota_kabupaten }}</option>
+                                        @foreach($dbKota as $KotaList)
+                                        <option value="{{ $KotaList->id }}">{{ $KotaList->kota_kabupaten }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -99,13 +103,15 @@
                         <div class="row mb-1">
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl Awal</span>
+                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl
+                                        Awal</span>
                                     <input wire:model='tglawal' type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl Akhir</span>
+                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl
+                                        Akhir</span>
                                     <input wire:model='tglakhir' value="2024-01-01" type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
@@ -119,7 +125,7 @@
                             </div>
                         </div>
                         <div>
-                            @if ($isUpdate)
+                            @if($isUpdate)
                             <input wire:click="update()" type="button" class="btn btn-primary" value="Update"></input>
                             @else
                             <input wire:click="store()" type="button" class="btn btn-primary" value="Simpan"></input>
@@ -145,16 +151,18 @@
                                     <td>
                                         <select wire:model="barangid" class="form-control select2" style="width: 100%;" id="selectBarang">
                                             <option value="">Pilih Barang</option>
-                                            @foreach ($dbBarang as $BarangList)
-                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }} - {{ $BarangList->kode }}</option>
+                                            @foreach($dbBarang as $BarangList)
+                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }} -
+                                                {{ $BarangList->kode }}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td><input wire:model="hpp" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
                                     <td><input wire:model="hargajual" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
                                     <td class="rata-kanan">
-                                        @if ($isUpdateBarang)
-                                        <button wire:click="editBarang({{ $barangid }})" type="button" class="btn btn-primary">Upd</button>
+                                        @if($isUpdateBarang)
+                                        <button wire:click="updateBarang" type="button" class="btn btn-primary">Upd</button>
                                         @else
                                         <button wire:click="storeBarang" type="button" class="btn btn-primary">Add</button>
                                         @endif
@@ -163,12 +171,12 @@
                                 </tr>
                             </tbody>
                             <tbody>
-                                @foreach ($dataBarangDetail as $index)
+                                @foreach($dataBarangDetail as $index)
                                 <tr>
                                     <td style="display: none;">{{ $index['barangid'] }}</td>
                                     <td>{{ $index['barang'] }}</td>
-                                    <td class="rata-kanan">{{ $index['hpp'] }}</td>
-                                    <td class="rata-kanan">{{ $index['hargajual'] }}</td>
+                                    <td class="rata-kanan">{{ number_format($index['hpp'], 0) }}</td>
+                                    <td class="rata-kanan">{{ number_format($index['hargajual'], 0) }}</td>
                                     <td class="rata-kanan">
                                         <a wire:click="editBarang({{ $index['barangid'] }})" type="button" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
                                         <a wire:click="deleteBarang_confirm({{ $index['barangid'] }})" type="button" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteBarang"><i class="bi bi-eraser"></i></a>
@@ -194,7 +202,15 @@
                             <h3>Daftar TIM</h>
                         </div>
 
-                        <a href="#/" class="pagination-class">{{ $dbTimHds->links() }}</a>
+                        <div class="col-3 offset-9">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Cari</span>
+                                <input wire:model.live="textcari" type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+
+                        </div>
+
+                        <a href="#/" class="pagination-class">{{ $dbTimHds->links(data: ['scrollTo' => false]) }}</a>
                         <table class="table table-sm table-striped table-hover table-sortable">
                             <thead>
                                 <tr>
@@ -206,7 +222,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dbTimHds as $timhd)
+                                @foreach($dbTimHds as $timhd)
                                 <tr>
                                     <td>{{ $timhd->nomer }}</td>
                                     <td>{{ $timhd->joinKota->kota_kabupaten }}</td>
@@ -217,7 +233,7 @@
                                         <a href="#top" wire:click="delete_confirm({{ $timhd->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteTim"><i class="bi bi-eraser"></i></a>
                                     </td>
                                 </tr>
-                                @foreach ($timhd->joinTimdt as $timdt)
+                                @foreach($timhd->joinTimdt as $timdt)
 
                                 @endforeach
                                 @endforeach
@@ -269,17 +285,30 @@
 
 @assets
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endassets
 
-@script
+@script()
 <script>
     $(document).ready(function() {
         $('#selectpt').select2();
-        $('#selectpt').on('change', function(event) {
-            console.log(event);
-        })
+
+        var ptidValue = @this.ptid;
+        console.log(ptidValue);
+        $('#selectpt').val(ptidValue).trigger('change');
+    });
+
+    document.addEventListener('livewire:load', function() {
+        Livewire.hook('message.received', (message, component) => {
+            // Check if the message is related to the 'ptid' property
+            if (message.hasOwnProperty('updateQueue') && message.updateQueue.some(update => update.name.includes('ptid'))) {
+                let newPtidValue = message.updateQueue.find(update => update.name === 'ptid').value;
+
+                // Update Select2 dropdown with the new value
+                $('#selectpt').val(newPtidValue).trigger('change');
+            }
+        });
     });
 </script>
 @endscript

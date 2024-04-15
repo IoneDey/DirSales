@@ -56,11 +56,12 @@ class Index extends Component
     public $isUpdate = false;
     public $isUpdateBarang = false;
 
+    //untuk multi pencarian
+    public $textcari;
+
     //untuk sort
     public $sortColumn = "nomer";
     public $sortDirection = "desc";
-
-
 
     public function clear()
     {
@@ -93,6 +94,7 @@ class Index extends Component
         $this->isUpdate = true;
 
         $this->refreshBarangDet($data);
+        $this->clearBarang();
     }
 
     public function refreshBarangDet($dataTim)
@@ -102,7 +104,7 @@ class Index extends Component
         foreach ($data->joinTimdt as $timdt) {
             $item = [
                 'barangid' => $timdt->barangid,
-                'barang' => $timdt->joinBarang->nama . '-' . $timdt->joinBarang->kode,
+                'barang' => $timdt->joinBarang->nama . ' - ' . $timdt->joinBarang->kode,
                 'hpp' => $timdt->hpp,
                 'hargajual' => $timdt->hargajual
             ];
@@ -167,7 +169,6 @@ class Index extends Component
             'tglawal' => ['required', 'date'],
             'tglakhir' => ['required', 'date', 'after:tglawal'],
             'pic' => ['required', 'max:255'],
-
         ]);
         $pesan = [
             'tglawal.required' => 'Tgl Awal wajib diisi.',
@@ -178,7 +179,7 @@ class Index extends Component
         ];
 
         if ($data->nomer != $this->nomer || $data->ptid != $this->ptid || $data->kotaid != $this->kotaid) {
-            $rules = [
+            $rules['nomer'] = [
                 'nomer' => [
                     'required', 'min:4', 'max:6',
                     Rule::unique('timhd')->where(function ($query) {
@@ -189,15 +190,14 @@ class Index extends Component
                 'ptid' => ['required'],
                 'kotaid' => ['required'],
             ];
-            $pesan = [
+            $pesan = array_merge($pesan, [
                 'nomer.required' => 'Nomer Tim wajib diisi.',
                 'nomer.min' => 'Nomer Tim minimum 4 karakter.',
                 'nomer.max' => 'Nomer Tim maximum 6 karakter.',
                 'nomer.unique' => 'Kota sudah pernah ada dalam tim.',
                 'kotaid.required' => 'Kota wajib diisi.',
                 'ptid.required' => 'PT wajib diisi.',
-                'kotaid.required' => 'Kota wajib diisi.',
-            ];
+            ]);
         }
 
         try {
@@ -256,7 +256,7 @@ class Index extends Component
 
         $this->nomerid = $data->nomerid;
         $this->barangid = $data->barangid;
-        $this->barang = $data->joinBarang->nama . ' ' . $data->joinBarang->kode;
+        $this->barang = $data->joinBarang->nama . ' - ' . $data->joinBarang->kode;
         $this->hpp = $data->hpp;
         $this->hargajual = $data->hargajual;
         $this->isUpdateBarang = true;
@@ -266,7 +266,6 @@ class Index extends Component
     {
         $tmp = ModelsBarang::find($this->barangid);
         $this->nomerid = $this->nomer;
-
 
         $rules = [
             'nomerid' => 'required',
@@ -318,6 +317,75 @@ class Index extends Component
 
     public function updateBarang()
     {
+        //idbarang yg akan diupdate
+        $idBrg = $this->temp_idBarang;
+
+        //untuk validasi barang
+        $tmp = ModelsBarang::find($this->barangid);
+        $this->nomerid = $this->nomer;
+
+        //cari index array yg akan diupdate
+        $indexToEdit = array_search($idBrg, array_column($this->dataBarangDetail, 'barangid'));
+
+        //cari data yg akan diedit
+        $data = ModelsTimdt::where([
+            'nomerid' => $this->id,
+            'barangid' => $idBrg
+        ])->first();
+
+        $rules = [
+            'nomerid' => 'required',
+            'hpp' => 'required|numeric|min:0',
+            'hargajual' => 'required|numeric|min:0'
+        ];
+        $pesan = [
+            'nomerid.required' => 'Tim wajib diisi.',
+            'hpp.required' => 'Hpp wajib diisi.',
+            'hargajual.required' => 'Harga jual wajib diisi.',
+        ];
+
+        //cek barang sama/beda kalo sama tidak perlu divalidasi
+        if ($idBrg != $this->barangid) {
+            $rules['barangid'] = [
+                'required',
+                Rule::unique('timdt')->where(function ($query) {
+                    return $query->where('nomerid', $this->id)
+                        ->where('barangid', $this->barangid);
+                })
+            ];
+            $pesan = array_merge($pesan, [
+                'barangid.required' => 'Barang belum dipilih.',
+                'barangid.unique' => 'Barang sudah ada.',
+            ]);
+        }
+
+        try {
+            $validatedData = $this->validate($rules, $pesan);
+
+            $validatedData['nomerid'] = $this->id;
+            $validatedData['userid'] = auth()->user()->id;
+
+            //update database
+            $data->update($validatedData);
+
+            //udpate array
+            if ($indexToEdit !== false) {
+                $this->dataBarangDetail[$indexToEdit]['barangid'] = $this->barangid;
+                $this->dataBarangDetail[$indexToEdit]['barang'] = $tmp->nama . ' - ' . $tmp->kode;
+                $this->dataBarangDetail[$indexToEdit]['hpp'] = $this->hpp;
+                $this->dataBarangDetail[$indexToEdit]['hargajual'] = $this->hargajual;
+            } else {
+                // Barang id tidak ditemukan
+                // Handle case jika barang id tidak ditemukan
+            }
+
+            $msg = 'Data ' . $this->barang . ' berhasil di-update.';
+            session()->flash('ok', $msg);
+            $this->clearBarang();
+        } catch (ValidationException $e) {
+            $errors = implode("\n", $e->validator->errors()->all());
+            Session::flash('error', $errors);
+        }
     }
 
     public function deleteBarang_confirm($id)
@@ -363,18 +431,25 @@ class Index extends Component
         $this->dbBarang = ModelsBarang::all();
     }
 
-    /*
+
     public function updatedptid($dbPT)
     {
-        $this->ptid = $dbPT;
+        //$this->ptid = $dbPT;
         //dd($this->ptid);
+
     }
+
 
     public function updatedkotaid($dbKota)
     {
         $this->kotaid = $dbKota;
     }
-    */
+
+    public function updatedtextcari()
+    {
+        $this->resetPage();
+    }
+
     public function sort($column)
     {
         $this->sortColumn = $column;
@@ -384,11 +459,19 @@ class Index extends Component
     public function render()
     {
         //$dbTimHd = ModelsTimHd::orderBy($this->sortColumn, $this->sortDirection)->paginate(5);
-
-        $dbTimHd = ModelsTimHd::join('kotas', 'timhd.kotaid', '=', 'kotas.id')
-            ->orderBy($this->sortColumn, $this->sortDirection)
-            ->select('timhd.*')
-            ->paginate(2);
+        if ($this->textcari != null) {
+            $dbTimHd = ModelsTimHd::join('kotas', 'timhd.kotaid', '=', 'kotas.id')
+                ->where('nomer', 'like', '%' . $this->textcari . '%')
+                ->orWhere('kota_kabupaten', 'like', '%' . $this->textcari . '%')
+                ->orderBy($this->sortColumn, $this->sortDirection)
+                ->select('timhd.*')
+                ->paginate(5);
+        } else {
+            $dbTimHd = ModelsTimHd::join('kotas', 'timhd.kotaid', '=', 'kotas.id')
+                ->orderBy($this->sortColumn, $this->sortDirection)
+                ->select('timhd.*')
+                ->paginate(5);
+        }
 
         return view('livewire.panel.tim.index', [
             'dbTimHds' => $dbTimHd,

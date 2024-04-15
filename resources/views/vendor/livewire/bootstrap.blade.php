@@ -1,6 +1,6 @@
 @php
 if (! isset($scrollTo)) {
-$scrollTo = '';
+$scrollTo = 'body';
 }
 
 $scrollIntoViewJsSnippet = ($scrollTo !== false)
