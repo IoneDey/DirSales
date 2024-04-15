@@ -1,13 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PtController;
+use Illuminate\Support\Facades\Route;
 
 /*
 Route::get('/', function () {
     return view('welcome');
 });
 */
+
+//Route::get('/', App\Livewire\Panel\Tim\Index::class);
 
 route::middleware('auth')->group(function () {
     Route::get('/panel', App\Livewire\Panel\Index::class)->name('panel');

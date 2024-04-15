@@ -1,7 +1,11 @@
 <div>
+    <link href="{{ asset('css/style_alert_center_close.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
+
     <style>
         form {
-            padding: 20px;
+            padding: 7px;
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -34,50 +38,36 @@
         }
     </style>
 
-    <div class="row g-2">
-        <div class="col-6">
-            <form id="form_list" action="">
-                {{ $timhdLists->links() }}
-                <table class="table table-sm table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%">Tim</th>
-                            <th style="width: 10%">Kota</th>
-                            <th style="width: 10%">Tgl Awal</th>
-                            <th style="width: 10%">Tgl Akhir</th>
-                            <th class="rata-kanan" style="width: 5%">Act</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($timhdLists as $timhd)
-                        <tr>
-                            <td style="width: 5">{{ $timhd->nomer }}</td>
-                            <td style="width: 10%">{{ $timhd->joinKota->kota_kabupaten }}</td>
-                            <td style="width: 10%">{{ $timhd->tglawal }}</td>
-                            <td style="width: 10%">{{ $timhd->tglakhir }}</td>
-                            <td class="rata-kanan" style="width: 5%">
-                                <a wire:click="edit({{ $timhd->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
-                                <a wire:click="delete_confirm({{ $timhd->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
-                            </td>
-                        </tr>
-                        @foreach ($timhd->joinTimdt as $timdt)
+    @if(session()->has('ok'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <ul>
+            <pre>{{ session('ok') }} </pre>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
+    </div>
+    @endif
 
-                        @endforeach
-                        @endforeach
-                    </tbody>
-                </table>
-            </form>
-        </div>
+    @if(session()->has('error'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <ul>
+            <pre>{{ session('error') }} </pre>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
+    </div>
+    @endif
 
-        <div class="col-6">
+    <h2 class="text-center" id="top">{{ $title }}</h2>
+
+    <div class="row g-2 mb-2">
+        <div class="col-12">
             <div class="container">
                 <div class="row g-2 mb-1">
-                    <form id="form_hd" class='mb-1 p-2'>
+                    <form id="form_hd" class='mb-1'>
                         <div class="row mb-1">
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tim</span>
-                                    <input wire:model.live='tim' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
+                                    <input wire:model='nomer' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
 
@@ -86,9 +76,9 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">PT</span>
-                                    <select wire:model='ptid' type='text' class="form-control" id="selectpt">
+                                    <select wire:model='ptid' type='text' class="form-control" id="_selectpt">
                                         <option value="">Pilih PT</option>
-                                        @foreach ($ptLists as $ptList)
+                                        @foreach ($dbPT as $ptList)
                                         <option value="{{ $ptList->id }}">{{ $ptList->nama }}</option>
                                         @endforeach
                                     </select>
@@ -99,7 +89,7 @@
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Kota</span>
                                     <select wire:model='kotaid' type='text' class="form-control" id="selectkota">
                                         <option value="">Pilih Kota</option>
-                                        @foreach ($KotaLists as $KotaList)
+                                        @foreach ($dbKota as $KotaList)
                                         <option value="{{ $KotaList->id }}">{{ $KotaList->kota_kabupaten }}</option>
                                         @endforeach
                                     </select>
@@ -110,13 +100,13 @@
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl Awal</span>
-                                    <input wire:model.live='tglawal' type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
+                                    <input wire:model='tglawal' type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl Akhir</span>
-                                    <input wire:model.live='tglakhir' value="2024-01-01" type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
+                                    <input wire:model='tglakhir' value="2024-01-01" type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
                         </div>
@@ -124,56 +114,175 @@
                             <div class="col-md-12">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">P.I.C</span>
-                                    <input wire:model.live='pic' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
+                                    <input wire:model='pic' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
                                 </div>
                             </div>
+                        </div>
+                        <div>
+                            @if ($isUpdate)
+                            <input wire:click="update()" type="button" class="btn btn-primary" value="Update"></input>
+                            @else
+                            <input wire:click="store()" type="button" class="btn btn-primary" value="Simpan"></input>
+                            @endif
+                            <input wire:click="clear()" type="button" class="btn btn-secondary" value="Clear"></input>
                         </div>
                     </form>
                 </div>
 
                 <div class="row g-2">
-                    <form id="form_dt" action="">
-                        <button wire:click="addDataArray" type="button">Add Row</button>
-                        <table class="table table-sm">
+                    <form id="form_dt">
+                        <table class="table table-sm table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th style="width: 40%;">Barang</th>
-                                    <th style="width: 25%;" class="rata-kanan">Hpp</th>
-                                    <th style="width: 25%;" class="rata-kanan">Harga Jual</th>
-                                    <th style="width: 5%;">Act</th>
+                                    <th style="width: 35%;">Barang</th>
+                                    <th style="width: 23%;" class="rata-kanan">Hpp</th>
+                                    <th style="width: 23%;" class="rata-kanan">Harga Jual</th>
+                                    <th style="width: 13%;" class="rata-kanan">Act</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dataBarangDetail as $index => $item)
                                 <tr>
                                     <td>
-                                        <select wire:model="dataBarangDetail.{{ $index }}.barangid" class="form-control" style="width: 100%;" id="selectBarang">
+                                        <select wire:model="barangid" class="form-control select2" style="width: 100%;" id="selectBarang">
                                             <option value="">Pilih Barang</option>
-                                            @foreach ($BarangLists as $BarangList)
-                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }}</option>
+                                            @foreach ($dbBarang as $BarangList)
+                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }} - {{ $BarangList->kode }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input wire:model="dataBarangDetail.{{ $index }}.hpp" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
-                                    <td><input wire:model="dataBarangDetail.{{ $index }}.hargajual" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
-                                    <td>
-                                        <button wire:click="delDataArray({{ $index }})" type="button" class="btn btn-danger"><i class="bi bi-eraser"></i></button>
+                                    <td><input wire:model="hpp" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
+                                    <td><input wire:model="hargajual" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
+                                    <td class="rata-kanan">
+                                        @if ($isUpdateBarang)
+                                        <button wire:click="editBarang({{ $barangid }})" type="button" class="btn btn-primary">Upd</button>
+                                        @else
+                                        <button wire:click="storeBarang" type="button" class="btn btn-primary">Add</button>
+                                        @endif
+                                        <button wire:click="clearBarang" type="button" class="btn btn-secondary">Clear</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                @foreach ($dataBarangDetail as $index)
+                                <tr>
+                                    <td style="display: none;">{{ $index['barangid'] }}</td>
+                                    <td>{{ $index['barang'] }}</td>
+                                    <td class="rata-kanan">{{ $index['hpp'] }}</td>
+                                    <td class="rata-kanan">{{ $index['hargajual'] }}</td>
+                                    <td class="rata-kanan">
+                                        <a wire:click="editBarang({{ $index['barangid'] }})" type="button" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <a wire:click="deleteBarang_confirm({{ $index['barangid'] }})" type="button" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteBarang"><i class="bi bi-eraser"></i></a>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+
                     </form>
-                    <div>
-                        <input wire:click="store()" type="button" class="btn btn-primary" value="Simpan"></input>
-                        <input wire:click="clear()" type="button" class="btn btn-secondary" value="Clear"></input>
-                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-2">
+        <div class="col-12">
+            <div class="container">
+                <div class="row g-2 mb-1">
+                    <form id="form_list">
+                        <div class="row">
+                            <h3>Daftar TIM</h>
+                        </div>
+
+                        <a href="#/" class="pagination-class">{{ $dbTimHds->links() }}</a>
+                        <table class="table table-sm table-striped table-hover table-sortable">
+                            <thead>
+                                <tr>
+                                    <th class="sort @if ($sortColumn== 'nomer') {{ $sortDirection }} @endif" wire:click="sort('nomer')">Tim</th>
+                                    <th class="sort @if ($sortColumn== 'kotas.kota_kabupaten') {{ $sortDirection }} @endif" wire:click="sort('kotas.kota_kabupaten')">Kota</th>
+                                    <th>Tgl Awal</th>
+                                    <th>Tgl Akhir</th>
+                                    <th class="rata-kanan">Act</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dbTimHds as $timhd)
+                                <tr>
+                                    <td>{{ $timhd->nomer }}</td>
+                                    <td>{{ $timhd->joinKota->kota_kabupaten }}</td>
+                                    <td>{{ $timhd->tglawal }}</td>
+                                    <td>{{ $timhd->tglakhir }}</td>
+                                    <td class="rata-kanan">
+                                        <a href="#top" wire:click="edit({{ $timhd->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="#top" wire:click="delete_confirm({{ $timhd->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteTim"><i class="bi bi-eraser"></i></a>
+                                    </td>
+                                </tr>
+                                @foreach ($timhd->joinTimdt as $timdt)
+
+                                @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div wire:ignore.self class="modal fade" id="ModalDeleteTim" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data Tim</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Anda yakin hapus data {{ $nomer }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button wire:click="delete()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div wire:ignore.self class="modal fade" id="ModalDeleteBarang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data Barang</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Anda yakin hapus data {{ $barang }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button wire:click="deleteBarang()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@assets
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+@endassets
+
+@script
+<script>
+    $(document).ready(function() {
+        $('#selectpt').select2();
+        $('#selectpt').on('change', function(event) {
+            console.log(event);
+        })
+    });
+</script>
+@endscript
 
 <!--
     tutorial select2

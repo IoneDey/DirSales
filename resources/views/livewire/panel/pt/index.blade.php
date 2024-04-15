@@ -1,4 +1,8 @@
 <div>
+    <link href="{{ asset('css/style_alert_center_close.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
+
     <style>
         /* CSS untuk menambahkan efek bayangan pada form */
         form {
@@ -9,33 +13,28 @@
         }
     </style>
 
+    @if(session()->has('ok'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <ul>
+            <pre>{{ session('ok') }} </pre>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
+    </div>
+    @endif
+
+    @if(session()->has('error'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <ul>
+            <pre>{{ session('error') }} </pre>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
+    </div>
+    @endif
+
+    <div id="top"></div>
+    <h2 class="text-center">{{ $title }}</h2>
+
     <div class='container'>
-        @if(session()->has('ok'))
-        <div class="alert alert-danger" id="ok-message">
-            {{ session('ok') }}
-        </div>
-        <script>
-            setTimeout(function() {
-                var errorMessage = document.getElementById('ok-message');
-                if (errorMessage) {
-                    errorMessage.remove();
-                }
-            }, 3500);
-        </script>
-        @endif
-        @if(session()->has('error'))
-        <div class="alert alert-danger" id="error-message">
-            {{ session('error') }}
-        </div>
-        <script>
-            setTimeout(function() {
-                var errorMessage = document.getElementById('error-message');
-                if (errorMessage) {
-                    errorMessage.remove();
-                }
-            }, 3500);
-        </script>
-        @endif
         <form class='mb-1 p-2'>
             <div class="row">
                 <div class="col-sm-6 col-md-4">
@@ -99,7 +98,6 @@
             </div>
         </form>
 
-
         <div>
             <form class='p-2'>
                 <div class="row">
@@ -145,7 +143,7 @@
                                     <td class="rata-kanan">{{ $value->angsuranhari }}</td>
                                     <td class="rata-kanan">{{ $value->angsuranperiode }}</td>
                                     <td class="rata-kanan">
-                                        <a wire:click="edit({{ $value->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
+                                        <a href="#top" wire:click="edit({{ $value->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
                                         <a wire:click="delete_confirm({{ $value->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
                                     </td>
                                 </tr>
@@ -157,6 +155,7 @@
             </form>
         </div>
     </div>
+
     <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

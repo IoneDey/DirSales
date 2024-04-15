@@ -1,25 +1,23 @@
 <div>
-    <div>
-        <form class='p-2'>
-            <div class="row">
-                <div class="col-md-2 position-relative d-flex align-items-end">
-                    <!-- del-->
-                </div>
-                <div class="col-md-3 offset-md-7">
-                    <div class="form-floating">
-                        <input wire:model.live="textcari" style="width: 100%;" type="text" name="search" id="floatingInputcari" placeholder=" " class="form-control mb-2">
-                        <label for="floatingInputcari"> Cari</label>
+    <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
+    <h2 class="text-center">{{ $title }}</h2>
+
+    <div class='container'>
+        <form class='mb-1 p-2'>
+            <div class="row row-cols-auto">
+                <div class="col-3 offset-9 mb-1">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Cari</span>
+                        <input wire:model.live="textcari" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-sm-12">
-
-
-                    {{ $dataKota->links() }}
-
-
+                <div class="col-12 mb-1">
+                    <div class="row mb-0">
+                        {{ $dataKota->links() }}
+                    </div>
                     <table class="table table-sm table-striped table-hover table-sortable">
                         <thead>
                             <tr>
@@ -42,5 +40,4 @@
             </div>
         </form>
     </div>
-</div>
 </div>

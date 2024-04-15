@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Panel\Kota;
 
+use App\Models\Kotas as ModelKota;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Kotas as ModelKota;
 
 class Index extends Component
 {
@@ -36,13 +36,14 @@ class Index extends Component
                 ->orWhere('kota_kabupaten', 'like', '%' . $this->textcari . '%')
                 ->orderBy($this->sortColumn, $this->sortDirection)->paginate(10);
         } else {
-            $data = ModelKota::orderBy($this->sortColumn, $this->sortDirection)->paginate(10);
+            $data = ModelKota::orderBy($this->sortColumn, $this->sortDirection)->paginate(2);
         }
 
         return view('livewire.panel.kota.index', [
             'dataKota' => $data,
         ])
-            ->layout('layouts.panel-layout', [
+            ->layout('layouts.app-layout', [
+                'menu' => 'navmenu.panel',
                 'title' => $this->title,
             ]);
     }

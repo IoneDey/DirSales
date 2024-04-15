@@ -2,18 +2,23 @@
 
 namespace App\Models;
 
+use App\Models\Kotas;
+use App\Models\Timdt;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Kotas;
-use App\Models\User;
-use App\Models\Timdt;
 
 class Timhd extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
     protected $table = 'timhd';
-    protected $with = ['joinUser', 'joinKota', 'joinTimdt'];
+    protected $with = ['joinPt', 'joinKota', 'joinUser', 'joinTimdt', 'joinTimdt.joinBarang'];
+
+    public function joinPt()
+    {
+        return $this->belongsTo(Pts::class, 'ptid', 'id');
+    }
 
     public function joinKota()
     {

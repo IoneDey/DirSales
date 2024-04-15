@@ -39,7 +39,7 @@
                 <img src="{{ asset('img/directselling-panel.jpg') }}" class="img-fluid responsive rounded-top rounded-bottom shadow shadow-custom smaller-image" alt="...">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('img/dinasty.jpg') }}" class="img-fluid responsive rounded-top rounded-bottom shadow shadow-custom smaller-image" alt="...">
+                <img src="{{ asset('img/directselling.jpg') }}" class="img-fluid responsive rounded-top rounded-bottom shadow shadow-custom smaller-image" alt="...">
             </div>
         </div>
     </div>

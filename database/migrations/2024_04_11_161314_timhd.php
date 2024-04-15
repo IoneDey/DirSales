@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('pic', 255);
             $table->unsignedBigInteger('userid');
             $table->timestamps();
-            $table->unique(['nomer', 'ptid', 'kotaid']);
+            $table->unique(['nomer', 'kotaid']);
             $table->foreign('ptid')->references('id')->on('pts');
             $table->foreign('kotaid')->references('id')->on('kotas');
             $table->foreign('userid')->references('id')->on('users');

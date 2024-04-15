@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Panel\Pt;
 
-use Livewire\Component;
 use App\Models\Pts as ModelsPT;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
@@ -74,8 +74,7 @@ class Index extends Component
         ];
 
         $validatedData = $this->validate($rules, $pesan);
-        $validatedData['userid'] = 1;
-        //$validatedData['userid'] = auth()->user()->id;
+        $validatedData['userid'] = auth()->user()->id;
         ModelsPT::create($validatedData);
         session()->flash('ok', 'Data ' . $this->kode . ' berhasil disimpan.');
         $this->clear();
@@ -124,8 +123,7 @@ class Index extends Component
             ];
         }
         $validatedData = $this->validate($rules, $pesan);
-        $validatedData['userid'] = 1;
-        //$validatedData['userid'] = auth()->user()->id;
+        $validatedData['userid'] = auth()->user()->id;
 
         $data->update($validatedData);
         //ModelsPT::create($validatedData);
@@ -171,8 +169,9 @@ class Index extends Component
             session()->flash('ok', $msg);
             $this->clear();
         } catch (\Exception $e) {
-            // Tangani pengecualian yang terjadi
-            session()->flash('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            $errors = implode("\n", array('Terjadi kesalahan:   ', 'Data sudah terpakai.'));
+            session()->flash('error', $errors);
         }
     }
 
@@ -196,7 +195,8 @@ class Index extends Component
 
         return view('livewire.panel.pt.index', [
             'dataPT' => $data,
-        ])->layout('layouts.panel-layout', [
+        ])->layout('layouts.app-layout', [
+            'menu' => 'navmenu.panel',
             'title' => $this->title,
         ]);
     }

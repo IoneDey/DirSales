@@ -1,0 +1,29 @@
+/* untuk format tabel dilayar hp */
+@media only screen and (max-width: 600px) and (orientation: portrait) {
+    table {
+        width: 100%;
+    }
+
+    th,
+    td {
+        display: block;
+    }
+
+    th {
+        text-align: left;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    .btn {
+        float: none;
+        margin-bottom: 10px;
+    }
+}
+
+/* untuk tabel rata kanan*/
+.rata-kanan {
+    text-align: right;
+}

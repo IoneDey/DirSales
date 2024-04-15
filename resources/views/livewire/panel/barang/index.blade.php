@@ -6,8 +6,11 @@
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 1px;
         }
     </style>
+    <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
+    <h2 class="text-center">{{ $title }}</h2>
 
     <div class='container'>
         @if(session()->has('ok'))
@@ -117,6 +120,7 @@
             </form>
         </div>
     </div>
+
     <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

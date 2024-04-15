@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('userid');
             $table->timestamps();
             $table->unique(['nomerid', 'barangid']);
-            $table->foreign('nomerid')->references('id')->on('timhd');
+            $table->foreign('nomerid')->references('id')->on('timhd')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('barangid')->references('id')->on('barangs');
             $table->foreign('userid')->references('id')->on('users');
         });
