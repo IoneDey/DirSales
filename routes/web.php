@@ -9,7 +9,7 @@ Route::get('/', function () {
 });
 */
 
-//Route::get('/', App\Livewire\Panel\Tim\Index::class);
+//Route::get('/', App\Livewire\Logout::class);
 
 route::middleware('auth')->group(function () {
     Route::get('/panel', App\Livewire\Panel\Index::class)->name('panel');
@@ -19,7 +19,7 @@ route::middleware('auth')->group(function () {
     Route::get('/panel/tim', App\Livewire\Panel\Tim\Index::class)->name('tim');
     Route::get('/logout', [App\Livewire\Logout::class, 'logout'])->name('logout');
 
-    Route::get('pt', [PtController::class, 'pt'])->name('pt.index');
+    Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
 });
 
 Route::get('/login', App\Livewire\Login::class)->name('login')->middleware('guest');

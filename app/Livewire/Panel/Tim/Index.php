@@ -82,6 +82,7 @@ class Index extends Component
     //header
     public function getData($id)
     {
+
         $data = ModelsTimHd::find($id);
 
         $this->id = $data->id;
@@ -146,6 +147,10 @@ class Index extends Component
             $validatedData = $this->validate($rules, $pesan);
             $validatedData['userid'] = auth()->user()->id;
             ModelsTimHd::create($validatedData);
+
+            $data = ModelsTimHd::where('nomer', '=', $this->nomer)->first();
+            $this->id = $data->id;
+
             $msg = 'Data ' . $this->nomer . ' berhasil disimpan.';
             session()->flash('ok', $msg);
         } catch (ValidationException $e) {
@@ -265,7 +270,7 @@ class Index extends Component
     public function storeBarang()
     {
         $tmp = ModelsBarang::find($this->barangid);
-        $this->nomerid = $this->nomer;
+        $this->nomerid = $this->id;
 
         $rules = [
             'nomerid' => 'required',
@@ -434,11 +439,9 @@ class Index extends Component
 
     public function updatedptid($dbPT)
     {
-        //$this->ptid = $dbPT;
+        $this->ptid = $dbPT;
         //dd($this->ptid);
-
     }
-
 
     public function updatedkotaid($dbKota)
     {

@@ -5,6 +5,7 @@ namespace App\Livewire\Panel\Barang;
 use App\Models\Barangs as ModelsBarang;
 use Livewire\Component;
 use Livewire\WithPagination;
+use PhpParser\Node\Stmt\TryCatch;
 
 class Index extends Component
 {
@@ -126,22 +127,27 @@ class Index extends Component
 
     public function delete()
     {
-        $id = $this->temp_id;
-        if ($id != '') {
-            $data = ModelsBarang::find($id);
-            $data->delete();
-            $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
-        } else {
-            if (count($this->selected_id)) {
-                for ($x = 0; $x < count($this->selected_id); $x++) {
-                    $data = ModelsBarang::find($this->selected_id[$x]);
-                    $data->delete();
+        try {
+            $id = $this->temp_id;
+            if ($id != '') {
+                $data = ModelsBarang::find($id);
+                $data->delete();
+                $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
+            } else {
+                if (count($this->selected_id)) {
+                    for ($x = 0; $x < count($this->selected_id); $x++) {
+                        $data = ModelsBarang::find($this->selected_id[$x]);
+                        $data->delete();
+                    }
+                    $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
                 }
-                $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
             }
+            session()->flash('ok', $msg);
+            $this->clear();
+        } catch (\Exception $e) {
+            $errors = implode("\n", array('Terjadi kesalahan:   ', 'Data sudah terpakai.'));
+            session()->flash('error', $errors);
         }
-        session()->flash('ok', $msg);
-        $this->clear();
     }
 
     public function sort($column)

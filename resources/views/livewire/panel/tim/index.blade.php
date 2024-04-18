@@ -74,12 +74,9 @@
                         </div>
                         <div class="row mb-1">
                             <div class="col-md-6">
-
-                                {{ $ptid  }}
-
-                                <div class="input-group input-group-sm">
+                                <div wire:ignore id="myModal" class="input-group input-group-sm">
                                     <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">PT</span>
-                                    <select wire:model.change="ptid" type='text' class="form-control" id="selectpt" name="selectpt">
+                                    <select wire:model.live="ptid" id="selectpt" type='text' class="form-control" name="selectpt">
                                         <option value="">Pilih PT</option>
                                         @foreach($dbPT as $ptList)
                                         <option value="{{ $ptList->id }}">{{ $ptList->nama }}</option>
@@ -281,37 +278,10 @@
             </div>
         </div>
     </div>
+
 </div>
 
-@assets
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-@endassets
 
-@script()
-<script>
-    $(document).ready(function() {
-        $('#selectpt').select2();
-
-        var ptidValue = @this.ptid;
-        console.log(ptidValue);
-        $('#selectpt').val(ptidValue).trigger('change');
-    });
-
-    document.addEventListener('livewire:load', function() {
-        Livewire.hook('message.received', (message, component) => {
-            // Check if the message is related to the 'ptid' property
-            if (message.hasOwnProperty('updateQueue') && message.updateQueue.some(update => update.name.includes('ptid'))) {
-                let newPtidValue = message.updateQueue.find(update => update.name === 'ptid').value;
-
-                // Update Select2 dropdown with the new value
-                $('#selectpt').val(newPtidValue).trigger('change');
-            }
-        });
-    });
-</script>
-@endscript
 
 <!--
     tutorial select2

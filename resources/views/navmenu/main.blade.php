@@ -11,7 +11,7 @@
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-shop"></i></div>
                     Pembelian
                 </a>
-                <a class="nav-link" href="#">
+                <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-comments-dollar"></i></div>
                     Penjualan
                 </a>

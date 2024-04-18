@@ -1,4 +1,6 @@
 <div>
+    <link href="{{ asset('css/style_alert_center_close.css') }}" rel="stylesheet" />
+
     <style>
         /* CSS untuk menambahkan efek bayangan pada form */
         form {
@@ -14,18 +16,25 @@
 
     <div class='container'>
         @if(session()->has('ok'))
-        <div class="alert alert-danger" id="ok-message">
-            {{ session('ok') }}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <ul>
+                <pre>{{ session('ok') }} </pre>
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
         </div>
-        <script>
-            setTimeout(function() {
-                var errorMessage = document.getElementById('ok-message');
-                if (errorMessage) {
-                    errorMessage.remove();
-                }
-            }, 3500);
-        </script>
         @endif
+
+        @if(session()->has('error'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <ul>
+                <pre>{{ session('error') }} </pre>
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label=""></button>
+        </div>
+        @endif
+
+
+
         <form class='mb-1 p-2'>
             <div class="row">
                 <div class="col-sm-6 col-md-4">
