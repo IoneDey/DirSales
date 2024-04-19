@@ -8,7 +8,7 @@
                     Home
                 </a>
                 @php
-                $isActive = Request::is('panel/barang') || Request::is('panel/pt') || Request::is('panel/kota');
+                $isActive = Request::is('panel/pt') || Request::is('panel/tim') || Request::is('panel/provinsi') || Request::is('panel/kota') || Request::is('panel/barang');
                 @endphp
                 <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -18,8 +18,10 @@
                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="{{ Request::is('panel/barang') ? 'active' : '' }} nav-link" href="{{ route('barang') }}">Barang</a>
-                        <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">PT</a>
                         <a class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link" href="{{ route('kota') }}">Kota</a>
+                        <a class="{{ Request::is('panel/provinsi') ? 'active' : '' }} nav-link" href="{{ route('provinsi') }}">Provinsi</a>
+                        <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">TIM</a>
+                        <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">PT</a>
                     </nav>
                 </div>
                 <a class="{{ Request::is('panel/tim') ? 'active' : '' }} nav-link" href="{{ route('tim') }}">

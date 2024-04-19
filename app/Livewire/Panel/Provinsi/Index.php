@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Panel\Barang;
+namespace App\Livewire\Panel\Provinsi;
 
-use App\Models\Barang;
+use App\Models\Provinsi;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -10,10 +10,10 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
-    public $title = 'Panel - Barang';
+    public $title = 'Panel - Provinsi';
 
     //--field + validation set
-    #[Rule('required|min:3|max:255|unique:barangs')]
+    #[Rule('required|min:3|max:255|unique:provinsis')]
     public $nama;
 
     protected $messages = [
@@ -52,10 +52,10 @@ class Index extends Component
         $this->tmpId = null;
     }
 
-    public function getDataBarang($id)
+    public function getDataProvinsi($id)
     {
         if ($id != "") {
-            $data = Barang::find($id);
+            $data = Provinsi::find($id);
 
             $this->nama = $data->nama;
 
@@ -69,7 +69,7 @@ class Index extends Component
         $validatedData = $this->validate();
         $validatedData['userid'] = auth()->user()->id;
 
-        Barang::create($validatedData);
+        Provinsi::create($validatedData);
         $msg = 'Tambah data ' . $this->nama . ' berhasil.';
         $this->clear();
         session()->flash('ok', $msg);
@@ -77,16 +77,16 @@ class Index extends Component
 
     public function edit($id)
     {
-        $this->getDataBarang($id);
+        $this->getDataProvinsi($id);
     }
 
     public function update()
     {
         if ($this->tmpId) {
-            $data = Barang::find($this->tmpId);
+            $data = Provinsi::find($this->tmpId);
 
             if ($this->nama != $data->nama) {
-                $rules['nama'] = 'required|min:3|max:255|unique:barangs';
+                $rules['nama'] = 'required|min:3|max:255|unique:provinsi';
             }
 
             try {
@@ -106,13 +106,13 @@ class Index extends Component
 
     public function confirmDelete($id)
     {
-        $this->getDataBarang($id);
+        $this->getDataProvinsi($id);
     }
 
     public function delete()
     {
         if ($this->tmpId) {
-            $data = Barang::find($this->tmpId);
+            $data = Provinsi::find($this->tmpId);
             $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
             try {
                 $data->delete();
@@ -134,11 +134,11 @@ class Index extends Component
 
     public function render()
     {
-        $data = Barang::where('nama', 'like', '%' . $this->cari . '%')
+        $data = Provinsi::where('nama', 'like', '%' . $this->cari . '%')
             ->orderby($this->sortColumn, $this->sortDirection)
             ->paginate(12);
 
-        return view('livewire.panel.barang.index', [
+        return view('livewire.panel.provinsi.index', [
             'datas' => $data,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.panel',

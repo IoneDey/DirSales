@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('timdt', function (Blueprint $table) {
+        Schema::create('pts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('nomerid');
-            $table->unsignedBigInteger('barangid');
-            $table->double('hpp');
-            $table->double('hargajual');
+            $table->string('nama', 255)->unique();
+            $table->string('alamat', 255);
+            $table->string('npwp', 16);
+            $table->enum('pkp', ['Iya', 'Tidak']);
             $table->unsignedBigInteger('userid');
             $table->timestamps();
-            $table->unique(['nomerid', 'barangid']);
-            $table->foreign('nomerid')->references('id')->on('timhd')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('barangid')->references('id')->on('barangs');
             $table->foreign('userid')->references('id')->on('users');
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('timdts');
+        Schema::dropIfExists('pts');
     }
 };

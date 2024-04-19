@@ -13,9 +13,13 @@ return new class extends Migration
     {
         Schema::create('kotas', function (Blueprint $table) {
             $table->id();
-            $table->string('provinsi')->nullable();
-            $table->string('kota_kabupaten')->nullable();
+            $table->string('nama');
+            $table->unsignedBigInteger('provinsiid');
+            $table->unsignedBigInteger('userid');
             $table->timestamps();
+            $table->foreign('provinsiid')->references('id')->on('provinsis');
+            $table->foreign('userid')->references('id')->on('users');
+            $table->unique(['nama', 'provinsiid']);
         });
     }
 

@@ -4,14 +4,22 @@
     <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
 
     <style>
-        /* CSS untuk menambahkan efek bayangan pada form */
-        form {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .form-floating .form-control {
+            border-width: 1px;
+            border-color: blue;
+            border-radius: 5px;
+            border-style: solid;
+        }
+
+        .custom-divider {
+            height: 1px;
+            background-color: blue;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+            margin: 20px 0;
         }
     </style>
+    <div id="top"></div>
+    <h2 class="text-center">{{ $title }}</h2>
 
     @if(session()->has('ok'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -31,143 +39,113 @@
     </div>
     @endif
 
-    <div id="top"></div>
-    <h2 class="text-center">{{ $title }}</h2>
-
-    <div class='container'>
-        <form class='mb-1 p-2'>
-            <div class="row">
-                <div class="col-sm-6 col-md-4">
-                    <div class="form-floating mb-2">
-                        <input wire:model="kode" type="text" class="form-control @error('kode') is-invalid @enderror" id="floatingInputKode" placeholder=" ">
-                        <label for="floatingInput1">Kode</label>
-                        @error('kode')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <form wire:submit="create" action="">
+                    <div class="row">
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="nama" type="text" class="form-control" id="" placeholder="name@example.com">
+                                <label for="nama">Nama</label>
+                            </div>
+                            @error('nama')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="form-floating mb-1">
-                        <input wire:model="nama" type="text" class="form-control @error('nama') is-invalid @enderror" id="floatingInput2" placeholder=" ">
-                        <label for="floatingInput2">Nama</label>
-                        @error('nama')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="alamat" type="text" class="form-control" id="alamat" placeholder="name@example.com">
+                                <label for="alamat">Alamat</label>
+                            </div>
+                            @error('alamat')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @enderror
                     </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-floating mb-2">
-                        <input wire:model="angsuranhari" type="number" class="form-control @error('angsuranhari') is-invalid @enderror" id="floatingInput3" placeholder=" ">
-                        <label for="floatingInput3">Angsuran - Hari</label>
-                        @error('angsuranhari')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                    <div class="row">
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="npwp" type="text" class="form-control" id="npwp" placeholder="name@example.com">
+                                <label for="npwp">NPWP</label>
+                            </div>
+                            @error('npwp')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
                         </div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating mb-2">
-                        <input wire:model="angsuranperiode" type="number" class="form-control @error('angsuranperiode') is-invalid @enderror" id="floatingInput4" placeholder=" ">
-                        <label for="floatingInput4">Angsuran - Periode</label>
-                        @error('angsuranperiode')
-                        <div class="invalid-feedback">
-                            {{ $message }}
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <select wire:model="pkp" type="text" class="form-control" id="pkp" placeholder="name@example.com">
+                                    <option value=""></option>
+                                    <option value="Iya">Iya</option>
+                                    <option value="Tidak">Tidak</option>
+                                </select>
+                                <label for="pkp">PKP</label>
+                            </div>
+                            @error('pkp')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
+                            @enderror
                         </div>
-                        @enderror
                     </div>
-                </div>
-
-                <div class="col-md-2 d-flex justify-content-start align-items-center">
-                    @if ( $isUpdate == false)
-                    <button wire:loading.attr="disabled" type="button" name='btnsimpan' class="btn btn-primary mr-5 w-150" wire:click="store()">Simpan</button>
+                    @if ($isUpdate)
+                    <button wire:click="update" wire:loading.attr="disabled" type="button" id="update" class="btn btn-primary">Update</button>
                     @else
-                    <button type="button" name='btnupdate' class="btn btn-primary mr-5 w-150" wire:click="update()">Update</button>
+                    <button wire:click="create" wire:loading.attr="disabled" type="button" id="simpan" class="btn btn-primary">Simpan</button>
                     @endif
-                    <span>.</span>
-                    <button type="button" name='btnclear' class="btn btn-secondary mr-5 w-150" wire:click="clear()">Clear</button>
-                </div>
-
+                    <button wire:click="clear" wire:loading.attr="disabled" type="button" id="bersihkan" class="btn btn-secondary">Bersihkan</button>
+                </form>
             </div>
-        </form>
 
-        <div>
-            <form class='p-2'>
-                <div class="row">
-                    <h3>Daftar PT</h>
-                </div>
+            <div class="custom-divider mt-2 mb-3"></div>
 
-                <div class="row">
-                    <div class="col-md-2 position-relative d-flex align-items-end">
-                        @if ($selected_id)
-                        <a wire:click="delete_confirm('')" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; cursor: pointer;"><i class="bi bi-eraser"></i>Hapus {{ count($selected_id) }} data.</a>
-                        @endif
-                    </div>
-                    <div class="col-md-3 offset-md-7">
-                        <div class="form-floating">
-                            <input wire:model.live="textcari" style="width: 100%;" type="text" name="search" id="floatingInputcari" placeholder=" " class="form-control mb-2">
-                            <label for="floatingInputcari"> Cari</label>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-12 mb-1">
+                <input class="border rounded" wire:model.live.debounce.500ms="cari" type="text" id="cari" placeholder="cari....">
+            </div>
 
-                <div class="row">
-                    <div class="col-sm-12">
-                        {{ $dataPT->links() }}
-                        <table class="table table-sm table-striped table-hover table-sortable">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>#</th>
-                                    <th class="sort @if ($sortColumn== 'kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode</th>
-                                    <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
-                                    <th class="rata-kanan">Angsuran-Hari</th>
-                                    <th class="rata-kanan">Angsuran-Periode</th>
-                                    <th class="rata-kanan">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ( $dataPT as $pt=>$value )
-                                <tr>
-                                    <td><input wire:key="{{ $value->id }}" wire:model.live="selected_id" value="{{ $value->id }}" type="checkbox"></td>
-                                    <td>{{ $dataPT->firstItem() + $pt }}</td>
-                                    <td>{{ $value->kode }}</td>
-                                    <td>{{ $value->nama }}</td>
-                                    <td class="rata-kanan">{{ $value->angsuranhari }}</td>
-                                    <td class="rata-kanan">{{ $value->angsuranperiode }}</td>
-                                    <td class="rata-kanan">
-                                        <a href="#top" wire:click="edit({{ $value->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
-                                        <a wire:click="delete_confirm({{ $value->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bi bi-eraser"></i></a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </form>
+            <div>
+                <table class="table table-sm table-hover table-striped table-bordered border-primary-subtle table-sortable">
+                    <thead>
+                        <th>#</th>
+                        <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                        <th class="sort @if ($sortColumn== 'alamat') {{ $sortDirection }} @endif" wire:click="sort('alamat')">Alamat</th>
+                        <th class="sort @if ($sortColumn== 'npwp') {{ $sortDirection }} @endif" wire:click="sort('npwp')">NPWP</th>
+                        <th class="sort @if ($sortColumn== 'pkp') {{ $sortDirection }} @endif" wire:click="sort('pkp')">PKP</th>
+                        <th>Act</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($datas as $dbdata)
+                        <tr>
+                            <td>{{ (($datas->currentPage()-1)*$datas->perPage()) + $loop->iteration }}</td>
+                            <td>{{ $dbdata->nama }}</td>
+                            <td>{{ $dbdata->alamat }}</td>
+                            <td>{{ $dbdata->npwp }}</td>
+                            <td>{{ $dbdata->pkp }}</td>
+                            <td>
+                                <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class=" bi bi-pencil-fill"></i></a>
+                                <a wire:click="confirmDelete({{ $dbdata->id }})" wire:loading.attr="disabled" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{ $datas->links() }}
+            </div>
         </div>
     </div>
 
-    <div wire:ignore.self class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- untuk modal confirm delete -->
+    <div wire:ignore.self class="modal fade" id="ModalDelete" tabindex="-1" aria-labelledby="ModalDeleteLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="ModalDeleteLabel">Hapus Data</h1>
+                    <button wire:click="clear" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Anda yakin hapus data {{ $nama }}?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button wire:click="clear" type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                     <button wire:click="delete()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
                 </div>
             </div>
