@@ -4,39 +4,22 @@
     <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
 
     <style>
-        form {
-            padding: 7px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .form-floating .form-control {
+            border-width: 1px;
+            border-color: blue;
+            border-radius: 5px;
+            border-style: solid;
         }
 
-        /* Gaya untuk menetapkan lebar span */
-        .span-fixed-width {
-            width: 100px;
-        }
-
-        /* Menghilangkan box-shadow dan outline pada elemen input dan select saat focus */
-        input.form-control:focus,
-        select.form-control:focus,
-        .select2-selection--single:focus {
-            box-shadow: none;
-            outline: none;
-        }
-
-        .container {
-            padding: 10px;
-            /* Padding untuk memberi ruang di dalam container */
-            border: 1px solid #ccc;
-            /* Border dengan ketebalan 1px dan warna abu-abu */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            /* Shadow dengan offset (0,2px) dan blur radius 4px */
-            border-radius: 8px;
-            /* Border radius 8px untuk sudut container yang membulat */
-            background-color: #f8f9fa;
-            /* Warna latar belakang abu-abu muda */
+        .custom-divider {
+            height: 1px;
+            background-color: blue;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
+            margin: 20px 0;
         }
     </style>
+    <div id="top"></div>
+    <h2 class="text-center">{{ $title }}</h2>
 
     @if(session()->has('ok'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -56,234 +39,93 @@
     </div>
     @endif
 
-    <h2 class="text-center" id="top">{{ $title }}</h2>
-
-    <div class="row g-2 mb-2">
-        <div class="col-12">
-            <div class="container">
-                <div class="row g-2 mb-1">
-                    <form id="form_hd" class='mb-1'>
-                        <div class="row mb-1">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tim</span>
-                                    <input wire:model='nomer' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
-                                </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <form wire:submit="create" action="">
+                    <div class="row">
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="nama" type="text" class="form-control" id="" placeholder="name@example.com">
+                                <label for="nama">Nama</label>
                             </div>
-
+                            @error('nama')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="row mb-1">
-                            <div class="col-md-6">
-                                <div wire:ignore id="myModal" class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">PT</span>
-                                    <select wire:model.live="ptid" id="selectpt" type='text' class="form-control" name="selectpt">
-                                        <option value="">Pilih PT</option>
-                                        @foreach($dbPT as $ptList)
-                                        <option value="{{ $ptList->id }}">{{ $ptList->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <select wire:model="ptid" class="form-select" id="floatingSelectPt" aria-label="">
+                                    <option value=""></option>
+                                    @foreach ($dbPts as $dbPt)
+                                    <option value="{{ $dbPt->id }}">{{ $dbPt->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <label for="floatingSelectPt">PT</label>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Kota</span>
-                                    <select wire:model='kotaid' type='text' class="form-control" id="selectkota">
-                                        <option value="">Pilih Kota</option>
-                                        @foreach($dbKota as $KotaList)
-                                        <option value="{{ $KotaList->id }}">{{ $KotaList->kota_kabupaten }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+                            @error('ptid')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="row mb-1">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl
-                                        Awal</span>
-                                    <input wire:model='tglawal' type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Tgl
-                                        Akhir</span>
-                                    <input wire:model='tglakhir' value="2024-01-01" type="date" class="form-control" aria-describedby="inputGroup-sizing-sm">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-1">
-                            <div class="col-md-12">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">P.I.C</span>
-                                    <input wire:model='pic' type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            @if($isUpdate)
-                            <input wire:click="update()" type="button" class="btn btn-primary" value="Update"></input>
-                            @else
-                            <input wire:click="store()" type="button" class="btn btn-primary" value="Simpan"></input>
-                            @endif
-                            <input wire:click="clear()" type="button" class="btn btn-secondary" value="Clear"></input>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    @if ($isUpdate)
+                    <button wire:click="update" wire:loading.attr="disabled" type="button" id="update" class="btn btn-primary">Update</button>
+                    @else
+                    <button wire:click="create" wire:loading.attr="disabled" type="button" id="simpan" class="btn btn-primary">Simpan</button>
+                    @endif
+                    <button wire:click="clear" wire:loading.attr="disabled" type="button" id="bersihkan" class="btn btn-secondary">Bersihkan</button>
+                </form>
+            </div>
 
-                <div class="row g-2">
-                    <form id="form_dt">
-                        <table class="table table-sm table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="width: 35%;">Barang</th>
-                                    <th style="width: 23%;" class="rata-kanan">Hpp</th>
-                                    <th style="width: 23%;" class="rata-kanan">Harga Jual</th>
-                                    <th style="width: 13%;" class="rata-kanan">Act</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <select wire:model="barangid" class="form-control select2" style="width: 100%;" id="selectBarang">
-                                            <option value="">Pilih Barang</option>
-                                            @foreach($dbBarang as $BarangList)
-                                            <option value="{{ $BarangList->id }}">{{ $BarangList->nama }} -
-                                                {{ $BarangList->kode }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td><input wire:model="hpp" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
-                                    <td><input wire:model="hargajual" type="number" class="form-control rata-kanan" style="width: 100%;"></td>
-                                    <td class="rata-kanan">
-                                        @if($isUpdateBarang)
-                                        <button wire:click="updateBarang" type="button" class="btn btn-primary">Upd</button>
-                                        @else
-                                        <button wire:click="storeBarang" type="button" class="btn btn-primary">Add</button>
-                                        @endif
-                                        <button wire:click="clearBarang" type="button" class="btn btn-secondary">Clear</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                @foreach($dataBarangDetail as $index)
-                                <tr>
-                                    <td style="display: none;">{{ $index['barangid'] }}</td>
-                                    <td>{{ $index['barang'] }}</td>
-                                    <td class="rata-kanan">{{ number_format($index['hpp'], 0) }}</td>
-                                    <td class="rata-kanan">{{ number_format($index['hargajual'], 0) }}</td>
-                                    <td class="rata-kanan">
-                                        <a wire:click="editBarang({{ $index['barangid'] }})" type="button" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
-                                        <a wire:click="deleteBarang_confirm({{ $index['barangid'] }})" type="button" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteBarang"><i class="bi bi-eraser"></i></a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+            <div class="custom-divider mt-2 mb-3"></div>
 
-                    </form>
+            <div class="col-12 mb-1">
+                <input class="border rounded" wire:model.live.debounce.500ms="cari" type="text" id="cari" placeholder="cari....">
+            </div>
 
-                </div>
+            <div>
+                <table class="table table-sm table-hover table-striped table-bordered border-primary-subtle table-sortable">
+                    <thead>
+                        <th>#</th>
+                        <th class="sort @if ($sortColumn=='nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                        <th class="sort @if ($sortColumn=='ptid') {{ $sortDirection }} @endif" wire:click="sort('ptid')">PT</th>
+                        <th>Act</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($datas as $dbdata)
+                        <tr>
+                            <td>{{ (($datas->currentPage()-1)*$datas->perPage()) + $loop->iteration }}</td>
+                            <td>{{ $dbdata->nama }}</td>
+                            <td>{{ $dbdata->joinPt->nama }}</td>
+                            <td>
+                                <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class=" bi bi-pencil-fill"></i></a>
+                                <a wire:click="confirmDelete({{ $dbdata->id }})" wire:loading.attr="disabled" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {{ $datas->links() }}
             </div>
         </div>
     </div>
 
-    <div class="row g-2">
-        <div class="col-12">
-            <div class="container">
-                <div class="row g-2 mb-1">
-                    <form id="form_list">
-                        <div class="row">
-                            <h3>Daftar TIM</h>
-                        </div>
-
-                        <div class="col-3 offset-9">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text span-fixed-width" id="inputGroup-sizing-sm">Cari</span>
-                                <input wire:model.live="textcari" type="text" class="form-control" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-
-                        </div>
-
-                        <a href="#/" class="pagination-class">{{ $dbTimHds->links(data: ['scrollTo' => false]) }}</a>
-                        <table class="table table-sm table-striped table-hover table-sortable">
-                            <thead>
-                                <tr>
-                                    <th class="sort @if ($sortColumn== 'nomer') {{ $sortDirection }} @endif" wire:click="sort('nomer')">Tim</th>
-                                    <th class="sort @if ($sortColumn== 'kotas.kota_kabupaten') {{ $sortDirection }} @endif" wire:click="sort('kotas.kota_kabupaten')">Kota</th>
-                                    <th>Tgl Awal</th>
-                                    <th>Tgl Akhir</th>
-                                    <th class="rata-kanan">Act</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($dbTimHds as $timhd)
-                                <tr>
-                                    <td>{{ $timhd->nomer }}</td>
-                                    <td>{{ $timhd->joinKota->kota_kabupaten }}</td>
-                                    <td>{{ $timhd->tglawal }}</td>
-                                    <td>{{ $timhd->tglakhir }}</td>
-                                    <td class="rata-kanan">
-                                        <a href="#top" wire:click="edit({{ $timhd->id }})" class="badge bg-warning bg-sm"><i class="bi bi-pencil-fill"></i></a>
-                                        <a href="#top" wire:click="delete_confirm({{ $timhd->id }})" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDeleteTim"><i class="bi bi-eraser"></i></a>
-                                    </td>
-                                </tr>
-                                @foreach($timhd->joinTimdt as $timdt)
-
-                                @endforeach
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div wire:ignore.self class="modal fade" id="ModalDeleteTim" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- untuk modal confirm delete -->
+    <div wire:ignore.self class="modal fade" id="ModalDelete" tabindex="-1" aria-labelledby="ModalDeleteLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data Tim</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="ModalDeleteLabel">Hapus Data</h1>
+                    <button wire:click="clear" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Anda yakin hapus data {{ $nomer }}?
+                    Anda yakin hapus data {{ $nama }}?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                    <button wire:click="clear" type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                     <button wire:click="delete()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div wire:ignore.self class="modal fade" id="ModalDeleteBarang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data Barang</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Anda yakin hapus data {{ $barang }}?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                    <button wire:click="deleteBarang()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
-
-
-
-<!--
-    tutorial select2
-    https://www.youtube.com/watch?v=66Kuv1b2_pg
--->
