@@ -9,4 +9,10 @@ class Barang extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $with = ['joinUser'];
+
+    public function joinUser()
+    {
+        return $this->belongsTo(User::class, 'userid', 'id');
+    }
 }

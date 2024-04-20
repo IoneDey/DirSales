@@ -20,7 +20,7 @@
                         <a class="{{ Request::is('panel/barang') ? 'active' : '' }} nav-link" href="{{ route('barang') }}">Barang</a>
                         <a class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link" href="{{ route('kota') }}">Kota</a>
                         <a class="{{ Request::is('panel/provinsi') ? 'active' : '' }} nav-link" href="{{ route('provinsi') }}">Provinsi</a>
-                        <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">TIM</a>
+                        <a class="{{ Request::is('panel/tim') ? 'active' : '' }} nav-link" href="{{ route('tim') }}">TIM</a>
                         <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">PT</a>
                     </nav>
                 </div>
