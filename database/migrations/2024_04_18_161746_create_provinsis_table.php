@@ -11,19 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('timhd', function (Blueprint $table) {
+        Schema::create('provinsis', function (Blueprint $table) {
             $table->id();
-            $table->string('nomer', 6);
-            $table->unsignedBigInteger('ptid');
-            $table->unsignedBigInteger('kotaid');
-            $table->date('tglawal');
-            $table->date('tglakhir');
-            $table->string('pic', 255);
+            $table->string('nama', 255)->unique();
             $table->unsignedBigInteger('userid');
             $table->timestamps();
-            $table->unique(['nomer', 'kotaid']);
-            $table->foreign('ptid')->references('id')->on('pts');
-            $table->foreign('kotaid')->references('id')->on('kotas');
             $table->foreign('userid')->references('id')->on('users');
         });
     }
@@ -33,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('timhd');
+        Schema::dropIfExists('provinsis');
     }
 };

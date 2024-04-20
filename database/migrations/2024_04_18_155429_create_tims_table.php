@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Barangs', function (Blueprint $table) {
+        Schema::create('tims', function (Blueprint $table) {
             $table->id();
-            $table->string('kode', 15)->unique()->index();
-            $table->string('nama', 255);
+            $table->string('nama');
+            $table->unsignedBigInteger('ptid');
             $table->unsignedBigInteger('userid');
             $table->timestamps();
+            $table->foreign('ptid')->references('id')->on('pts');
             $table->foreign('userid')->references('id')->on('users');
+            $table->unique(['nama', 'ptid']);
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Barang');
+        Schema::dropIfExists('tims');
     }
 };

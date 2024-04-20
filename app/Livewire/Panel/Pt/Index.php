@@ -2,7 +2,8 @@
 
 namespace App\Livewire\Panel\Pt;
 
-use App\Models\Pts as ModelsPT;
+use App\Models\Pt;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,167 +12,140 @@ class Index extends Component
     use WithPagination;
     public $title = 'Panel - PT';
 
-    //untuk deklaras filed2x database
-    public $kode;
+    //--field + validation set
+    #[Rule('required|min:3|max:255|unique:pts')]
     public $nama;
-    public $angsuranhari;
-    public $angsuranperiode;
+    #[Rule('required|min:3|max:255')]
+    public $alamat;
+    #[Rule('max:16')]
+    public $npwp;
+    #[Rule('required')]
+    public $pkp;
 
-    //untuk status create datau edit
-    public $isUpdate = false;
+    protected $messages = [
+        'nama.required' => 'nama wajib diisi.',
+        'nama.min' => 'nama minimal harus 3 karakter.',
+        'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
+        'nama.unique' => 'nama sudah dipakai.',
+        'alamat.required' => 'alamat wajib diisi.',
+        'alamat.min' => 'nama minimal harus 3 karakter.',
+        'alamat.max' => 'nama tidak boleh lebih dari 255 karakter.',
+        'npwp.max' => 'npwp tidak boleh lebih dari 16 karakter.',
+        'pkp.required' => 'pkp wajib diisi.',
+    ];
+    //--end field + validation set
 
-    //untuk delete row atau bulk
-    public $temp_id;
-    public $selectedCount = 0;
-    public $selected_id = [];
-
-    //untuk multi pencarian
-    public $textcari;
-
-    //untuk sort
-    public $sortColumn = "kode";
-    public $sortDirection = "asc";
-
+    //--cari + paginate
+    public $cari;
+    protected $paginationTheme = 'bootstrap';
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
     }
+    public function updatedcari()
+    {
+        $this->resetPage();
+    }
+    //--end cari + paginate
+
+    //--sort
+    public $sortColumn = "nama";
+    public $sortDirection = "asc";
+    //--end sort
+
+    public $isUpdate = false;
+    public $tmpId = null;
 
     public function clear()
     {
-        $this->kode = "";
         $this->nama = "";
-        $this->angsuranhari = "";
-        $this->angsuranperiode = "";
+        $this->alamat = "";
+        $this->npwp = "";
+        $this->pkp = "";
         $this->isUpdate = false;
-        $this->temp_id = "";
-        $this->selected_id = [];
-        $this->selectedCount = 0;
+        $this->tmpId = null;
     }
 
-    public function store()
+    public function getDataPT($id)
     {
-        $rules = [
-            'kode' => ['required', 'min:3', 'max:10', 'unique:pts'],
-            'nama' => ['required', 'min:5', 'max:255'],
-            'angsuranhari' => ['required', 'integer', 'min:3', 'max:31'],
-            'angsuranperiode' => ['required', 'integer', 'min:3', 'max:12']
-        ];
-        $pesan = [
-            'kode.required' => 'Kode wajib diisi.',
-            'nama.required' => 'Nama wajib diisi.',
-            'angsuranhari.required' => 'Angsuran-Hari wajib diisi.',
-            'angsuranperiode.required' => 'Angsuran-Peride wajib diisi.',
-            'kode.min' => 'Kode min 3 karakter.',
-            'nama.min' => 'Nama min 5 karakter.',
-            'kode.max' => 'Kode maximum 10 karakter',
-            'nama.max' => 'Nama maximum 255 karakter',
-            'angsuranhari.min' => 'Angusran min 3',
-            'angsuranperiode.min' => 'Angusran min 3',
-            'angsuranhari.max' => 'Angusran max 31',
-            'angsuranperiode.max' => 'Angusran max 12',
-            'kode.unique' => 'Kode sudah ada didata.',
-        ];
+        if ($id != "") {
+            $data = Pt::find($id);
 
-        $validatedData = $this->validate($rules, $pesan);
+            $this->nama = $data->nama;
+            $this->alamat = $data->alamat;
+            $this->npwp = $data->npwp;
+            $this->pkp = $data->pkp;
+
+            $this->isUpdate = true;
+            $this->tmpId = $id;
+        }
+    }
+
+    public function create()
+    {
+        $validatedData = $this->validate();
         $validatedData['userid'] = auth()->user()->id;
-        ModelsPT::create($validatedData);
-        session()->flash('ok', 'Data ' . $this->kode . ' berhasil disimpan.');
+
+        Pt::create($validatedData);
+        $msg = 'Tambah data ' . $this->nama . ' berhasil.';
         $this->clear();
+        session()->flash('ok', $msg);
     }
 
     public function edit($id)
     {
-        $data = ModelsPT::find($id);
-        $this->kode = $data->kode;
-        $this->nama = $data->nama;
-        $this->angsuranhari = $data->angsuranhari;
-        $this->angsuranperiode = $data->angsuranperiode;
-
-        $this->isUpdate = true;
-        $this->temp_id = $id;
+        $this->getDataPT($id);
     }
 
     public function update()
     {
-        $data = ModelsPT::find($this->temp_id);
+        if ($this->tmpId) {
+            $data = Pt::find($this->tmpId);
 
-        $rules = [
-            'nama' => ['required', 'min:5', 'max:255'],
-            'angsuranhari' => ['required', 'integer', 'min:3', 'max:31'],
-            'angsuranperiode' => ['required', 'integer', 'min:3', 'max:12']
-        ];
-        $pesan = [
-            'nama.required' => 'Nama wajib diisi.',
-            'nama.min' => 'Nama min 5 karakter.',
-            'nama.max' => 'Nama maximum 255 karakter',
-            'angsuranhari.required' => 'Angsuran-Hari wajib diisi.',
-            'angsuranhari.min' => 'Angusran min 3',
-            'angsuranhari.max' => 'Angusran max 31',
-            'angsuranperiode.required' => 'Angsuran-Peride wajib diisi.',
-            'angsuranperiode.min' => 'Angusran min 3',
-            'angsuranperiode.max' => 'Angusran max 12',
-        ];
-
-        if ($data->kode != $this->kode) {
-            $rules = ['kode' => ['required', 'min:3', 'max:10', 'unique:pts']];
-            $pesan = [
-                'kode.required' => 'Kode wajib diisi.',
-                'kode.min' => 'Kode min 3 karakter.',
-                'kode.max' => 'Kode maximum 10 karakter',
-                'kode.unique' => 'Kode sudah ada didata.',
+            $rules = [
+                'alamat' => 'required|min:3|max:255',
+                'npwp' => 'max:16',
+                'pkp' => 'required',
             ];
+
+            if ($this->nama != $data->nama) {
+                $rules['nama'] = 'required|min:3|max:255|unique:pts';
+            }
+
+            try {
+                $validatedData = $this->validate($rules);
+                $validatedData['userid'] = auth()->user()->id;
+                $data->update($validatedData);
+
+                $msg = 'Update data ' . $this->nama . ' berhasil.';
+                $this->clear();
+                session()->flash('ok', $msg);
+            } catch (\Exception $e) {
+                $errors = implode("\n", array('Terjadi kesalahan:   ', 'Data sudah terpakai.'));
+                session()->flash('error', $errors);
+            }
         }
-        $validatedData = $this->validate($rules, $pesan);
-        $validatedData['userid'] = auth()->user()->id;
-
-        $data->update($validatedData);
-        //ModelsPT::create($validatedData);
-        session()->flash('ok', 'Data ' . $this->kode . ' berhasil di-update.');
-
-        $this->clear();
     }
 
-    public function delete_confirm($id)
+    public function confirmDelete($id)
     {
-        if ($id != "") {
-            $data = ModelsPT::find($id);
-            $this->kode = $data->kode;
-            $this->nama = $data->nama;
-            $this->angsuranhari = $data->angsuranhari;
-            $this->angsuranperiode = $data->angsuranperiode;
-
-            $this->isUpdate = true;
-            $this->temp_id = $id;
-        } else {
-            $this->selectedCount = count($this->selected_id);
-        }
+        $this->getDataPT($id);
     }
 
     public function delete()
     {
-        try {
-
-            $id = $this->temp_id;
-            if ($id != '') {
-                $data = ModelsPT::find($id);
+        if ($this->tmpId) {
+            $data = Pt::find($this->tmpId);
+            $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
+            try {
                 $data->delete();
-                $msg = 'Data ' . $this->kode . ' berhasil di-delete.';
-            } else {
-                if (count($this->selected_id)) {
-                    for ($x = 0; $x < count($this->selected_id); $x++) {
-                        $data = ModelsPT::find($this->selected_id[$x]);
-                        $data->delete();
-                    }
-                    $msg = 'Berhasil hapus ' . $this->selectedCount . ' data.';
-                }
+                $this->clear();
+                session()->flash('ok', $msg);
+            } catch (\Exception $e) {
+                $errors = implode("\n", array('Terjadi kesalahan:   ', 'Data sudah terpakai.'));
+                session()->flash('error', $errors);
             }
-            session()->flash('ok', $msg);
-            $this->clear();
-        } catch (\Exception $e) {
-
-            $errors = implode("\n", array('Terjadi kesalahan:   ', 'Data sudah terpakai.'));
-            session()->flash('error', $errors);
+            //$this->js('alert("$this->msg")');
         }
     }
 
@@ -183,18 +157,15 @@ class Index extends Component
 
     public function render()
     {
-        if ($this->textcari != null) {
-            $data = ModelsPT::where('kode', 'like', '%' . $this->textcari . '%')
-                ->orWhere('nama', 'like', '%' . $this->textcari . '%')
-                ->orWhere('angsuranhari', '=', $this->textcari)
-                ->orWhere('angsuranperiode', '=', $this->textcari)
-                ->orderBy($this->sortColumn, $this->sortDirection)->paginate(15);
-        } else {
-            $data = ModelsPT::orderBy($this->sortColumn, $this->sortDirection)->paginate(15);
-        }
+        $data = Pt::where('nama', 'like', '%' . $this->cari . '%')
+            ->orWhere('alamat', 'like', '%' . $this->cari . '%')
+            ->orWhere('npwp', 'like', '%' . $this->cari . '%')
+            ->orWhere('pkp', 'like', '%' . $this->cari . '%')
+            ->orderby($this->sortColumn, $this->sortDirection)
+            ->paginate(12);
 
         return view('livewire.panel.pt.index', [
-            'dataPT' => $data,
+            'datas' => $data,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.panel',
             'title' => $this->title,
