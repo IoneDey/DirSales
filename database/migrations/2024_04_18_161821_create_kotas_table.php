@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kotas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('nama', 255);
             $table->unsignedBigInteger('provinsiid');
             $table->unsignedBigInteger('userid');
             $table->timestamps();

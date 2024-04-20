@@ -20,7 +20,7 @@ route::middleware('auth')->group(function () {
 
     Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
 
-    Route::get('/register', [App\Livewire\Register::class])->name('register');
+    //cleaRoute::get('/register', [App\Livewire\Register::class])->name('register');
     Route::get('/logout', [App\Livewire\Logout::class, 'logout'])->name('logout');
 });
 
