@@ -9,7 +9,7 @@ class Kota extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $with = ['joinUser'];
+    protected $with = ['joinUser', 'joinProvinsi'];
 
     public function joinUser()
     {

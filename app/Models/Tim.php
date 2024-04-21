@@ -9,7 +9,12 @@ class Tim extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $with = ['joinPt'];
+    protected $with = ['joinUser', 'joinPt'];
+
+    public function joinUser()
+    {
+        return $this->belongsTo(User::class, 'userid', 'id');
+    }
 
     public function joinPt()
     {
