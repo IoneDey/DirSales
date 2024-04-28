@@ -2,16 +2,16 @@
 
 namespace App\Livewire\Panel\Tim;
 
+use App\Models\Kota;
 use App\Models\Pt;
 use App\Models\Tim;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Index extends Component
-{
+class Index extends Component {
     use WithPagination;
-    public $title = 'Panel - Tim';
+    public $title = 'Master Tim';
 
     //--field
     #[Rule('required|min:3|max:255')]
@@ -19,24 +19,15 @@ class Index extends Component
     #[Rule('required')]
     public $ptid;
 
-    protected $messages = [
-        'nama.required' => 'nama wajib diisi.',
-        'nama.min' => 'nama minimal harus 3 karakter.',
-        'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
-        'nama.unique' => 'nama sudah dipakai.',
-        'ptid.required' => 'pt wajib diisi.',
-    ];
     //--end field + validation set
 
     //--cari + paginate
     public $cari;
     protected $paginationTheme = 'bootstrap';
-    public function paginationView()
-    {
+    public function paginationView() {
         return 'vendor.livewire.bootstrap';
     }
-    public function updatedcari()
-    {
+    public function updatedcari() {
         $this->resetPage();
     }
     //--end cari + paginate
@@ -51,21 +42,19 @@ class Index extends Component
 
     public $dbPts;
 
-    public function mount()
-    {
-        $this->dbPts = Pt::all();
+    public function mount() {
+        // $this->dbPts = Pt::all();
+        $this->dbPts = Pt::select('id', 'nama')->get();
     }
 
-    public function clear()
-    {
+    public function clear() {
         $this->nama = "";
         $this->ptid = "";
         $this->isUpdate = false;
         $this->tmpId = null;
     }
 
-    public function getDataTim($id)
-    {
+    public function getDataTim($id) {
         if ($id != "") {
             $data = Tim::find($id);
 
@@ -77,8 +66,15 @@ class Index extends Component
         }
     }
 
-    public function create()
-    {
+    protected $messages = [
+        'nama.required' => 'nama wajib diisi.',
+        'nama.min' => 'nama minimal harus 3 karakter.',
+        'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
+        'nama.unique' => 'nama sudah ada.',
+        'ptid.required' => 'pt wajib diisi.',
+    ];
+
+    public function create() {
 
         $rules = ([
             'nama' => [
@@ -100,13 +96,11 @@ class Index extends Component
         session()->flash('ok', $msg);
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
         $this->getDataTim($id);
     }
 
-    public function update()
-    {
+    public function update() {
         if ($this->tmpId) {
             $data = Tim::find($this->tmpId);
 
@@ -139,13 +133,11 @@ class Index extends Component
         }
     }
 
-    public function confirmDelete($id)
-    {
+    public function confirmDelete($id) {
         $this->getDataTim($id);
     }
 
-    public function delete()
-    {
+    public function delete() {
         if ($this->tmpId) {
             $data = Tim::find($this->tmpId);
             $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
@@ -161,18 +153,17 @@ class Index extends Component
         }
     }
 
-    public function sort($column)
-    {
+    public function sort($column) {
         $this->sortColumn = $column;
         $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
-    public function render()
-    {
+    public function render() {
         $data = Tim::where(function ($query) {
-            $query->whereHas('joinPt', function ($subquery) {
-                $subquery->where('nama', 'like', '%' . $this->cari . '%');
-            })
+            $query
+                ->whereHas('joinPt', function ($subquery) {
+                    $subquery->where('nama', 'like', '%' . $this->cari . '%');
+                })
                 ->orWhere('nama', 'like', '%' . $this->cari . '%');
         })
             ->orderby($this->sortColumn, $this->sortDirection)

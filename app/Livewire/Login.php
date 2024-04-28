@@ -20,7 +20,6 @@ class Login extends Component
         if (Auth::attempt($this->only('username', 'password'))) {
             return redirect(route('main'));
         }
-
         throw ValidationException::withMessages([
             'password' => 'Login gagal.'
         ]);

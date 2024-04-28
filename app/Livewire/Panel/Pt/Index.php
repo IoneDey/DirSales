@@ -10,7 +10,7 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
-    public $title = 'Panel - PT';
+    public $title = 'Master PT';
 
     //--field + validation set
     #[Rule('required|min:3|max:255|unique:pts')]

@@ -372,14 +372,6 @@ label {
     display: inline-block;
 }
 
-button {
-    border-radius: 0;
-}
-
-button:focus:not(:focus-visible) {
-    outline: 0;
-}
-
 input,
 button,
 select,
@@ -11343,6 +11335,7 @@ body {
     z-index: 1038;
     transform: translateX(-225px);
 }
+
 #layoutSidenav #layoutSidenav_content {
     position: relative;
     display: flex;

@@ -35,6 +35,7 @@
         <div class="sb-sidenav-footer">
             <div class="nav small">Logged in as:</div>
             @auth
+            <img src="{{ asset('storage/' . auth()->user()->image) }}" class="img-fluid rounded-circle" style="object-fit: cover; width: 25px; height: 25px;" alt="Profile Picture">
             {{ auth()->User()->name }}
             @else
             Guest

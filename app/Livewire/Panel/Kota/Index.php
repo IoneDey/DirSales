@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 class Index extends Component
 {
     use WithPagination;
-    public $title = 'Panel - Kota';
+    public $title = 'Master Kota';
 
     //--field
     #[Rule('required|min:3|max:255')]

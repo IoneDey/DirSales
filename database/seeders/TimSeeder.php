@@ -14,35 +14,35 @@ class TimSeeder extends Seeder
     {
         $data = [
             [
-                'nama' => 'Tim A',
+                'nama' => 'Tim 1',
                 'ptid' => 1, // ID dari PT yang sudah ada di tabel 'pts'
                 'userid' => 1, // ID dari user yang sudah ada di tabel 'users'
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Tim B',
+                'nama' => 'Tim 2',
                 'ptid' => 2,
                 'userid' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Tim C',
+                'nama' => 'Tim 3',
                 'ptid' => 3,
                 'userid' => 3,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Tim D',
+                'nama' => 'Tim 4',
                 'ptid' => 4,
                 'userid' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Tim E',
+                'nama' => 'Tim 5',
                 'ptid' => 5,
                 'userid' => 5,
                 'created_at' => now(),

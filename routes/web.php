@@ -17,9 +17,12 @@ route::middleware('auth')->group(function () {
     Route::get('/panel/provinsi', App\Livewire\Panel\Provinsi\Index::class)->name('provinsi');
     Route::get('/panel/kota', App\Livewire\Panel\Kota\Index::class)->name('kota');
     Route::get('/panel/barang', App\Livewire\Panel\Barang\Index::class)->name('barang');
+    Route::get('/panel/user', App\Livewire\Panel\User\Index::class)->name('user');
+
+    Route::get('/panel/timsetup', App\Livewire\Panel\Timsetup\Index::class)->name('timsetup');
+
 
     Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
-
     Route::get('/logout', [App\Livewire\Logout::class, 'logout'])->name('logout');
 });
 

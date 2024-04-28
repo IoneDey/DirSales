@@ -4,19 +4,46 @@
     <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
 
     <style>
-        .form-floating .form-control {
-            border-width: 1px;
-            border-color: blue;
-            border-radius: 5px;
-            border-style: solid;
-        }
-
         .custom-divider {
             height: 1px;
             background-color: blue;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
             margin: 20px 0;
         }
+
+        /* untuk select2 */
+        .select2-container {
+            width: 100% !important;
+            padding: 0;
+        }
+
+        .select2-container .select2-selection--single {
+            height: calc(2.25rem + 2px);
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+            right: 10px;
+            top: 1px;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: calc(2.25rem + 2px);
+        }
+
+        .select2-container .select2-selection--single:focus,
+        .select2-container .select2-selection--single:focus-within {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .select2-container .select2-dropdown--below .select2-selection--single {
+            border-color: #0d6efd;
+        }
+
+        /* end select2 */
     </style>
     <div id="top"></div>
     <h2 class="text-center">{{ $title }}</h2>
@@ -45,23 +72,30 @@
                 <form wire:submit="create" action="">
                     <div class="row">
                         <div class="col-6 g-1">
-                            <div class="form-floating mb-1">
-                                <input wire:model="nama" type="text" class="form-control" id="" placeholder="name@example.com">
-                                <label for="nama">Nama</label>
+                            <div class="mb-1">
+                                <span for="nama">Nama</span>
+                                <input wire:model="nama" type="text" class="form-control" id="" placeholder="">
                             </div>
                             @error('nama')
                             <span style="font-size: smaller; color: red;">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="col-6 g-1">
-                            <div class="form-floating mb-1">
-                                <select wire:model="provinsiid" class="form-select" id="floatingSelectProvinsi" aria-label="">
+                            <div class="select2-containe mb-1" wire:ignore>
+                                <span for="floatingSelectProvinsi">Provinsi</span>
+                                <select x-data="{
+                                        item: @entangle('provinsiid')
+                                        }" x-init="$($refs.select2ref).select2();
+                                            $($refs.select2ref).on('change', function(){$wire.set('provinsiid', $(this).val());
+                                        });" x-effect="
+                                            $refs.select2ref.value = item;
+                                            $($refs.select2ref).select2();" x-ref="select2ref">
                                     <option value=""></option>
                                     @foreach ($dbProvinsis as $dbProvinsi)
                                     <option value="{{ $dbProvinsi->id }}">{{ $dbProvinsi->nama }}</option>
                                     @endforeach
                                 </select>
-                                <label for="floatingSelectProvinsi">Provinsi</label>
+
                             </div>
                             @error('provinsiid')
                             <span style="font-size: smaller; color: red;">{{ $message }}</span>
