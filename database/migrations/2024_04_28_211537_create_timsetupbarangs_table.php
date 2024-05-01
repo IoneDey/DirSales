@@ -9,16 +9,17 @@ return new class extends Migration {
      * Run the migrations.
      */
     public function up(): void {
-        Schema::create('timsetuppakets', function (Blueprint $table) {
+        Schema::create('timsetupbarangs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('timsetupid');
-            $table->string('nama', 50);
-            $table->double('hargajual', 15, 8);
+            $table->unsignedBigInteger('timsetuppaketid');
+            $table->unsignedBigInteger('barangid');
+            $table->double('hpp', 15, 8);
             $table->unsignedBigInteger('userid');
             $table->timestamps();
-            $table->foreign('timsetupid')->references('id')->on('timsetups')->onDelete('cascade');
+            $table->foreign('timsetuppaketid')->references('id')->on('timsetuppakets')->onDelete('cascade');
+            $table->foreign('barangid')->references('id')->on('barangs');
             $table->foreign('userid')->references('id')->on('users');
-            $table->unique(['timsetupid', 'nama']);
+            $table->unique(['timsetuppaketid', 'barangid']);
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration {
      * Reverse the migrations.
      */
     public function down(): void {
-        Schema::dropIfExists('timsetuppakets');
+        Schema::dropIfExists('timsetupbarangs');
     }
 };

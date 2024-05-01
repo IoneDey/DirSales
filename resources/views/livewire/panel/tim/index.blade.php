@@ -2,6 +2,7 @@
     <link href="{{ asset('css/style_alert_center_close.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/tabelsort.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/styleSelect2.css') }}" rel="stylesheet" />
 
     <style>
         .custom-divider {
@@ -10,40 +11,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 1);
             margin: 20px 0;
         }
-
-        /* untuk select2 */
-        .select2-container {
-            width: 100% !important;
-            padding: 0;
-        }
-
-        .select2-container .select2-selection--single {
-            height: calc(2.25rem + 2px);
-            border: 1px solid #ced4da;
-            border-radius: 0.25rem;
-        }
-
-        .select2-container .select2-selection--single .select2-selection__arrow {
-            height: calc(2.25rem + 2px);
-            right: 10px;
-            top: 1px;
-        }
-
-        .select2-container .select2-selection--single .select2-selection__rendered {
-            line-height: calc(2.25rem + 2px);
-        }
-
-        .select2-container .select2-selection--single:focus,
-        .select2-container .select2-selection--single:focus-within {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-
-        .select2-container .select2-dropdown--below .select2-selection--single {
-            border-color: #0d6efd;
-        }
-
-        /* end select2 */
     </style>
 
     <div id="top"></div>
@@ -163,37 +130,3 @@
             </div>
         </div>
     </div>
-
-    @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#ptselect2').select2({
-                placeholder: 'cari....'
-            }).on('change', function(e) {
-                Livewire.emit('ptSelected', e.target.value);
-            });
-        });
-
-        Livewire.on('refreshSelect2', function() {
-            $('#ptselect2').select2({
-                placeholder: 'cari....'
-            });
-        });
-
-        // $(function() {
-        //     $('.select2').select2({
-        //         palaceholder: 'Cari....'
-        //     })
-        // })
-
-        // $('#ptselect2').val(@json($ptid));
-
-        // $('.select2').trigger('change');
-
-        // $(function() {
-        //     $('#ptselect2').on('change', function() {
-        //         @this.set('ptid', $(this).val());
-        //     })
-        // })
-    </script>
-    @endpush

@@ -6,13 +6,11 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
-{
+class DatabaseSeeder extends Seeder {
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
+    public function run(): void {
         DB::table('users')->insert([
             'name' => 'Dedy Setiawan',
             'username' => 'DedyS',
@@ -28,9 +26,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('users')->insert([
-            'name' => 'John Doe',
-            'username' => 'johndoe',
-            'email' => 'john.doe@example.com',
+            'name' => 'Diah',
+            'username' => 'Diah',
+            'email' => 'diah@example.com',
             'password' => Hash::make('password'),
         ]);
 
