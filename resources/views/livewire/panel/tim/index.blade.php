@@ -49,7 +49,7 @@
                             @enderror
                         </div>
                         <div class="col-6 g-1">
-                            <div class="select2-containe mb-1" wire:ignore>
+                            <div class="select2-container mb-1" wire:ignore>
                                 <span for="input-label">PT</span>
                                 <select x-data="{
                                         item: @entangle('ptid')
@@ -99,7 +99,7 @@
                             <td>{{ $dbdata->nama }}</td>
                             <td>{{ $dbdata->joinPt->nama }}</td>
                             <td>
-                                <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class=" bi bi-pencil-fill"></i></a>
+                                <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class="bi bi-pencil-fill"></i></a>
                                 <a wire:click="confirmDelete({{ $dbdata->id }})" wire:loading.attr="disabled" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>
                             </td>
                         </tr>

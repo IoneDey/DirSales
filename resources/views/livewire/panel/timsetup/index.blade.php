@@ -46,7 +46,6 @@
 
     <h2 class="text-center">{{ $title }}</h2>
 
-
     @if ($errors->any())
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <ul>
@@ -79,7 +78,7 @@
     @if ($idswitchMenu >= 1)
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12  col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px; {{ $idswitchMenu >= 1 && $idswitchItem == 1 ? 'display: none;' : '' }}">
                     <div class="row justify-content-left">
                         <div class="col-12 col-md-12 col-lg-12">
@@ -99,7 +98,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12 col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px;{{ $idswitchItem == 1 ? '' : 'display: none;' }}">
                     <div class="row justify-content-center">
                         <div class="col-sm-12 col-md-12 col-lg-12">
@@ -191,7 +190,7 @@
     @if ($idswitchMenu >= 2)
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12  col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px;{{ $idswitchMenu >= 2 && $idswitchItem == 2 ? 'display: none;' : '' }}">
                     <div class="row justify-content-left">
                         <div class="col-12 col-md-12 col-lg-12">
@@ -216,7 +215,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12 col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px;{{ $idswitchItem == 2 ? '' : 'display: none;' }}">
                     <div class="row justify-content-center">
                         <div class="col-sm-12 col-md-12 col-lg-12">
@@ -281,7 +280,7 @@
     @if ($idswitchMenu >= 3)
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12  col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px;{{ $idswitchMenu >= 3 && $idswitchItem == 3 ? 'display: none;' : '' }}">
                     <div class="row justify-content-left">
                         <div class="col-12 col-md-10 col-lg-8">
@@ -301,7 +300,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-12  col-md-8">
                 <div class="container" style="border: 2px solid black; border-radius: 5px; padding: 3px; margin-bottom: 5px;{{ $idswitchItem == 3 ? '' : 'display: none;' }}">
                     <div class="row justify-content-center">
                         <div class="col-12 col-md-12 col-lg-12">
@@ -376,11 +375,9 @@
 
     <div class="container">
         <div class="custom-divider mt-2 mb-3"></div>
-
         <div class="col-12 mb-1">
             <input class="border rounded" wire:model.live.debounce.500ms="cari" type="text" id="cari" placeholder="cari....">
         </div>
-
         <div>
             <table class="table table-sm table-hover table-striped table-bordered border-primary-subtle table-sortable">
                 <thead>

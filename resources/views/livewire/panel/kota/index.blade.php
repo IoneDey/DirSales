@@ -81,7 +81,7 @@
                             @enderror
                         </div>
                         <div class="col-6 g-1">
-                            <div class="select2-containe mb-1" wire:ignore>
+                            <div class="select2-container mb-1" wire:ignore>
                                 <span for="floatingSelectProvinsi">Provinsi</span>
                                 <select x-data="{
                                         item: @entangle('provinsiid')

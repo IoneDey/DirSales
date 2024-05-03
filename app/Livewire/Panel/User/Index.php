@@ -8,8 +8,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class Index extends Component
-{
+class Index extends Component {
     use WithPagination;
     use WithFileUploads;
 
@@ -24,12 +23,10 @@ class Index extends Component
     //--cari + paginate
     public $cari;
     protected $paginationTheme = 'bootstrap';
-    public function paginationView()
-    {
+    public function paginationView() {
         return 'vendor.livewire.bootstrap';
     }
-    public function updatedcari()
-    {
+    public function updatedcari() {
         $this->resetPage();
     }
     //--end cari + paginate
@@ -42,8 +39,7 @@ class Index extends Component
     public $isUpdate = false;
     public $tmpId = null;
 
-    public function clear()
-    {
+    public function clear() {
         $this->name = "";
         $this->username = "";
         $this->email = "";
@@ -53,8 +49,7 @@ class Index extends Component
         $this->tmpId = null;
     }
 
-    public function getDataUser($id)
-    {
+    public function getDataUser($id) {
         if ($id != "") {
             $data = User::find($id);
 
@@ -85,8 +80,7 @@ class Index extends Component
         'image.max' => 'gambar tidak boleh lebih besar dari 1024 kilobyte.',
     ];
 
-    public function create()
-    {
+    public function create() {
         $rules = ([
             'name' => ['required', 'min:3', 'max:50'],
             'username' => ['required', 'min:3', 'max:15', 'unique:users'],
@@ -107,13 +101,11 @@ class Index extends Component
         session()->flash('ok', $msg);
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
         $this->getDataUser($id);
     }
 
-    public function update()
-    {
+    public function update() {
         $data = User::find($this->tmpId);
         $rules = ([
             'name' => ['required', 'min:3', 'max:50'],
@@ -140,13 +132,11 @@ class Index extends Component
         session()->flash('ok', $msg);
     }
 
-    public function confirmDelete($id)
-    {
+    public function confirmDelete($id) {
         $this->getDataUser($id);
     }
 
-    public function delete()
-    {
+    public function delete() {
         try {
             $msg = 'Data ' . $this->name . ' berhasil dihapus.';
             User::find($this->tmpId)->delete();
@@ -158,8 +148,7 @@ class Index extends Component
         }
     }
 
-    public function render()
-    {
+    public function render() {
         $data = User::where('name', 'like', '%' . $this->cari . '%')
             ->orWhere('username', 'like', '%' . $this->cari . '%')
             ->orWhere('email', 'like', '%' . $this->cari . '%')

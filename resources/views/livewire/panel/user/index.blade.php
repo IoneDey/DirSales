@@ -112,7 +112,6 @@
                 @foreach ($datas as $data)
                 @include('livewire.panel.user.card')
                 @endforeach
-
             </div>
             <div class="row justify-content-center">
                 <div class="col-6 mb-1">

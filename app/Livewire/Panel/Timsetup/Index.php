@@ -205,10 +205,9 @@ class Index extends Component {
                     })
                 ];
             }
-
+            $validate = $this->validate($rules);
+            $validate['userid'] = auth()->user()->id;
             try {
-                $validate = $this->validate($rules);
-                $validate['userid'] = auth()->user()->id;
                 $data->update($validate);
 
                 $dbTim = $this->dbTims->where('id', $this->timid)->first();
@@ -330,11 +329,10 @@ class Index extends Component {
                     })
                 ];
             }
-
+            $validatePaket = $this->validate($rulesPaket);
+            $validatePaket['timsetupid'] = $this->timIdAktif;
+            $validatePaket['userid'] = auth()->user()->id;
             try {
-                $validatePaket = $this->validate($rulesPaket);
-                $validatePaket['timsetupid'] = $this->timIdAktif;
-                $validatePaket['userid'] = auth()->user()->id;
                 $data->update($validatePaket);
 
                 $msg = 'Update data ' . $this->nama . ' berhasil.';
@@ -449,11 +447,10 @@ class Index extends Component {
                     })
                 ];
             }
-
+            $validateBarang = $this->validate($rulesBarang);
+            $validateBarang['timsetuppaketid'] = $this->timIdAktifPaket;
+            $validateBarang['userid'] = auth()->user()->id;
             try {
-                $validateBarang = $this->validate($rulesBarang);
-                $validateBarang['timsetuppaketid'] = $this->timIdAktifPaket;
-                $validateBarang['userid'] = auth()->user()->id;
                 $data->update($validateBarang);
 
                 $msg = 'Update data ' . $this->timBarangAktif . ' berhasil.';
@@ -488,10 +485,10 @@ class Index extends Component {
     }
 
     public function getdataTimSetupBarang($id) {
+
         $data = Timsetupbarang::find($id);
         $this->barangid = $data->barangid;
         $this->hpp =  mynumber::float2Str($data->hpp);
-
         $this->timIdAktifBarang = $data->id;
         $this->updatedbarangid();
         $this->isUpdateBarang = true;
