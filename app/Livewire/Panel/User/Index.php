@@ -121,7 +121,6 @@ class Index extends Component {
         }
 
         $validatedData = $this->validate($rules, $this->messages);
-
         if ($this->image) {
             $validatedData['image'] = $this->image->store('uploads', 'public');
         }

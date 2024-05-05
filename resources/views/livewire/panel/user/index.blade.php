@@ -88,6 +88,9 @@
                             <label class="input-group-text" for="inputGroupFile01">Profile Pic</label>
                             <input wire:model="image" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupFile01">
                         </div>
+                        @error('image')
+                        <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
+                        @enderror
                         <div wire:loading wire:target="image">Uploading...</div>
 
                     </div>
