@@ -16,13 +16,15 @@ class DatabaseSeeder extends Seeder {
             'username' => 'DedyS',
             'email' => 'ione.dey@gmail.com',
             'password' => Hash::make('12345'),
+            'roles' => 'SUPERVISOR',
         ]);
 
         DB::table('users')->insert([
             'name' => 'Demo',
             'username' => 'demo',
             'email' => 'demo@gmail.com',
-            'password' => Hash::make('Aa.Bb.Cc'),
+            'password' => Hash::make('12345'),
+            'roles' => 'SPV ADMIN',
         ]);
 
         DB::table('users')->insert([
@@ -30,6 +32,7 @@ class DatabaseSeeder extends Seeder {
             'username' => 'Diah',
             'email' => 'diah@example.com',
             'password' => Hash::make('password'),
+            'roles' => 'SUPERVISOR',
         ]);
 
         DB::table('users')->insert([
@@ -37,6 +40,7 @@ class DatabaseSeeder extends Seeder {
             'username' => 'janesmith',
             'email' => 'jane.smith@example.com',
             'password' => Hash::make('password'),
+            'roles' => 'SPV LOCK',
         ]);
 
         DB::table('users')->insert([
@@ -44,6 +48,7 @@ class DatabaseSeeder extends Seeder {
             'username' => 'michaelj',
             'email' => 'michael.johnson@example.com',
             'password' => Hash::make('password'),
+            'roles' => 'ADMIN',
         ]);
 
         DB::table('users')->insert([
@@ -51,6 +56,7 @@ class DatabaseSeeder extends Seeder {
             'username' => 'sarahw',
             'email' => 'sarah.williams@example.com',
             'password' => Hash::make('password'),
+            'roles' => 'LOCK',
         ]);
 
         DB::table('users')->insert([
@@ -58,6 +64,7 @@ class DatabaseSeeder extends Seeder {
             'username' => 'davidb',
             'email' => 'david.brown@example.com',
             'password' => Hash::make('password'),
+            'roles' => 'MANAGEMENT',
         ]);
 
         $this->call(PTSeeder::class);

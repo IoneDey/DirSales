@@ -73,13 +73,13 @@
                     <td>{{ $detail->customernama }}</td>
                     <td>{{ $detail->customeralamat }}</td>
                     <td>{{ $detail->customernotelp }}</td>
-                    <td class="rata-kanan">{{ number_format($detail->totaljual, 0, ',', '.') }}</td>
+                    <td class="rata-kanan">{{ number_format(($detail->totaljual ?? 0), 0, ',', '.') }}</td>
                     <td>{{ $detail->userentry }}</td>
                     <td>{{ $detail->updated_at }}</td>
                     <td>
                         <a wire:click="edit({{ $detail->id }})" wire:loading.attr="disabled" title="Edit" type="button" class="badge bg-warning bg-sm" href="#entry"><i class="bi bi-pencil-fill"></i></a>
                         <a wire:click="confirmDelete({{ $detail->id }})" wire:loading.attr="disabled" title="Delete" type="button" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>
-                        <a wire:click="confirmValid({{ $detail->id }},{{ $detail->totaljual }})" wire:loading.attr="disabled" title="Valid" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid"><i class=" bi bi-clipboard-check"></i></a>
+                        <a wire:click="confirmValid({{ $detail->id }},{{ $detail->totaljual ?? 0 }})" wire:loading.attr="disabled" title="Valid" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid"><i class=" bi bi-clipboard-check"></i></a>
                     </td>
                 </tr>
                 @endforeach

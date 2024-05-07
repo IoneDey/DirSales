@@ -18,6 +18,7 @@ class Index extends Component {
     public $username;
     public $email;
     public $password;
+    public $roles = 'SUPERVISOR';
     public $image;
 
     //--cari + paginate
@@ -44,6 +45,7 @@ class Index extends Component {
         $this->username = "";
         $this->email = "";
         $this->password = "";
+        $this->roles = "SUPERVISOR";
         $this->image = null;
         $this->isUpdate = false;
         $this->tmpId = null;
@@ -57,6 +59,7 @@ class Index extends Component {
             $this->username = $data->username;
             $this->email = $data->email;
             //$this->password = $data->password;
+            $this->roles = $data->roles;
             $this->image = $data->image;
             $this->isUpdate = true;
             $this->tmpId = $id;
@@ -76,6 +79,7 @@ class Index extends Component {
         'email.unique' => 'email sudah dipakai.',
         'password.required' => 'password wajib diisi.',
         'password.min' => 'password minimal harus 8 karakter.',
+        'roles.required' => 'roles wajib diisi.',
         'image.image' => 'file harus berupa gambar.',
         'image.max' => 'gambar tidak boleh lebih besar dari 1024 kilobyte.',
     ];
@@ -86,6 +90,7 @@ class Index extends Component {
             'username' => ['required', 'min:3', 'max:15', 'unique:users'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:8'],
+            'roles' => ['required'],
             'image' => ['nullable', 'sometimes', 'image', 'max:1024']
         ]);
 
@@ -109,6 +114,7 @@ class Index extends Component {
         $data = User::find($this->tmpId);
         $rules = ([
             'name' => ['required', 'min:3', 'max:50'],
+            'roles' => ['required'],
             'image' => ['nullable', 'sometimes', 'image', 'max:1024']
         ]);
 

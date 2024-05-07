@@ -98,6 +98,7 @@ class Index extends Component {
         if ($this->fotonota) {
             $validated['fotonota'] = $this->fotonota->storeAs('uploads', 'nota-' . $this->nota . '.jpg', 'public');
         }
+        $validated['status'] = 'Entry';
         $validated['userid'] = auth()->user()->id;
 
         Penjualanhd::create($validated);
@@ -245,8 +246,15 @@ class Index extends Component {
     }
 
     public function valid() {
-        dump($this->jumlahTotal);
+        //dump($this->jumlahTotal);
+        if ($this->penjualanhdid) {
+            $data = Penjualanhd::find($this->penjualanhdid);
+            $data->status = 'Entry Valid';
+            $data->save();
+            $this->entryNew();
+        }
     }
+
     //end head
 
     //paket
@@ -382,6 +390,7 @@ class Index extends Component {
             ->leftJoin('timsetups', 'penjualanhds.timsetupid', '=', 'timsetups.id')
             ->leftJoin('tims', 'timsetups.timid', '=', 'tims.id')
             ->where('penjualanhds.userid', auth()->user()->id)
+            ->where('status', 'Entry')
             ->groupBy('penjualanhds.id', 'penjualanhds.tgljual', 'tims.nama', 'penjualanhds.nota', 'penjualanhds.customernama', 'penjualanhds.customeralamat', 'penjualanhds.customernotelp', 'users.name', 'penjualanhds.updated_at')
             ->get();
 

@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->string('pjadminnota', 150);
             $table->string('fotoktp');
             $table->string('fotonota');
+            $table->string('status', 11);
             $table->unsignedBigInteger('userid');
             $table->timestamps();
             $table->foreign('timsetupid')->references('id')->on('timsetups');

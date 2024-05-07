@@ -13,4 +13,8 @@ class Penjualandt extends Model {
     public function joinTimSetupPaket() {
         return $this->belongsTo(Timsetuppaket::class, 'timsetuppaketid', 'id');
     }
+
+    // public function joinPenjualanhd() {
+    //     return $this->belongsTo(Penjualanhd::class, 'penjualanhdid', 'id');
+    // }
 }

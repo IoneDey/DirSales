@@ -16,6 +16,7 @@
                     <h6 style="font-weight: bold; font-style: italic;">#{{ (($datas->currentPage()-1)*$datas->perPage()) + $loop->iteration }}</h6>
                     <h5 class="card-title">{{ $data->name }}</h5>
                     <p class="card-text">{{ $data->email  }}</p>
+                    <p class="card-text">{{ $data->roles  }}</p>
                     <p class="card-text"><small class="text-body-secondary">{{ $data->username  }}</small></p>
 
                     <a wire:click="edit({{ $data->id }})" type="button" href="#top" class="rounded bg-primary text-white" style="text-decoration: none; padding-right: 7px; padding-left: 7px;">Update</a>

@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="sb-sidenav-footer">
-            <div class="small">Logged in as:</div>
+            <div class="small">Logged in as: {{ auth()->user()->roles ?? '' }}</div>
             @auth
             @if (auth()->user()->image)
             <img src="{{ asset('storage/' . auth()->user()->image) }}" class="img-fluid rounded-circle" style="object-fit: cover; width: 25px; height: 25px;" alt="Profile Picture">

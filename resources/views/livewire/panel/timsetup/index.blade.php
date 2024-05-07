@@ -410,7 +410,6 @@
             </table>
             {{ $dbdatas->links() }}
         </div>
-
     </div>
 
     <!-- untuk modal confirm delete barang-->

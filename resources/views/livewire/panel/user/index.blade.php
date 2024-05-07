@@ -54,6 +54,7 @@
                             <span style="font-size: smaller; color: red;">{{ $message }}</span>
                             @enderror
                         </div>
+
                         <div class="col-6 g-1">
                             <div class="form-floating mb-1">
                                 <input wire:model="username" type="text" class="form-control" id="alamat" placeholder="user name">
@@ -64,6 +65,7 @@
                             @enderror
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-6 g-1">
                             <div class="form-floating mb-1">
@@ -74,10 +76,28 @@
                             <span style="font-size: smaller; color: red;">{{ $message }}</span>
                             @enderror
                         </div>
+
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <select wire:model="roles" class="form-control" id="roles" placeholder="roles">
+                                    <option value="SUPERVISOR">SUPERVISOR</option>
+                                    <option value="MANAGEMENT">MANAGEMENT</option>
+                                    <option value="SPV ADMIN">SPV ADMIN</option>
+                                    <option value="SPV LOCK">SPV LOCK</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="LOCK">LOCK</option>
+                                </select>
+                                <label for="roles">Roles</label>
+                            </div>
+                            @error('roles')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
+                            @enderror
+                        </div>
+
                         <div class="col-6 g-1">
                             <div class="form-floating mb-1">
                                 <input wire:model="password" @if($isUpdate) disabled @endif type="password" class="form-control" id="password" placeholder="password">
-                                <label for="email">Password</label>
+                                <label for="password">Password</label>
                             </div>
                             @error('password')
                             <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
