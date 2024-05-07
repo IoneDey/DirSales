@@ -95,12 +95,13 @@
                             <th>Nama Driver</th>
                             <th>PJ Kolektor Nota</th>
                             <th>PJ Admin Nota</th>
-                            <th>Tot Jumlah</th>
+                            <th class="rata-kanan">Tot Jumlah</th>
                             <th>Barang</th>
                             <th>Foto KTP</th>
                             <th>Foto Nota</th>
                             <th>Status</th>
                             <th>User Entry</th>
+                            <th>Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,7 +118,7 @@
                             <td>{{ $penjualanhd->namadriver }}</td>
                             <td>{{ $penjualanhd->pjkolektornota }}</td>
                             <td>{{ $penjualanhd->pjadminnota }}</td>
-                            <td>{{ $penjualanhd->hargajual_total }}</td>
+                            <td class="rata-kanan">{{ number_format(($penjualanhd->hargajual_total ?? 0), 0, ',', '.') }}</td>
                             <td>
                                 @foreach($penjualanhd->joinPenjualandt as $penjualandt)
                                 <li>
@@ -134,6 +135,7 @@
                             <td><a href="{{ asset('storage/' . $penjualanhd->fotonota ) }}" target="_blank">{{ $penjualanhd->fotonota }}</a></td>
                             <td>{{ $penjualanhd->status }}</td>
                             <td>{{ $penjualanhd->joinUser->name }}</td>
+                            <td>{{ $penjualanhd->updated_at }}</td>
                         </tr>
                         @endforeach
                     </tbody>

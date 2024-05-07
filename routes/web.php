@@ -27,6 +27,13 @@ Route::middleware(['checkroles:SUPERVISOR'])->group(function () {
 
 Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,ADMIN'])->group(function () {
     Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
+});
+
+Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,SPV LOCK,LOCK'])->group(function () {
+    Route::get('/main/penjualanvalidasi', App\Livewire\Main\Penjualan\Validasi::class)->name('penjualanvalidasi');
+});
+
+Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,ADMIN,SPV LOCK,LOCK'])->group(function () {
     Route::get('/main/penjualanreport', App\Livewire\Main\Penjualan\Laporan::class)->name('penjualanreport');
 });
 

@@ -15,7 +15,7 @@
                 </a>
                 <!-- penjualan -->
                 @php
-                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanreport');
+                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanvalidasi') || Request::is('main/penjualanreport');
                 @endphp
                 <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -25,7 +25,7 @@
                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
-                        <a class="{{ Request::is('/') ? 'active' : '' }} nav-link" href="{{ route('main') }}">Validasi Penjualan</a>
+                        <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
                         <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
                     </nav>
                 </div>
@@ -54,14 +54,31 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
                         @if ((auth()->user()->roles ?? '') == 'SPV ADMIN')
-                        <a class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link" href="{{ route('kota') }}">Validasi Penjualan</a>
+                        <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
                         @endif
-                        <a class="{{ Request::is('panel/provinsi') ? 'active' : '' }} nav-link" href="{{ route('provinsi') }}">Laporan Penjualan</a>
+                        <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
                     </nav>
                 </div>
                 <!-- end penjualan -->
                 @break
-
+                @case('SPV LOCK')
+                @case('LOCK')
+                <!-- penjualan -->
+                @php
+                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanreport');
+                @endphp
+                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    Penjualan
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
+                        <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
+                    </nav>
+                </div>
+                <!-- end penjualan -->
                 @default
                 <!-- kosong -->
                 @auth
