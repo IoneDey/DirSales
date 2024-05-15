@@ -14,6 +14,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('timsetupid');
             $table->string('nota')->unique();
             $table->date('tgljual');
+            $table->integer('angsuranhari');
+            $table->integer('angsuranperiode');
             $table->string('customernama', 150);
             $table->string('customeralamat', 255);
             $table->string('customernotelp');
@@ -23,13 +25,21 @@ return new class extends Migration {
             $table->string('namadriver', 150);
             $table->string('pjkolektornota', 150);
             $table->string('pjadminnota', 150);
-            $table->string('fotoktp');
-            $table->string('fotonota');
+            $table->string('fotoktp')->nullable();
+            $table->string('fotonota')->nullable();
+            $table->string('fotonotarekap')->nullable();
             $table->string('status', 11);
             $table->unsignedBigInteger('userid');
             $table->timestamps();
+            $table->unsignedBigInteger('userlockid')->nullable();
+            $table->timestamp('validatedlock_at')->nullable();
+            $table->unsignedBigInteger('useradmin1id')->nullable();
+            $table->timestamp('validatedadmin1_at')->nullable();
+            $table->boolean('sheet')->default(false);
             $table->foreign('timsetupid')->references('id')->on('timsetups');
             $table->foreign('userid')->references('id')->on('users');
+            $table->foreign('userlockid')->references('id')->on('users');
+            $table->foreign('useradmin1id')->references('id')->on('users');
         });
     }
 

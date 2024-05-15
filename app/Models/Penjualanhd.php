@@ -24,7 +24,7 @@ class Penjualanhd extends Model {
 
     public function getHargajualTotalAttribute() {
         return $this->joinPenjualandt->sum(function ($penjualandt) {
-            return $penjualandt->jumlah * $penjualandt->joinTimSetupPaket->hargajual;
+            return ($penjualandt->jumlah + $penjualandt->jumlahkoreksi) * $penjualandt->joinTimSetupPaket->hargajual;
         });
     }
 }

@@ -20,7 +20,7 @@
                     <p class="card-text"><small class="text-body-secondary">{{ $data->username  }}</small></p>
 
                     <a wire:click="edit({{ $data->id }})" type="button" href="#top" class="rounded bg-primary text-white" style="text-decoration: none; padding-right: 7px; padding-left: 7px;">Update</a>
-                    <a data-bs-toggle="modal" data-bs-target="#ModalPassword" type="button" class="rounded bg-info text-white" style="text-decoration: none; padding-right: 7px; padding-left: 7px;">Ubah Password</a>
+
                 </div>
             </div>
         </div>
@@ -41,25 +41,6 @@
             <div class="modal-footer">
                 <button wire:click="clear" type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                 <button wire:click="delete()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- untuk modal ubah password -->
-<div wire:ignore.self class="modal fade" id="ModalPassword" tabindex="-1" aria-labelledby="ModalDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="ModalPasswordLabel">Ubah Password</h1>
-                <button wire:click="clear" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                UNDER CONSTRUCTION
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Yes</button>
             </div>
         </div>
     </div>

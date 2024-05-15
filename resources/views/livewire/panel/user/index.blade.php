@@ -82,9 +82,8 @@
                                 <select wire:model="roles" class="form-control" id="roles" placeholder="roles">
                                     <option value="SUPERVISOR">SUPERVISOR</option>
                                     <option value="MANAGEMENT">MANAGEMENT</option>
-                                    <option value="SPV ADMIN">SPV ADMIN</option>
-                                    <option value="SPV LOCK">SPV LOCK</option>
-                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="SPV ADMIN">ADMIN 1</option>
+                                    <option value="SPV LOCK">ADMIN 2</option>
                                     <option value="LOCK">LOCK</option>
                                 </select>
                                 <label for="roles">Roles</label>
@@ -100,6 +99,16 @@
                                 <label for="password">Password</label>
                             </div>
                             @error('password')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
+                            @enderror
+                        </div>
+
+                        <div class="col-6 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="passwordbaru" @if(!$isUpdate) disabled @endif type="password" class="form-control" id="passwordbaru" placeholder="password baru">
+                                <label for="passwordbaru">Password Baru</label>
+                            </div>
+                            @error('passwordbaru')
                             <span style="font-size: smaller; color: red;">{{ $message }}</span><br>
                             @enderror
                         </div>

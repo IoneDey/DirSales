@@ -32,9 +32,36 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                     User
                 </a>
+                <hr>
+
+                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInventory" aria-expanded="false" aria-controls="collapseLayouts">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    Inventory
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseInventory" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link">Kartu Stock</a>
+                    </nav>
+                </div>
+
+                @php
+                $isActivePiutang = Request::is('panel/piutang') || Request::is('panel/piutangkartu');
+                @endphp
+                <a class="{{ $isActivePiutang ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePiutang" aria-expanded="false" aria-controls="collapseLayouts">
+                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                    Piutang
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapsePiutang" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="{{ Request::is('panel/piutangkartu') ? 'active' : '' }} nav-link" href="{{ route('piutangkartu') }}">Kartu Piutang</a>
+                    </nav>
+                </div>
             </div>
+
         </div>
-        <div class="sb-sidenav-footer">
+        <div class=" sb-sidenav-footer">
             <div class="small">Logged in as: {{ auth()->user()->roles ?? '' }}</div>
             @auth
             @if (auth()->user()->image)

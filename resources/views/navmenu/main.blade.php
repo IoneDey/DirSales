@@ -39,8 +39,8 @@
                     Pembayaran
                 </a>
                 @break
-                @case('SPV ADMIN')
-                @case('ADMIN')
+                @case('ADMIN 1')
+                @case('ADMIN 2')
                 <!-- penjualan -->
                 @php
                 $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanreport');
@@ -52,8 +52,10 @@
                 </a>
                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
+                        @if ((auth()->user()->roles ?? '') == 'ADMIN 2')
                         <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
-                        @if ((auth()->user()->roles ?? '') == 'SPV ADMIN')
+                        @endif
+                        @if ((auth()->user()->roles ?? '') == 'ADMIN 1')
                         <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
                         @endif
                         <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
@@ -61,7 +63,6 @@
                 </div>
                 <!-- end penjualan -->
                 @break
-                @case('SPV LOCK')
                 @case('LOCK')
                 <!-- penjualan -->
                 @php
@@ -100,7 +101,7 @@
             @else
             <img src="{{ asset('img/profile-kosong.webp') }}" class="img-fluid rounded-circle" style="object-fit: cover; width: 25px; height: 25px;" alt="Profile Picture">
             @endif
-            {{ auth()->User()->name }}
+            <a href="{{ route('profile') }}">{{ auth()->User()->name }}</a>
             @else
             Guest
             @endauth

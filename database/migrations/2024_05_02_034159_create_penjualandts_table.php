@@ -14,11 +14,15 @@ return new class extends Migration {
             $table->unsignedBigInteger('penjualanhdid');
             $table->unsignedBigInteger('timsetuppaketid');
             $table->integer('jumlah');
-            $table->unsignedBigInteger('userid');
+            $table->integer('jumlahkoreksi');
+            $table->unsignedBigInteger('userid')->nullable();
             $table->timestamps();
+            $table->unsignedBigInteger('userkoreksiid')->nullable();
+            $table->timestamp('validatedkoreksi_at')->nullable();
             $table->foreign('penjualanhdid')->references('id')->on('penjualanhds')->onDelete('cascade');;
             $table->foreign('timsetuppaketid')->references('id')->on('timsetuppakets');
             $table->foreign('userid')->references('id')->on('users');
+            $table->foreign('userkoreksiid')->references('id')->on('users');
         });
     }
 

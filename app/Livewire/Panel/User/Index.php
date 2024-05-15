@@ -21,6 +21,8 @@ class Index extends Component {
     public $roles = 'SUPERVISOR';
     public $image;
 
+    public $passwordbaru;
+
     //--cari + paginate
     public $cari;
     protected $paginationTheme = 'bootstrap';
@@ -40,11 +42,16 @@ class Index extends Component {
     public $isUpdate = false;
     public $tmpId = null;
 
+    public function resetErrors() {
+        $this->resetErrorBag();
+    }
+
     public function clear() {
         $this->name = "";
         $this->username = "";
         $this->email = "";
         $this->password = "";
+        $this->passwordbaru = "";
         $this->roles = "SUPERVISOR";
         $this->image = null;
         $this->isUpdate = false;
@@ -126,9 +133,17 @@ class Index extends Component {
             $rules['email'] = ['required', 'email', 'unique:users'];
         }
 
+        if (strlen($this->passwordbaru) > 0) {
+            $rules['passwordbaru'] = ['required', 'min:5'];
+        }
+
         $validatedData = $this->validate($rules, $this->messages);
         if ($this->image) {
             $validatedData['image'] = $this->image->store('uploads', 'public');
+        }
+
+        if (strlen($this->passwordbaru) >= 5) {
+            $validatedData['password'] = Hash::make($this->passwordbaru);
         }
 
         $data->update($validatedData);

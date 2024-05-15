@@ -117,11 +117,14 @@
                         @if ($jumlahTotal===0)
                         Tidak bisa validasi, jumlah total penjualan = 0
                         @else
+                        @if (!empty($validMessage))
+                        {{ $validMessage }}
+                        @endif
                         Anda yakin validasi Nota: {{ $nota }}?
                         @endif
                     </div>
                     <div class="modal-footer">
-                        @if ($jumlahTotal===0)
+                        @if (($jumlahTotal===0) or !empty($validMessage))
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                         @else
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

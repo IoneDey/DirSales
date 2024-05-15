@@ -21,23 +21,26 @@ Route::middleware(['checkroles:SUPERVISOR'])->group(function () {
     Route::get('/panel/user', App\Livewire\Panel\User\Index::class)->name('user');
 
     Route::get('/panel/timsetup', App\Livewire\Panel\Timsetup\Index::class)->name('timsetup');
+    Route::get('/panel/piutangkartu', App\Livewire\Panel\Piutang\Kartu::class)->name('piutangkartu');
 
     //Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
 });
 
-Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,ADMIN'])->group(function () {
+Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,ADMIN 2'])->group(function () {
     Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
 });
 
-Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,SPV LOCK,LOCK'])->group(function () {
+Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,LOCK'])->group(function () {
     Route::get('/main/penjualanvalidasi', App\Livewire\Main\Penjualan\Validasi::class)->name('penjualanvalidasi');
+    Route::get('/main/penjualanvalidasiedit/{id}', App\Livewire\Main\Penjualan\Validasiedit::class)->name('penjualanvalidasiedit');
 });
 
-Route::middleware(['checkroles:SUPERVISOR,SPV ADMIN,ADMIN,SPV LOCK,LOCK'])->group(function () {
+Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,ADMIN 2,LOCK'])->group(function () {
     Route::get('/main/penjualanreport', App\Livewire\Main\Penjualan\Laporan::class)->name('penjualanreport');
 });
 
 route::middleware('auth')->group(function () {
+    Route::get('/profile', App\Livewire\Profile::class)->name('profile');
     Route::get('/logout', [App\Livewire\Logout::class, 'logout'])->name('logout');
 });
 

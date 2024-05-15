@@ -53,6 +53,16 @@
         </div>
 
         <div class="input-group-item">
+            <span class="input-label">Angsuran - Hari</span>
+            <input wire:model="angsuranhari" type="number" class="form-control">
+        </div>
+
+        <div class="input-group-item">
+            <span class="input-label">Angsuran - Periode</span>
+            <input wire:model="angsuranperiode" type="number" class="form-control">
+        </div>
+
+        <div class="input-group-item">
             <span class="input-label">Tgl Jual</span>
             <input wire:model="tgljual" type="date" class="form-control">
         </div>
@@ -111,30 +121,18 @@
     </div>
 </div>
 
-<!-- upload ktp dan nota -->
+<!-- upload nota rekap -->
 <div class="container col-10" style="padding: 3px; margin-bottom: 0px;">
     <div class="input-group">
         <div class="input-group-item mb-0">
-            <span class="input-label" for="inputGroupKTP">Foto KTP</span>
-            <input wire:model="fotoktp" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupKTP">
-            <div wire:loading wire:target="fotoktp">Uploading...</div>
-            @if (is_string($fotoktp) && strlen($fotoktp) > 0)
-            <img src="{{ asset('storage/' . $fotoktp) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            <span class="input-label" for="inputGroupNota">Foto Rekap Sales</span>
+            <input wire:model="fotonotarekap" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNotaRekap">
+            <div wire:loading wire:target="fotonotarekap">Uploading...</div>
+            @if (is_string($fotonotarekap) && strlen($fotonotarekap) > 0)
+            <img src="{{ asset('storage/' . $fotonotarekap) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
             @else
-            @if ($fotoktp)
-            <img src="{{ $fotoktp->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
-            @endif
-            @endif
-        </div>
-        <div class="input-group-item mb-0">
-            <span class="input-label" for="inputGroupNota">Foto Nota</span>
-            <input wire:model="fotonota" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNota">
-            <div wire:loading wire:target="fotonota">Uploading...</div>
-            @if (is_string($fotonota) && strlen($fotonota) > 0)
-            <img src="{{ asset('storage/' . $fotonota) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
-            @else
-            @if ($fotonota)
-            <img src="{{ $fotonota->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @if ($fotonotarekap)
+            <img src="{{ $fotonotarekap->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
             @endif
             @endif
         </div>
