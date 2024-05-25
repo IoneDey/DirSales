@@ -113,6 +113,11 @@
             </div>
 
             <div class="input-group-item">
+                <span class="input-label">Kecamatan</span>
+                <input wire:model="kecamatan" type="text" class="form-control">
+            </div>
+
+            <div class="input-group-item">
                 <span class="input-label">Tgl Jual</span>
                 <input wire:model="tgljual" type="date" class="form-control">
             </div>
@@ -246,7 +251,7 @@
                 <div class='col-4'>
                     <div class="input-group-item">
                         <span class="input-label">Jumlah Koreksi Barang</span>
-                        <input wire:model="jumlahkoreksi" type="number" class="form-control" {{ $isUpdate ? '' : 'disabled' }}>
+                        <input wire:model="jumlahkoreksi" type="number" class="form-control" {{ $isUpdate ? '' : 'disabled' }} placeholder="masukkan nilai yg benar">
                     </div>
                 </div>
             </div>
@@ -279,7 +284,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $dbPenjualandt->joinTimSetupPaket->nama }}</td>
                     <td>{{ $dbPenjualandt->jumlah }}</td>
-                    <td>{{ $dbPenjualandt->jumlahkoreksi }}</td>
+                    <td>{{ $dbPenjualandt->jumlah + $dbPenjualandt->jumlahkoreksi }}</td>
                     <td class="rata-kanan">{{ number_format($dbPenjualandt->joinTimSetupPaket->hargajual, 0, ',', '.') }}</td>
                     <td>
                         <ul style="list-style-type: none; padding-left: 0;">

@@ -7,81 +7,68 @@
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
                     Home
                 </a>
-                @switch((auth()->user()->roles ?? ''))
-                @case('SUPERVISOR')
+
+                <!-- menu pembelian -->
+                @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR']))
                 <a class="nav-link" href="#">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-shop"></i></div>
                     Pembelian
                 </a>
-                <!-- penjualan -->
+                @endif
+
+                <!-- menu penjualan -->
+                @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','ADMIN 2','LOCK']))
                 @php
-                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanvalidasi') || Request::is('main/penjualanreport');
+                $isActivePenjualan = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanvalidasi') || Request::is('main/penjualanreport');
                 @endphp
-                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                <a class="{{ $isActivePenjualan ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsPenjualan" aria-expanded="false" aria-controls="collapseLayoutsPenjualan">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                     Penjualan
                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                <!-- menu item penjualan -->
+                <div class="collapse" id="collapseLayoutsPenjualan" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
+                        @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','ADMIN 2']))
                         <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
+                        @endif
+                        @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','LOCK']))
                         <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
+                        @endif
+                        @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','ADMIN 2','LOCK']))
                         <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
+                        @endif
                     </nav>
                 </div>
-                <!-- end penjualan -->
-                <a class="nav-link" href="#">
-                    <div class="sb-nav-link-icon"><i class="fa-solid fa-file-invoice"></i></div>
-                    Penagihan
+                @endif
+
+                <!-- menu penagihan -->
+                @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','PENAGIHAN']))
+                @php
+                $isActivePenagihan = Request::is('main/penagihan');
+                @endphp
+                <a class="{{ $isActivePenagihan ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsPenagihan" aria-expanded="false" aria-controls="collapseLayoutsPenagihan">
+                    <div class="sb-nav-link-icon"><i class="fa-solid fa-file-invoice"></i></div> Penagihan
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
+                @endif
+                <!-- menu item penagihan -->
+                <div class="collapse" id="collapseLayoutsPenagihan" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','PENAGIHAN']))
+                        <a class="{{ Request::is('main/penagihan') ? 'active' : '' }} nav-link" href="{{ route('penagihan') }}">Entry Penagihan</a>
+                        @endif
+                    </nav>
+                </div>
+
+                @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR']))
                 <a class="nav-link" href="#">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-sack-dollar"></i></div>
                     Pembayaran
                 </a>
-                @break
-                @case('ADMIN 1')
-                @case('ADMIN 2')
-                <!-- penjualan -->
-                @php
-                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanreport');
-                @endphp
-                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                    Penjualan
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        @if ((auth()->user()->roles ?? '') == 'ADMIN 2')
-                        <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
-                        @endif
-                        @if ((auth()->user()->roles ?? '') == 'ADMIN 1')
-                        <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
-                        @endif
-                        <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
-                    </nav>
-                </div>
-                <!-- end penjualan -->
-                @break
-                @case('LOCK')
-                <!-- penjualan -->
-                @php
-                $isActive = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanreport');
-                @endphp
-                <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                    <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                    Penjualan
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>
-                        <a class="{{ Request::is('main/penjualanreport') ? 'active' : '' }} nav-link" href="{{ route('penjualanreport') }}">Laporan Penjualan</a>
-                    </nav>
-                </div>
-                <!-- end penjualan -->
-                @default
-                <!-- kosong -->
+                @endif
+
+                <!-- menu login -->
                 @auth
                 @else
                 <a class="{{ Request::is('login') ? 'active' : '' }} nav-link" href="{{ route('login') }}">
@@ -89,8 +76,6 @@
                     Login
                 </a>
                 @endauth
-                @endswitch
-
             </div>
         </div>
         <div class="sb-sidenav-footer">

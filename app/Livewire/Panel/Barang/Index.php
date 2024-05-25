@@ -7,32 +7,31 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Index extends Component
-{
+class Index extends Component {
     use WithPagination;
     public $title = 'Master Barang';
 
     //--field + validation set
-    #[Rule('required|min:3|max:255|unique:barangs')]
     public $nama;
+    public $kode;
 
     protected $messages = [
         'nama.required' => 'nama wajib diisi.',
         'nama.min' => 'nama minimal harus 3 karakter.',
         'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
         'nama.unique' => 'nama sudah dipakai.',
+        'kode.min' => 'kode minimal harus 3 karakter.',
+        'kode.max' => 'kode tidak boleh lebih dari 15 karakter.',
     ];
     //--end field + validation set
 
     //--cari + paginate
     public $cari;
     protected $paginationTheme = 'bootstrap';
-    public function paginationView()
-    {
+    public function paginationView() {
         return 'vendor.livewire.bootstrap';
     }
-    public function updatedcari()
-    {
+    public function updatedcari() {
         $this->resetPage();
     }
     //--end cari + paginate
@@ -45,28 +44,32 @@ class Index extends Component
     public $isUpdate = false;
     public $tmpId = null;
 
-    public function clear()
-    {
+    public function clear() {
         $this->nama = "";
+        $this->kode = "";
         $this->isUpdate = false;
         $this->tmpId = null;
     }
 
-    public function getDataBarang($id)
-    {
+    public function getDataBarang($id) {
         if ($id != "") {
             $data = Barang::find($id);
 
             $this->nama = $data->nama;
+            $this->kode = $data->kode;
 
             $this->isUpdate = true;
             $this->tmpId = $id;
         }
     }
 
-    public function create()
-    {
-        $validatedData = $this->validate();
+    public function create() {
+
+        $rules = ([
+            'nama' => ['required', 'min:3', 'max:255', 'unique:barangs'],
+            'kode' => ['string', 'min:2', 'max:25'],
+        ]);
+        $validatedData = $this->validate($rules, $this->messages);
         $validatedData['userid'] = auth()->user()->id;
 
         Barang::create($validatedData);
@@ -75,15 +78,17 @@ class Index extends Component
         session()->flash('ok', $msg);
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
         $this->getDataBarang($id);
     }
 
-    public function update()
-    {
+    public function update() {
         if ($this->tmpId) {
             $data = Barang::find($this->tmpId);
+
+            $rules = ([
+                'kode' => ['string', 'min:2', 'max:25'],
+            ]);
 
             if ($this->nama != $data->nama) {
                 $rules['nama'] = 'required|min:3|max:255|unique:barangs';
@@ -104,13 +109,11 @@ class Index extends Component
         }
     }
 
-    public function confirmDelete($id)
-    {
+    public function confirmDelete($id) {
         $this->getDataBarang($id);
     }
 
-    public function delete()
-    {
+    public function delete() {
         if ($this->tmpId) {
             $data = Barang::find($this->tmpId);
             $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
@@ -126,14 +129,12 @@ class Index extends Component
         }
     }
 
-    public function sort($column)
-    {
+    public function sort($column) {
         $this->sortColumn = $column;
         $this->sortDirection = $this->sortDirection == 'asc' ? 'desc' : 'asc';
     }
 
-    public function render()
-    {
+    public function render() {
         $data = Barang::where('nama', 'like', '%' . $this->cari . '%')
             ->orderby($this->sortColumn, $this->sortDirection)
             ->paginate(12);

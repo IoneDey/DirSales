@@ -135,6 +135,8 @@
                             <th>Sheet</th>
                             @endif
                             <th>Tim</th>
+                            <th>Kota</th>
+                            <th>Kecamatan</th>
                             <th>Nota</th>
                             <th>Tgl Jual</th>
                             <th>Nama Customer</th>
@@ -168,6 +170,8 @@
                             </td>
                             @endif
                             <td>{{ $penjualanhd->joinTimSetup->jointim->nama }}</td>
+                            <td>{{ $penjualanhd->joinTimSetup->joinkota->nama }}</td>
+                            <td>{{ $penjualanhd->kecamatan }}</td>
                             <td>{{ $penjualanhd->nota }}</td>
                             <td>{{ $penjualanhd->tgljual }}</td>
                             <td>{{ $penjualanhd->customernama }}</td>
@@ -205,6 +209,8 @@
                             @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
                             <td></td>
                             @endif
+                            <td></td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>

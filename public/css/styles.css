@@ -11348,6 +11348,9 @@ body {
 }
 
 .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
+    transform: translateX(0);
+}
+.sb-sidenav-toggled #layoutSidenav #layoutSidenav_content:before {
     content: "";
     display: block;
     position: absolute;
@@ -11359,9 +11362,6 @@ body {
     z-index: 1037;
     opacity: 0.5;
     transition: opacity 0.3s ease-in-out;
-}
-.sb-sidenav-toggled #layoutSidenav #layoutSidenav_content:before {
-    transform: translateX(0);
 }
 
 @media (min-width: 992px) {
@@ -11454,7 +11454,6 @@ body {
 }
 .sb-sidenav .sb-sidenav-menu .nav .sb-sidenav-menu-heading {
     padding: 1.75rem 1rem 0.75rem;
-    padding: 1.75rem 1rem 0.75rem;
     font-size: 0.75rem;
     font-weight: bold;
     text-transform: uppercase;
@@ -11462,8 +11461,8 @@ body {
 .sb-sidenav .sb-sidenav-menu .nav .nav-link {
     display: flex;
     align-items: center;
-    padding-top: 0.1rem;
-    padding-bottom: 0.1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
     position: relative;
 }
 .sb-sidenav .sb-sidenav-menu .nav .nav-link .sb-nav-link-icon {

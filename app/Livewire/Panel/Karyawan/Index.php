@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Livewire\Panel\Tim;
+namespace App\Livewire\Panel\Karyawan;
 
-use App\Models\Pt;
-use App\Models\Tim;
+use App\Models\Karyawan;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component {
     use WithPagination;
-    public $title = 'Master Tim';
+    public $title = 'Master Karyawan';
 
     //--field
-    #[Rule('required|min:3|max:255')]
+    public $nik;
     public $nama;
-    #[Rule('required')]
-    public $ptid;
+    public $notelp = '';
+    public $flagdriver = false;
+    public $flagkolektor = false;
 
     //--end field + validation set
 
@@ -39,26 +39,25 @@ class Index extends Component {
     public $isUpdate = false;
     public $tmpId = null;
 
-    public $dbPts;
-
-    public function mount() {
-        // $this->dbPts = Pt::all();
-        $this->dbPts = Pt::select('id', 'nama')->get();
-    }
-
     public function clear() {
+        $this->nik = "";
         $this->nama = "";
-        $this->ptid = "";
+        $this->notelp = "";
+        $this->flagdriver = false;
+        $this->flagkolektor = false;
         $this->isUpdate = false;
         $this->tmpId = null;
     }
 
-    public function getDataTim($id) {
+    public function getData($id) {
         if ($id != "") {
-            $data = Tim::find($id);
+            $data = Karyawan::find($id);
 
+            $this->nik = $data->nik;
             $this->nama = $data->nama;
-            $this->ptid = $data->ptid;
+            $this->notelp = $data->notelp;
+            $this->flagdriver = (bool) $data->flagdriver;
+            $this->flagkolektor = (bool) $data->flagkolektor;
 
             $this->isUpdate = true;
             $this->tmpId = $id;
@@ -66,59 +65,57 @@ class Index extends Component {
     }
 
     protected $messages = [
+        'nik.required' => 'nik wajib diisi.',
+        'nik.min' => 'nik minimal harus 5 karakter.',
+        'nik.max' => 'nik tidak boleh lebih dari 10 karakter.',
+        'nik.unique' => 'nik sudah dipakai.',
         'nama.required' => 'nama wajib diisi.',
         'nama.min' => 'nama minimal harus 3 karakter.',
         'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
-        'nama.unique' => 'nama sudah ada.',
-        'ptid.required' => 'pt wajib diisi.',
+        'notelp.min' => 'nomor telp minimal harus 10 digit.',
+        'notelp.max' => 'nomer telp tidak boleh lebih dari 20 digit.',
+        'flagdriver.bollean' => 'status true/false',
+        'flagkolektor.bollean' => 'status true/false',
     ];
 
     public function create() {
-
-        $rules = ([
-            'nama' => [
-                'required', 'min:3', 'max:255',
-                Rule::unique('tims')->where(function ($query) {
-                    return $query->where('nama', $this->nama)
-                        ->where('ptid', $this->ptid);
-                })
-            ],
-            'ptid' => ['required']
-        ]);
+        $rules = [
+            'nik' => 'required|min:5|max:10|unique:karyawans,nik',
+            'nama' => 'required|min:3|max:255',
+            'notelp' => 'string|min:10|max:20',
+            'flagdriver' => 'boolean',
+            'flagkolektor' => 'boolean',
+        ];
 
         $validatedData = $this->validate($rules, $this->messages);
         $validatedData['userid'] = auth()->user()->id;
 
-        Tim::create($validatedData);
+        Karyawan::create($validatedData);
         $msg = 'Tambah data ' . $this->nama . ' berhasil.';
         $this->clear();
         session()->flash('ok', $msg);
     }
 
     public function edit($id) {
-        $this->getDataTim($id);
+        $this->getData($id);
     }
 
     public function update() {
         if ($this->tmpId) {
-            $data = Tim::find($this->tmpId);
+            $data = Karyawan::find($this->tmpId);
 
             $rules = [
-                'ptid' => 'required',
+                'nama' => 'required|min:3|max:255',
+                'notelp' => 'string|min:10|max:20',
+                'flagdriver' => 'boolean',
+                'flagkolektor' => 'boolean',
             ];
-
-            if ($this->nama != $data->nama) {
-                $rules['nama'] = [
-                    'required', 'min:3', 'max:255',
-                    Rule::unique('tims')->where(function ($query) {
-                        return $query->where('nama', $this->nama)
-                            ->where('ptid', $this->ptid);
-                    })
-                ];
+            if (($this->nik != $data->nik)) {
+                $rules['nik'] = ['required', 'min:5', 'max:10', 'unique:karyawans,nik'];
             }
+            $validatedData = $this->validate($rules, $this->messages);
 
             try {
-                $validatedData = $this->validate($rules, $this->messages);
                 $validatedData['userid'] = auth()->user()->id;
                 $data->update($validatedData);
 
@@ -133,12 +130,12 @@ class Index extends Component {
     }
 
     public function confirmDelete($id) {
-        $this->getDataTim($id);
+        $this->getData($id);
     }
 
     public function delete() {
         if ($this->tmpId) {
-            $data = Tim::find($this->tmpId);
+            $data = Karyawan::find($this->tmpId);
             $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
             try {
                 $data->delete();
@@ -158,17 +155,13 @@ class Index extends Component {
     }
 
     public function render() {
-        $data = Tim::where(function ($query) {
-            $query
-                ->whereHas('joinPt', function ($subquery) {
-                    $subquery->where('nama', 'like', '%' . $this->cari . '%');
-                })
-                ->orWhere('nama', 'like', '%' . $this->cari . '%');
+        $data = Karyawan::where(function ($query) {
+            $query->Where('nama', 'like', '%' . $this->cari . '%');
         })
             ->orderby($this->sortColumn, $this->sortDirection)
             ->paginate(12);
 
-        return view('livewire.panel.tim.index', [
+        return view('livewire.panel.karyawan.index', [
             'datas' => $data,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.panel',

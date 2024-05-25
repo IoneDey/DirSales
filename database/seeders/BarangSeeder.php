@@ -14,7 +14,7 @@ class BarangSeeder extends Seeder {
             'Selang 4 Lapis',
             'Selang Baja',
             'Kerudung',
-            'Paket Seal Clamp',
+            'Seal Clamp',
             'Presto',
             'Wajan',
             'Regulator Tectum',

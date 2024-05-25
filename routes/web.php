@@ -14,6 +14,8 @@ Route::get('/', function () {
 Route::middleware(['checkroles:SUPERVISOR'])->group(function () {
     Route::get('/panel', App\Livewire\Panel\Index::class)->name('panel');
     Route::get('/panel/pt', App\Livewire\Panel\Pt\Index::class)->name('pt');
+    Route::get('/panel/sales', App\Livewire\Panel\Sales\Index::class)->name('sales');
+    Route::get('/panel/karyawan', App\Livewire\Panel\Karyawan\Index::class)->name('karyawan');
     Route::get('/panel/tim', App\Livewire\Panel\Tim\Index::class)->name('tim');
     Route::get('/panel/provinsi', App\Livewire\Panel\Provinsi\Index::class)->name('provinsi');
     Route::get('/panel/kota', App\Livewire\Panel\Kota\Index::class)->name('kota');
@@ -37,6 +39,10 @@ Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,LOCK'])->group(function () {
 
 Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,ADMIN 2,LOCK'])->group(function () {
     Route::get('/main/penjualanreport', App\Livewire\Main\Penjualan\Laporan::class)->name('penjualanreport');
+});
+
+Route::middleware(['checkroles:SUPERVISOR,PENAGIHAN'])->group(function () {
+    Route::get('/main/penagihan', App\Livewire\Main\Penagihan\index::class)->name('penagihan');
 });
 
 route::middleware('auth')->group(function () {

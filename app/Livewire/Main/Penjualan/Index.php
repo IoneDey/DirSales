@@ -4,6 +4,7 @@ namespace App\Livewire\Main\Penjualan;
 
 use App\Models\Penjualandt;
 use App\Models\Penjualanhd;
+use App\Models\Sales;
 use App\Models\Timsetup;
 use App\Models\Timsetuppaket;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ class Index extends Component {
     //entity
     public $timsetupid;
     public $nota;
+    public $kecamatan;
     public $tgljual;
     public $angsuranhari;
     public $angsuranperiode;
@@ -49,7 +51,6 @@ class Index extends Component {
 
     public $paketnama;
 
-
     //lain2x
     public $isUpdate;
     public $isUpdatePaket;
@@ -58,6 +59,7 @@ class Index extends Component {
 
     //db
     public $dbTimsetups;
+    public $dbSales;
 
     public function resetErrors() {
         $this->resetErrorBag();
@@ -68,29 +70,76 @@ class Index extends Component {
     }
 
     public function entryNew() {
+        $this->resetErrors();
         $this->clear();
         $this->clearPaket();
         $this->isEditor = true;
         $this->isUpdate = false;
     }
 
+    private function formatNota($value) {
+        // Remove all non-digit characters
+        $value = preg_replace('/\D/', '', $value);
+
+        // Format the value
+        $formattedNota = '';
+        if (strlen($value) > 2) {
+            $formattedNota .= substr($value, 0, 2) . '-';
+            $value = substr($value, 2);
+        } else {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        if (strlen($value) > 2) {
+            $formattedNota .= substr($value, 0, 2) . '-';
+            $value = substr($value, 2);
+        } else if (strlen($value) > 0) {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        if (strlen($value) > 4) {
+            $formattedNota .= substr($value, 0, 4) . '-';
+            $value = substr($value, 4);
+        } else if (strlen($value) > 0) {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        $formattedNota .= $value;
+
+        return $formattedNota;
+    }
+
+    public function updatednota() {
+        $this->nota = $this->formatNota($this->nota);
+    }
+
     //head
     public function updatedtimsetupid($id) {
         $dbTimsetuppaket = Timsetup::where('id', $id)->first();
-        $this->angsuranhari = $dbTimsetuppaket->angsuranhari;
-        $this->angsuranperiode = $dbTimsetuppaket->angsuranperiode;
+        $this->namasales = '';
+        $this->angsuranhari = ($dbTimsetuppaket->angsuranhari ?? '');
+        $this->angsuranperiode = ($dbTimsetuppaket->angsuranperiode ?? '');
+
+
+        if ($dbTimsetuppaket) {
+            $this->dbSales = Sales::where('ptid', $dbTimsetuppaket->jointim->ptid)->get();
+        }
     }
 
     public function create() {
         $rules = [
             'timsetupid' => 'required',
-            'nota' => 'required|string|unique:penjualanhds',
+            'nota' => 'required|string|min:15|max:15|unique:penjualanhds',
+            'kecamatan' => 'string|max:150',
             'tgljual' => 'required|date',
             'angsuranhari' => 'required|numeric|min:1|max:10',
             'angsuranperiode' => 'required|numeric|min:1|max:10',
             'customernama' => 'required|string|max:150',
             'customeralamat' => 'string|max:255',
-            'customernotelp' => 'required|string',
+            'customernotelp' => 'string|min:10',
             'shareloc' => 'string|max:150',
             'namasales' => 'required|string|max:150',
             'namalock' => 'required|string|max:150',
@@ -128,13 +177,14 @@ class Index extends Component {
 
             $rules = [
                 'timsetupid' => 'required',
+                'kecamatan' => 'string|max:150',
                 'tgljual' => 'required|date',
                 'angsuranhari' => 'required|numeric|min:1|max:10',
                 'angsuranperiode' => 'required|numeric|min:1|max:10',
                 'customernama' => 'required|string|max:150',
                 'customeralamat' => 'required|string|max:255',
-                'customernotelp' => 'required|string',
-                'shareloc' => 'required|string|max:150',
+                'customernotelp' => 'string|min:10',
+                'shareloc' => 'string|max:150',
                 'namasales' => 'required|string|max:150',
                 'namalock' => 'required|string|max:150',
                 'namadriver' => 'required|string|max:150',
@@ -143,7 +193,7 @@ class Index extends Component {
             ];
 
             if ($this->nota != $data->nota) {
-                $rules['nota'] = ['required', 'string', 'unique:penjualanhds'];
+                $rules['nota'] = ['required', 'string', 'min:15', 'max:15', 'unique:penjualanhds'];
             }
             if ($this->fotonotarekap != $data->fotonotarekap) {
                 $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
@@ -200,6 +250,7 @@ class Index extends Component {
     public function clear() {
         $this->timsetupid = "";
         $this->nota = "";
+        $this->kecamatan = "";
         $this->tgljual = "";
         $this->angsuranhari = "";
         $this->angsuranperiode = "";
@@ -221,6 +272,7 @@ class Index extends Component {
         $this->penjualanhdid = $data->id;
         $this->timsetupid = $data->timsetupid;
         $this->nota = $data->nota;
+        $this->kecamatan = $data->kecamatan;
         $this->tgljual = $data->tgljual;
         $this->angsuranhari = $data->angsuranhari;
         $this->angsuranperiode = $data->angsuranperiode;
@@ -423,6 +475,7 @@ class Index extends Component {
             'listPenjualans' => $listPenjualans,
             'dbTimssetuppakets' => $dbTimssetuppakets,
             'dbPenjualandts' => $dbPenjualandts,
+            'dbSaless' => $this->dbSales,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.main',
             'title' => $this->title,

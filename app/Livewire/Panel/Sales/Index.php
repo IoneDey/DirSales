@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Livewire\Panel\Tim;
+namespace App\Livewire\Panel\Sales;
 
 use App\Models\Pt;
-use App\Models\Tim;
+use App\Models\Sales;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component {
     use WithPagination;
-    public $title = 'Master Tim';
+    public $title = 'Master Sales';
 
     //--field
     #[Rule('required|min:3|max:255')]
     public $nama;
+    #[Rule('string|min:10|max:20')]
+    public $notelp = '';
     #[Rule('required')]
     public $ptid;
 
@@ -48,6 +50,7 @@ class Index extends Component {
 
     public function clear() {
         $this->nama = "";
+        $this->notelp = "";
         $this->ptid = "";
         $this->isUpdate = false;
         $this->tmpId = null;
@@ -55,9 +58,10 @@ class Index extends Component {
 
     public function getDataTim($id) {
         if ($id != "") {
-            $data = Tim::find($id);
+            $data = Sales::find($id);
 
             $this->nama = $data->nama;
+            $this->notelp = $data->notelp;
             $this->ptid = $data->ptid;
 
             $this->isUpdate = true;
@@ -69,7 +73,9 @@ class Index extends Component {
         'nama.required' => 'nama wajib diisi.',
         'nama.min' => 'nama minimal harus 3 karakter.',
         'nama.max' => 'nama tidak boleh lebih dari 255 karakter.',
-        'nama.unique' => 'nama sudah ada.',
+        'nama.unique' => 'nama sudah ada di PT yang dipilih.',
+        'notelp.min' => 'nomor telp minimal harus 10 digit.',
+        'notelp.max' => 'nomer telp tidak boleh lebih dari 20 digit.',
         'ptid.required' => 'pt wajib diisi.',
     ];
 
@@ -83,13 +89,14 @@ class Index extends Component {
                         ->where('ptid', $this->ptid);
                 })
             ],
+            'notelp' => ['string', 'min:10', 'max:20'],
             'ptid' => ['required']
         ]);
 
         $validatedData = $this->validate($rules, $this->messages);
         $validatedData['userid'] = auth()->user()->id;
 
-        Tim::create($validatedData);
+        Sales::create($validatedData);
         $msg = 'Tambah data ' . $this->nama . ' berhasil.';
         $this->clear();
         session()->flash('ok', $msg);
@@ -101,24 +108,26 @@ class Index extends Component {
 
     public function update() {
         if ($this->tmpId) {
-            $data = Tim::find($this->tmpId);
+            $data = Sales::find($this->tmpId);
 
             $rules = [
+                'notelp' => 'string|min:10|max:20',
                 'ptid' => 'required',
             ];
 
-            if ($this->nama != $data->nama) {
+            if (($this->nama != $data->nama) || ($this->ptid != $data->ptid)) {
                 $rules['nama'] = [
                     'required', 'min:3', 'max:255',
-                    Rule::unique('tims')->where(function ($query) {
+                    Rule::unique('sales')->where(function ($query) {
                         return $query->where('nama', $this->nama)
                             ->where('ptid', $this->ptid);
                     })
                 ];
             }
 
+            $validatedData = $this->validate($rules, $this->messages);
+
             try {
-                $validatedData = $this->validate($rules, $this->messages);
                 $validatedData['userid'] = auth()->user()->id;
                 $data->update($validatedData);
 
@@ -138,7 +147,7 @@ class Index extends Component {
 
     public function delete() {
         if ($this->tmpId) {
-            $data = Tim::find($this->tmpId);
+            $data = Sales::find($this->tmpId);
             $msg = 'Data ' . $this->nama . ' berhasil dihapus.';
             try {
                 $data->delete();
@@ -158,7 +167,7 @@ class Index extends Component {
     }
 
     public function render() {
-        $data = Tim::where(function ($query) {
+        $data = Sales::where(function ($query) {
             $query
                 ->whereHas('joinPt', function ($subquery) {
                     $subquery->where('nama', 'like', '%' . $this->cari . '%');
@@ -168,7 +177,7 @@ class Index extends Component {
             ->orderby($this->sortColumn, $this->sortDirection)
             ->paginate(12);
 
-        return view('livewire.panel.tim.index', [
+        return view('livewire.panel.sales.index', [
             'datas' => $data,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.panel',

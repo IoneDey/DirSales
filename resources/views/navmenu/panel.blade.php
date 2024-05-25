@@ -7,8 +7,9 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Home
                 </a>
+                @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR']))
                 @php
-                $isActive = Request::is('panel/pt') || Request::is('panel/tim') || Request::is('panel/provinsi') || Request::is('panel/kota') || Request::is('panel/barang');
+                $isActive = Request::is('panel/pt') || Request::is('panel/tim') || Request::is('panel/sales') || Request::is('panel/karyawan') || Request::is('panel/provinsi') || Request::is('panel/kota') || Request::is('panel/barang');
                 @endphp
                 <a class="{{ $isActive ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -21,6 +22,8 @@
                         <a class="{{ Request::is('panel/kota') ? 'active' : '' }} nav-link" href="{{ route('kota') }}">Kota</a>
                         <a class="{{ Request::is('panel/provinsi') ? 'active' : '' }} nav-link" href="{{ route('provinsi') }}">Provinsi</a>
                         <a class="{{ Request::is('panel/tim') ? 'active' : '' }} nav-link" href="{{ route('tim') }}">TIM</a>
+                        <a class="{{ Request::is('panel/karyawan') ? 'active' : '' }} nav-link" href="{{ route('karyawan') }}">Karyawan</a>
+                        <a class="{{ Request::is('panel/sales') ? 'active' : '' }} nav-link" href="{{ route('sales') }}">Sales</a>
                         <a class="{{ Request::is('panel/pt') ? 'active' : '' }} nav-link" href="{{ route('pt') }}">PT</a>
                     </nav>
                 </div>
@@ -58,6 +61,7 @@
                         <a class="{{ Request::is('panel/piutangkartu') ? 'active' : '' }} nav-link" href="{{ route('piutangkartu') }}">Kartu Piutang</a>
                     </nav>
                 </div>
+                @endif
             </div>
 
         </div>

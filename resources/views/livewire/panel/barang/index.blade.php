@@ -46,10 +46,19 @@
                     <div class="row">
                         <div class="col-12 g-1">
                             <div class="form-floating mb-1">
-                                <input wire:model="nama" type="text" class="form-control" id="" placeholder="name@example.com">
+                                <input wire:model="nama" type="text" class="form-control" id="nama" placeholder="">
                                 <label for="nama">Nama</label>
                             </div>
                             @error('nama')
+                            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-12 g-1">
+                            <div class="form-floating mb-1">
+                                <input wire:model="kode" type="text" class="form-control" id="kode" placeholder="">
+                                <label for="kode">Kode S.Sheet</label>
+                            </div>
+                            @error('kode')
                             <span style="font-size: smaller; color: red;">{{ $message }}</span>
                             @enderror
                         </div>
@@ -76,6 +85,7 @@
                     <thead>
                         <th>#</th>
                         <th class="sort @if ($sortColumn== 'nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
+                        <th class="sort @if ($sortColumn== 'kode') {{ $sortDirection }} @endif" wire:click="sort('kode')">Kode S.Sheet</th>
                         <th>Act</th>
                     </thead>
                     <tbody>
@@ -83,6 +93,7 @@
                         <tr>
                             <td>{{ (($datas->currentPage()-1)*$datas->perPage()) + $loop->iteration }}</td>
                             <td>{{ $dbdata->nama }}</td>
+                            <td>{{ $dbdata->kode }}</td>
                             <td>
                                 <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class=" bi bi-pencil-fill"></i></a>
                                 <a wire:click="confirmDelete({{ $dbdata->id }})" wire:loading.attr="disabled" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>

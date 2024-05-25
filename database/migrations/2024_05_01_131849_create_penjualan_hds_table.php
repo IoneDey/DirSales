@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('timsetupid');
             $table->string('nota')->unique();
+            $table->string('kecamatan', 150);
             $table->date('tgljual');
             $table->integer('angsuranhari');
             $table->integer('angsuranperiode');

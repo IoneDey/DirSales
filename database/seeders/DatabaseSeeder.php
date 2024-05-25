@@ -20,14 +20,6 @@ class DatabaseSeeder extends Seeder {
         ]);
 
         DB::table('users')->insert([
-            'name' => 'Demo',
-            'username' => 'admin 1',
-            'email' => 'demo@gmail.com',
-            'password' => Hash::make('password'),
-            'roles' => 'ADMIN 1',
-        ]);
-
-        DB::table('users')->insert([
             'name' => 'Diah',
             'username' => 'Diah',
             'email' => 'diah@example.com',
@@ -35,40 +27,8 @@ class DatabaseSeeder extends Seeder {
             'roles' => 'SUPERVISOR',
         ]);
 
-        DB::table('users')->insert([
-            'name' => 'Jane Smith',
-            'username' => 'janesmith',
-            'email' => 'jane.smith@example.com',
-            'password' => Hash::make('password'),
-            'roles' => 'LOCK',
-        ]);
-
-        DB::table('users')->insert([
-            'name' => 'Michael Johnson',
-            'username' => 'admin 2',
-            'email' => 'michael.johnson@example.com',
-            'password' => Hash::make('password'),
-            'roles' => 'ADMIN 2',
-        ]);
-
-        DB::table('users')->insert([
-            'name' => 'Sarah Williams',
-            'username' => 'lock',
-            'email' => 'sarah.williams@example.com',
-            'password' => Hash::make('password'),
-            'roles' => 'LOCK',
-        ]);
-
-        DB::table('users')->insert([
-            'name' => 'David Brown',
-            'username' => 'management',
-            'email' => 'david.brown@example.com',
-            'password' => Hash::make('password'),
-            'roles' => 'MANAGEMENT',
-        ]);
 
         $this->call(PTSeeder::class);
-        $this->call(TimSeeder::class);
         $this->call(ProvinsiSeeder::class);
         $this->call(KotaSeeder::class);
         $this->call(BarangSeeder::class);

@@ -22,6 +22,7 @@ class Validasiedit extends Component {
     public $nota;
     public $angsuranhari;
     public $angsuranperiode;
+    public $kecamatan;
     public $tgljual;
     public $customernama;
     public $customeralamat;
@@ -80,6 +81,7 @@ class Validasiedit extends Component {
 
             $rules = [
                 'timsetupid' => 'required',
+                'kecamatan' => 'string|max:150',
                 'tgljual' => 'required|date',
                 'angsuranhari' => 'required|numeric|min:1|max:10',
                 'angsuranperiode' => 'required|numeric|min:1|max:10',
@@ -164,6 +166,7 @@ class Validasiedit extends Component {
         $this->nota = $data->nota;
         $this->angsuranhari = $data->angsuranhari;
         $this->angsuranperiode = $data->angsuranperiode;
+        $this->kecamatan = $data->kecamatan;
         $this->tgljual = $data->tgljual;
         $this->customernama = $data->customernama;
         $this->customeralamat = $data->customeralamat;
@@ -222,7 +225,7 @@ class Validasiedit extends Component {
         $data = Penjualandt::find($id);
         $this->timsetuppaketid = $data->timsetuppaketid;
         $this->jumlah = $data->jumlah;
-        $this->jumlahkoreksi = $data->jumlahkoreksi;
+        $this->jumlahkoreksi = $data->jumlah + $data->jumlahkoreksi;
 
         $this->penjualandtid = $data->id;
         $this->paketnama = $data->joinTimSetupPaket->nama;
@@ -233,17 +236,17 @@ class Validasiedit extends Component {
         if ($this->penjualandtid) {
             $data = Penjualandt::find($this->penjualandtid);
 
-            $rulesPaket = [
-                'jumlahkoreksi' => [
-                    'required', 'numeric', function ($attribute, $value, $fail) use ($data) {
-                        $jumlah = $data->jumlah;
-                        if ($value < (-1 * $jumlah)) {
-                            $fail('Nilai ' . $attribute . ' tidak boleh lebih kecil dari -' . $jumlah);
-                        }
-                    }
-                ]
-            ];
-
+            // $rulesPaket = [
+            //     'jumlahkoreksi' => [
+            //         'required', 'numeric', function ($attribute, $value, $fail) use ($data) {
+            //             $jumlah = $data->jumlah;
+            //             if ($value < (-1 * $jumlah)) {
+            //                 $fail('Nilai ' . $attribute . ' tidak boleh lebih kecil dari -' . $jumlah);
+            //             }
+            //         }
+            //     ]
+            // ];
+            $rulesPaket = ['jumlahkoreksi' => ['required', 'numeric', 'min:1']];
             if ($this->timsetuppaketid != $data->timsetuppaketid) {
                 $rulesPaket['timsetuppaketid'] = [
                     'required',
@@ -256,6 +259,7 @@ class Validasiedit extends Component {
             $validatePaket = $this->validate($rulesPaket);
             $validatePaket['penjualanhdid'] = $this->penjualanhdid;
             $validatePaket['userkoreksiid'] = auth()->user()->id;
+            $validatePaket['jumlahkoreksi'] = $this->jumlahkoreksi - $this->jumlah;
             $validatePaket['validatedkoreksi_at'] = now();
 
             try {
