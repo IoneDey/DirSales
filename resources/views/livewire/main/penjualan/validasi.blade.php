@@ -155,8 +155,8 @@
                             <td>{{ $penjualanhd->joinUser->name }}</td>
                             <td>{{ $penjualanhd->updated_at }}</td>
                             <td>
-                                <a type="button" class="badge bg-warning bg-sm" href="{{ route('penjualanvalidasiedit', ['id' => $penjualanhd->id]) }}"><i class="bi bi-pencil-fill"></i></a>
-                                <a wire:click="cekValidasi('{{ $penjualanhd->nota }}')" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid"><i class="bi bi-lock"></i></a>
+                                <a type="button" class="badge bg-warning bg-sm" href="{{ route('penjualanvalidasiedit', ['id' => $penjualanhd->id]) }}" title="Edit"><i class="bi bi-pencil-fill"></i></a>
+                                <a wire:click="cekValidasi('{{ $penjualanhd->nota }}')" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid" title="Validasi"><i class="bi bi-lock"></i></a>
                             </td>
                         </tr>
                         @endforeach

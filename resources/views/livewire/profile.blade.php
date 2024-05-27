@@ -30,6 +30,16 @@
                             <p class="card-text">Email: {{ $data->email }}</p>
                             <p class="card-text">Roles: {{ $data->roles }}</p>
                             <p class="card-text"><small class="text-body-secondary">Username: {{ $data->username }}</small></p>
+                            <p>
+                            <div class="input-group-item">
+                                <span class="input-label">Ubah Password</span>
+                                <input wire:model="password" type="password" class="form-control">
+                                @error('password')
+                                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <button wire:click="update" type="button" class="btn btn-primary mt-1">Update</button>
+                            </p>
                         </div>
                     </div>
                 </div>

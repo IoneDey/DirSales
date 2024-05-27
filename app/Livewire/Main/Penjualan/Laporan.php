@@ -158,7 +158,8 @@ class Laporan extends Component {
                 DB::raw("CONCAT('" . asset('storage/') . "/',a.fotonota) as fotonota"),
                 'a.fotonotarekap',
                 DB::raw("'' AS kecamatan"),
-                'g.nama AS kota'
+                'g.nama AS kota',
+                'a.angsuranperiode'
             )
             ->where('a.nota', '=', $this->nota)
             ->get();
@@ -179,6 +180,7 @@ class Laporan extends Component {
                 'fotonotarekap' => $item->fotonotarekap,
                 'kecamatan' => $item->kecamatan,
                 'kota' => $item->kota,
+                'angsuranperiode' => $item->angsuranperiode,
             ];
         }
         $jsonData1 = json_encode($dataArr);

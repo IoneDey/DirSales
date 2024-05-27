@@ -60,6 +60,9 @@ class Index extends Component {
     //db
     public $dbTimsetups;
     public $dbSales;
+    public $dbDrivers;
+    public $dbKolektors;
+
 
     public function resetErrors() {
         $this->resetErrorBag();
@@ -67,6 +70,8 @@ class Index extends Component {
 
     public function mount() {
         $this->dbTimsetups = Timsetup::get();
+        $this->dbDrivers = DB::select("SELECT nama FROM `karyawans` where void=0 and flagdriver=1");
+        $this->dbKolektors = DB::select("SELECT nama FROM `karyawans` where void=0 and flagkolektor=1");
     }
 
     public function entryNew() {

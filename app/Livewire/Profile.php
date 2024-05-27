@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -39,6 +40,16 @@ class Profile extends Component {
 
         $data->update($validatedData);
         $this->getDataUser($this->id);
+    }
+
+    public function update() {
+        $data = User::find($this->id);
+        $rules['password'] = ['required', 'min:8'];
+        $validate = $this->validate($rules);
+        $this->password = Hash::make($this->password);
+        $data->update($validate);
+        $this->js('alert("Password baru sudah tersimpan.")');
+        $this->password = "";
     }
 
     public function getDataUser($id) {

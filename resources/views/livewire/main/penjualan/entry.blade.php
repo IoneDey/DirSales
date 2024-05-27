@@ -131,7 +131,6 @@
                 <option value="{{ $dbSales->nama }}">{{ $dbSales->nama }}</option>
                 @endforeach
                 @endif
-
             </select>
             @error('namasales')
             <span style="font-size: smaller; color: red;">{{ $message }}</span>
@@ -148,7 +147,14 @@
 
         <div class="input-group-item">
             <span class="input-label">Nama Driver</span>
-            <input wire:model="namadriver" type="text" class="form-control">
+            <select wire:model="namadriver" type="text" class="form-select">
+                <option value=""></option>
+                @if($dbDrivers)
+                @foreach ($dbDrivers as $dbDriver)
+                <option value="{{ $dbDriver->nama }}">{{ $dbDriver->nama }}</option>
+                @endforeach
+                @endif
+            </select>
             @error('namadriver')
             <span style="font-size: smaller; color: red;">{{ $message }}</span>
             @enderror
@@ -156,7 +162,14 @@
 
         <div class="input-group-item">
             <span class="input-label">Penanggung jawab Kolektor Nota</span>
-            <input wire:model="pjkolektornota" type="text" class="form-control">
+            <select wire:model="pjkolektornota" type="text" class="form-select">
+                <option value=""></option>
+                @if($dbDrivers)
+                @foreach ($dbKolektors as $dbKolektor)
+                <option value="{{ $dbKolektor->nama }}">{{ $dbKolektor->nama }}</option>
+                @endforeach
+                @endif
+            </select>
             @error('pjkolektornota')
             <span style="font-size: smaller; color: red;">{{ $message }}</span>
             @enderror
