@@ -4,8 +4,10 @@ namespace App\Livewire\Main\Penjualan;
 
 use App\Models\Penjualandt;
 use App\Models\Penjualanhd;
+use App\Models\Sales;
 use App\Models\Timsetup;
 use App\Models\Timsetuppaket;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -36,6 +38,7 @@ class Validasiedit extends Component {
     public $fotoktp;
     public $fotonota;
     public $fotonotarekap;
+    public $catatan = '';
 
     public $penjualanhdid;
     public $timsetupnama;
@@ -56,8 +59,16 @@ class Validasiedit extends Component {
 
     //db
     public $dbTimsetups;
+    public $dbSales;
+    public $dbDrivers;
+    public $dbKolektors;
 
     public $roles;
+
+    //rules khusus
+    public $setisinamalockval = true;
+    public $setisifotonotaval = true;
+    public $setisifotonotarekapval = true;
 
     public function resetErrors() {
         $this->resetErrorBag();
@@ -69,8 +80,49 @@ class Validasiedit extends Component {
         $this->title = 'Edit Penjualan (' . $this->statusUser . ')';
 
         $this->dbTimsetups = Timsetup::get();
+        $this->dbDrivers = DB::select("SELECT nama FROM `karyawans` where void=0 and flagdriver=1");
+        $this->dbKolektors = DB::select("SELECT nama FROM `karyawans` where void=0 and flagkolektor=1");
 
         $this->getData($id);
+    }
+
+    private function formatNota($value) {
+        // Remove all non-digit characters
+        $value = preg_replace('/\D/', '', $value);
+
+        // Format the value
+        $formattedNota = '';
+        if (strlen($value) > 2) {
+            $formattedNota .= substr($value, 0, 2) . '-';
+            $value = substr($value, 2);
+        } else {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        if (strlen($value) > 2) {
+            $formattedNota .= substr($value, 0, 2) . '-';
+            $value = substr($value, 2);
+        } else if (strlen($value) > 0) {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        if (strlen($value) > 4) {
+            $formattedNota .= substr($value, 0, 4) . '-';
+            $value = substr($value, 4);
+        } else if (strlen($value) > 0) {
+            $formattedNota .= $value;
+            $value = '';
+        }
+
+        $formattedNota .= $value;
+
+        return $formattedNota;
+    }
+
+    public function updatednota() {
+        $this->nota = $this->formatNota($this->nota);
     }
 
     //head
@@ -87,27 +139,59 @@ class Validasiedit extends Component {
                 'angsuranperiode' => 'required|numeric|min:1|max:10',
                 'customernama' => 'required|string|max:150',
                 'customeralamat' => 'required|string|max:255',
-                'customernotelp' => 'required|string',
+                'customernotelp' => 'required|string|max:20',
                 'shareloc' => 'required|string|max:150',
                 'namasales' => 'required|string|max:150',
-                'namalock' => 'required|string|max:150',
                 'namadriver' => 'required|string|max:150',
                 'pjkolektornota' => 'required|string|max:150',
                 'pjadminnota' => 'required|string|max:150',
+                'catatan' => 'string|max:255',
             ];
 
             if ($this->nota != $data->nota) {
-                $rules['nota'] = ['required', 'string', 'unique:penjualanhds'];
+                $rules['nota'] = [
+                    'required', 'min:15', 'max:15',
+                    Rule::unique('penjualanhds')->where(function ($query) {
+                        return $query->where('nota', $this->nota)
+                            ->where('timsetupid', $this->timsetupid);
+                    })
+                ];
             }
+
+            if ($this->setisinamalockval) {
+                $rules['namalock'] = ['required', 'string', 'max:150'];
+            } else {
+                $rules['namalock'] = ['string', 'max:150'];
+            }
+
             if ($this->fotoktp != $data->fotoktp) {
-                $rules['fotoktp'] = ['required', 'sometimes', 'image', 'max:1024'];
+                $rules['fotoktp'] = ['sometimes', 'image', 'max:1024'];
             }
+
             if ($this->fotonota != $data->fotonota) {
-                $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
+                if ($this->setisifotonotaval) {
+                    $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
+                } else {
+                    $rules['fotonota'] = ['sometimes', 'image', 'max:1024'];
+                }
             }
             if ($this->fotonotarekap != $data->fotonotarekap) {
-                $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+                if ($this->setisifotonotarekapval) {
+                    $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+                } else {
+                    $rules['fotonotarekap'] = ['sometimes', 'image', 'max:1024'];
+                }
             }
+
+            // if ($this->fotoktp != $data->fotoktp) {
+            //     $rules['fotoktp'] = ['required', 'sometimes', 'image', 'max:1024'];
+            // }
+            // if ($this->fotonota != $data->fotonota) {
+            //     $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
+            // }
+            // if ($this->fotonotarekap != $data->fotonotarekap) {
+            //     $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+            // }
 
             $validated = $this->validate($rules);
             if (!is_string($this->fotoktp)) {
@@ -163,6 +247,15 @@ class Validasiedit extends Component {
 
         $this->penjualanhdid = $data->id;
         $this->timsetupid = $data->timsetupid;
+
+        $dbTimsetuppaket = Timsetup::where('id', $this->timsetupid)->first();
+        if ($dbTimsetuppaket) {
+            $this->dbSales = Sales::where('ptid', $dbTimsetuppaket->jointim->ptid)->get();
+            $this->setisinamalockval = (bool) $dbTimsetuppaket->jointim->setisinamalockval;
+            $this->setisifotonotaval = (bool) $dbTimsetuppaket->jointim->setisifotonotaval;
+            $this->setisifotonotarekapval = (bool) $dbTimsetuppaket->jointim->setisifotonotarekapval;
+        }
+
         $this->nota = $data->nota;
         $this->angsuranhari = $data->angsuranhari;
         $this->angsuranperiode = $data->angsuranperiode;
@@ -180,6 +273,7 @@ class Validasiedit extends Component {
         $this->fotoktp = $data->fotoktp;
         $this->fotonota = $data->fotonota;
         $this->fotonotarekap = $data->fotonotarekap;
+        $this->catatan = $data->catatan ?? '';
 
         $this->timsetupnama = $data->joinTimSetup->joinTim->nama;
 
@@ -318,6 +412,7 @@ class Validasiedit extends Component {
         return view('livewire.main.penjualan.validasiedit', [
             'dbTimssetuppakets' => $dbTimssetuppakets,
             'dbPenjualandts' => $dbPenjualandts,
+            'dbSaless' => $this->dbSales,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.main',
             'title' => $this->title,

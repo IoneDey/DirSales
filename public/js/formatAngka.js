@@ -40,7 +40,7 @@ function formatAngka(event) {
         value = parts.join(',');
     }
 
-    event.target.value = value;
+    event.target.value = value
 }
 
 function formatNota(event) {

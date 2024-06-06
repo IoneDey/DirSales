@@ -74,6 +74,18 @@
         .text-right {
             text-align: right;
         }
+
+        table th,
+        table td {
+            white-space: nowrap;
+        }
+
+        .table-responsive {
+            /* max-height: 400px; */
+            /* Sesuaikan tinggi sesuai kebutuhan */
+            overflow-y: auto;
+            overflow-x: auto;
+        }
     </style>
     <h2 class="text-center">{{ $title }}</h2>
 
@@ -154,6 +166,13 @@
                         <span style="font-size: smaller; color: red;">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="input-group-item mb-0">
+                        <span class="input-label" for="inputKwitans">Foto Kwitansi</span>
+                        <input wire:model="fotokwitansi" accept="image/png, image/jpeg" type="file" class="form-control" id="inputKwitans">
+                        @error('fotokwitansi')
+                        <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
                 <div>
                     <button wire:click="create" type="button" class="btn btn-primary mt-1">Simpan</button>
@@ -161,10 +180,9 @@
                 </div>
             </div>
 
-
             <div class="col-5">
                 <!-- kartu piutang -->
-                <div class="input-group">
+                <div class="table-responsive input-group">
                     <div class="input-group-item">
                         <div>Kartu Piutang Nota</div>
                     </div>
@@ -195,7 +213,31 @@
                 <div class="custom-divider mt-2 mb-3"></div>
 
                 <!-- info angsuran -->
-                <div class="input-group">
+                <div class="table-responsive input-group">
+                    <div class="input-group-item form-check-inline">
+                        <span class="input-label">Metode Reschedule Angsuran</span>
+                        <div class="input-group">
+                            <div class="form-check">
+                                <input value="Avg" wire:model.live="selectedOption" class="form-check-input" type="radio" name="opt1" id="opt1">
+                                <label class="form-check-label" for="opt1">
+                                    Avg
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input value="Up" wire:model.live="selectedOption" class="form-check-input" type="radio" name="opt2" id="opt2">
+                                <label class="form-check-label" for="opt2">
+                                    Up
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input value="Down" wire:model.live="selectedOption" class="form-check-input" type="radio" name="opt3" id="opt3">
+                                <label class="form-check-label" for="opt3">
+                                    Down
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="input-group-item">
                         <div>Informasi Angsuran</div>
                         <div>Tgl Penjualan: {{ $tgljual }} - Rp. {{ number_format(($jmljual ?? 0), 0, ',', '.') }}</div>

@@ -77,19 +77,19 @@
 
     <!-- header nota -->
     <div class="container col-10" style="padding: 3px; margin-bottom: 5px;">
-        <a typ="button" class="badge bg-warning bg-sm mb-3" style="text-decoration: none;" href="{{ route('penjualanvalidasi') }}"><i class="bi bi-arrow-left-circle"></i> Kembali</a>
+        <a typ="button" class="badge bg-warning bg-sm mb-3" style="text-decoration: none;" href="{{ route('penjualanvalidasi', ['tglAwal' => request('tglAwal'), 'tglAkhir' => request('tglAkhir'), 'cari' => request('cari')]) }}"><i class="bi bi-arrow-left-circle"></i> Kembali</a>
 
         <div class="input-group">
             <div x-data="{ isUpdate: @entangle('isUpdate') }" wire:ignore class="input-group-item select2-container">
                 <span class="input-label">Tim</span>
-                <select x-data="{
-                        item: @entangle('timsetupid')}
+                <select x-bind:style="{'max-width': selectedOption ? 'calc(100% - 20px)' : '100%'}
+                        " x-data="{item: @entangle('timsetupid')}
                         " x-init="$($refs.select2ref).select2();
                             $($refs.select2ref).on('change', function(){$wire.set('timsetupid', $(this).val());});
                         " x-effect="
                             $refs.select2ref.value = item;
                             $($refs.select2ref).select2();
-                        " x-ref="select2ref" :disabled="isUpdate">
+                        " x-ref="select2ref" :disabled="isUpdate" class="form-select input-group-item">
                     <option value=""></option>
                     @foreach ($dbTimsetups as $dbTimsetup)
                     <option value="{{ $dbTimsetup->id }}">{{ $dbTimsetup->joinTim->nama }} ({{ $dbTimsetup->joinTim->joinPt->nama }}) - {{ $dbTimsetup->joinKota->nama }}</option>
@@ -97,29 +97,45 @@
                 </select>
             </div>
 
-            <div class="input-group-item">
+            <div class="input-group-item" x-data="{ Nota: @entangle('nota') }">
                 <span class="input-label">Nota</span>
-                <input wire:model="nota" type="text" class="form-control" {{ $roles == 'LOCK' ? 'disabled' : '' }}>
+                <input type="text" inputmode="numeric" maxlength="15" class="form-control" x-model="Nota" x-on:input="formatNota($event)">
+                @error('nota')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Angsuran - Hari</span>
                 <input wire:model="angsuranhari" type="number" class="form-control">
+                @error('angsuranhari')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
+
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Angsuran - Periode</span>
                 <input wire:model="angsuranperiode" type="number" class="form-control">
+                @error('angsuranperiode')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Kecamatan</span>
                 <input wire:model="kecamatan" type="text" class="form-control">
+                @error('kecamatan')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Tgl Jual</span>
                 <input wire:model="tgljual" type="date" class="form-control">
+                @error('tgljual')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
         </div>
     </div>
@@ -130,18 +146,30 @@
             <div class="input-group-item">
                 <span class="input-label">Nama Customer</span>
                 <input wire:model="customernama" type="text" class="form-control">
+                @error('customernama')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
             <div class="input-group-item">
                 <span class="input-label">Alamat Customer</span>
                 <input wire:model="customeralamat" type="text" class="form-control">
+                @error('customeralamat')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
             <div class="input-group-item">
                 <span class="input-label">No.Telp Customer</span>
                 <input wire:model="customernotelp" type="text" class="form-control">
+                @error('customernotelp')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
             <div class="input-group-item">
                 <span class="input-label">Share Lokasi</span>
                 <input wire:model="shareloc" type="text" class="form-control">
+                @error('shareloc')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
         </div>
     </div>
@@ -151,27 +179,63 @@
         <div class="input-group">
             <div class="input-group-item">
                 <span class="input-label">Nama Sales</span>
-                <input wire:model="namasales" type="text" class="form-control">
+                <select wire:model="namasales" type="text" class="form-select">
+                    <option value=""></option>
+                    @if($dbSaless)
+                    @foreach ($dbSaless as $dbSales)
+                    <option value="{{ $dbSales->nama }}">{{ $dbSales->nama }}</option>
+                    @endforeach
+                    @endif
+                </select>
+                @error('namasales')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Nama Lock</span>
                 <input wire:model="namalock" type="text" class="form-control">
+                @error('namalock')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Nama Driver</span>
-                <input wire:model="namadriver" type="text" class="form-control">
+                <select wire:model="namadriver" type="text" class="form-select">
+                    <option value=""></option>
+                    @if($dbDrivers)
+                    @foreach ($dbDrivers as $dbDriver)
+                    <option value="{{ $dbDriver->nama }}">{{ $dbDriver->nama }}</option>
+                    @endforeach
+                    @endif
+                </select>
+                @error('namadriver')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Penanggung jawab Kolektor Nota</span>
-                <input wire:model="pjkolektornota" type="text" class="form-control">
+                <select wire:model="pjkolektornota" type="text" class="form-select">
+                    <option value=""></option>
+                    @if($dbDrivers)
+                    @foreach ($dbKolektors as $dbKolektor)
+                    <option value="{{ $dbKolektor->nama }}">{{ $dbKolektor->nama }}</option>
+                    @endforeach
+                    @endif
+                </select>
+                @error('pjkolektornota')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="input-group-item">
                 <span class="input-label">Penanggung jawab Admin Nota</span>
                 <input wire:model="pjadminnota" type="text" class="form-control">
+                @error('pjadminnota')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
             </div>
         </div>
     </div>
@@ -183,6 +247,9 @@
                 <span class="input-label" for="inputGroupKTP">Foto KTP</span>
                 <input wire:model="fotoktp" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupKTP">
                 <div wire:loading wire:target="fotoktp">Uploading...</div>
+                @error('fotoktp')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
                 @if (is_string($fotoktp) && strlen($fotoktp) > 0)
                 <img src="{{ asset('storage/' . $fotoktp) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
                 @else
@@ -195,6 +262,9 @@
                 <span class="input-label" for="inputGroupNota">Foto Nota</span>
                 <input wire:model="fotonota" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNota">
                 <div wire:loading wire:target="fotonota">Uploading...</div>
+                @error('fotonota')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
                 @if (is_string($fotonota) && strlen($fotonota) > 0)
                 <img src="{{ asset('storage/' . $fotonota) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
                 @else
@@ -207,6 +277,9 @@
                 <span class="input-label" for="inputGroupNota">Foto Rekap Sales</span>
                 <input wire:model="fotonotarekap" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNotaRekap">
                 <div wire:loading wire:target="fotonotarekap">Uploading...</div>
+                @error('fotonotarekap')
+                <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                @enderror
                 @if (is_string($fotonotarekap) && strlen($fotonotarekap) > 0)
                 <img src="{{ asset('storage/' . $fotonotarekap) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
                 @else
@@ -216,12 +289,20 @@
                 @endif
             </div>
         </div>
+        <div class="input-group">
+            <span class="input-label">Catatan</span>
+            <input wire:model="catatan" type="text" class="form-control">
+            @error('catatan')
+            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+            @enderror
+        </div>
         @if ($isUpdate)
         <button wire:click="update" type="button" class="btn btn-primary mt-1">Update</button>
         @else
         <button wire:click="create" type="button" class="btn btn-primary mt-1">Simpan</button>
         @endif
     </div>
+
 
     <!-- detail entry paket -->
     <div class="container col-10" style="padding: 3px;">
@@ -301,7 +382,7 @@
                 @endforeach
             </tbody>
         </table>
-        <a typ="button" class="badge bg-warning bg-sm" style="text-decoration: none;" href="{{ route('penjualanvalidasi') }}"><i class="bi bi-arrow-left-circle"></i> Kembali</a>
+        <a typ="button" class="badge bg-warning bg-sm" style="text-decoration: none;" href="{{ route('penjualanvalidasi', ['tglawal' => request('tglawal'), 'tglakhir' => request('tglakhir'), 'cari' => request('cari')]) }}"><i class="bi bi-arrow-left-circle"></i> Kembali</a>
     </div>
 
     <!-- modal delete paket -->

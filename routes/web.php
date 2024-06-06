@@ -30,6 +30,7 @@ Route::middleware(['checkroles:SUPERVISOR'])->group(function () {
 
 Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,ADMIN 2'])->group(function () {
     Route::get('/main/penjualan', App\Livewire\Main\Penjualan\Index::class)->name('penjualan');
+    Route::get('/main/penjualanret', App\Livewire\Main\Penjualan\Retur::class)->name('penjualanret');
 });
 
 Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,LOCK'])->group(function () {

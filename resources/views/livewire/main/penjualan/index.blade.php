@@ -9,7 +9,6 @@
         @media (max-width: 768px) {
             .input-group-item {
                 flex: 1 1 100%;
-                /* Item akan menjadi satu baris pada layar kecil */
             }
         }
 
@@ -114,17 +113,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @if ($jumlahTotal===0)
-                        Tidak bisa validasi, jumlah total penjualan = 0
-                        @else
+                        Jumlah total penjualan = {{ $jumlahTotal }} <br>
                         @if (!empty($validMessage))
                         {{ $validMessage }}
-                        @endif
+                        @else
                         Anda yakin validasi Nota: {{ $nota }}?
                         @endif
                     </div>
                     <div class="modal-footer">
-                        @if (($jumlahTotal===0) or !empty($validMessage))
+                        @if (!empty($validMessage))
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                         @else
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

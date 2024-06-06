@@ -3,9 +3,9 @@
 namespace App\Livewire\Panel\Barang;
 
 use App\Models\Barang;
-use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithPagination;
+use PDF;
 
 class Index extends Component {
     use WithPagination;
@@ -51,6 +51,23 @@ class Index extends Component {
         $this->tmpId = null;
     }
 
+    public function exportPDF() {
+        $title = 'Master Barang';
+        $data = Barang::get();
+
+        $pdf = PDF::loadView(
+            'livewire/pdf/barangpdf',
+            [
+                'title' => $title,
+                'datas' => $data
+            ]
+        );
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
+        }, 'document.pdf');
+    }
+
     public function getDataBarang($id) {
         if ($id != "") {
             $data = Barang::find($id);
@@ -64,7 +81,6 @@ class Index extends Component {
     }
 
     public function create() {
-
         $rules = ([
             'nama' => ['required', 'min:3', 'max:255', 'unique:barangs'],
             'kode' => ['string', 'min:2', 'max:25'],

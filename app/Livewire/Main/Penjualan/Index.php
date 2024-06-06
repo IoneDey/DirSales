@@ -35,6 +35,8 @@ class Index extends Component {
     public $namadriver;
     public $pjkolektornota;
     public $pjadminnota;
+    public $fotoktp;
+    public $fotonota;
     public $fotonotarekap;
 
     public $penjualanhdid;
@@ -63,6 +65,10 @@ class Index extends Component {
     public $dbDrivers;
     public $dbKolektors;
 
+    //rules khusus
+    public $setisinamalock = true;
+    public $setisifotonota = true;
+    public $setisifotonotarekap = true;
 
     public function resetErrors() {
         $this->resetErrorBag();
@@ -128,16 +134,24 @@ class Index extends Component {
         $this->angsuranhari = ($dbTimsetuppaket->angsuranhari ?? '');
         $this->angsuranperiode = ($dbTimsetuppaket->angsuranperiode ?? '');
 
-
         if ($dbTimsetuppaket) {
             $this->dbSales = Sales::where('ptid', $dbTimsetuppaket->jointim->ptid)->get();
+            $this->setisinamalock = (bool) $dbTimsetuppaket->jointim->setisinamalock;
+            $this->setisifotonota = (bool) $dbTimsetuppaket->jointim->setisifotonota;
+            $this->setisifotonotarekap = (bool) $dbTimsetuppaket->jointim->setisifotonotarekap;
         }
     }
 
     public function create() {
         $rules = [
             'timsetupid' => 'required',
-            'nota' => 'required|string|min:15|max:15|unique:penjualanhds',
+            'nota' => [
+                'required', 'min:15', 'max:15',
+                Rule::unique('penjualanhds')->where(function ($query) {
+                    return $query->where('nota', $this->nota)
+                        ->where('timsetupid', $this->timsetupid);
+                })
+            ],
             'kecamatan' => 'string|max:150',
             'tgljual' => 'required|date',
             'angsuranhari' => 'required|numeric|min:1|max:10',
@@ -147,14 +161,37 @@ class Index extends Component {
             'customernotelp' => 'string|min:10',
             'shareloc' => 'string|max:150',
             'namasales' => 'required|string|max:150',
-            'namalock' => 'required|string|max:150',
             'namadriver' => 'required|string|max:150',
             'pjkolektornota' => 'required|string|max:150',
             'pjadminnota' => 'required|string|max:150',
-            'fotonotarekap' => 'required|sometimes|image|max:1024',
+            'fotoktp' => 'sometimes|image|max:1024',
         ];
 
+        if ($this->setisinamalock) {
+            $rules['namalock'] = ['required', 'string', 'max:150'];
+        } else {
+            $rules['namalock'] = ['string', 'max:150'];
+        }
+
+        if ($this->setisifotonota) {
+            $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
+        } else {
+            $rules['fotonota'] = ['sometimes', 'image', 'max:1024'];
+        }
+
+        if ($this->setisifotonotarekap) {
+            $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+        } else {
+            $rules['fotonotarekap'] = ['sometimes', 'image', 'max:1024'];
+        }
+
         $validated = $this->validate($rules);
+        if ($this->fotoktp) {
+            $validated['fotoktp'] = $this->fotoktp->storeAs('uploads', 'ktp-' . $this->nota . '.jpg', 'public');
+        }
+        if ($this->fotonota) {
+            $validated['fotonota'] = $this->fotonota->storeAs('uploads', 'nota-' . $this->nota . '.jpg', 'public');
+        }
         if ($this->fotonotarekap) {
             $validated['fotonotarekap'] = $this->fotonotarekap->storeAs('uploads', 'notarekap-' . $this->nota . '.jpg', 'public');
         }
@@ -165,7 +202,9 @@ class Index extends Component {
         $msg = 'Tambah data ' . $this->nota . ' berhasil.';
         session()->flash('ok', $msg);
 
-        $this->penjualanhdid = Penjualanhd::where('nota', $this->nota)->pluck('id')->first();
+        $this->penjualanhdid = Penjualanhd::where('nota', $this->nota)
+            ->where('timsetupid', $this->timsetupid)
+            ->pluck('id')->first();
         $this->isUpdate = true;
     }
 
@@ -187,24 +226,64 @@ class Index extends Component {
                 'angsuranhari' => 'required|numeric|min:1|max:10',
                 'angsuranperiode' => 'required|numeric|min:1|max:10',
                 'customernama' => 'required|string|max:150',
-                'customeralamat' => 'required|string|max:255',
+                'customeralamat' => 'string|max:255',
                 'customernotelp' => 'string|min:10',
                 'shareloc' => 'string|max:150',
                 'namasales' => 'required|string|max:150',
-                'namalock' => 'required|string|max:150',
                 'namadriver' => 'required|string|max:150',
                 'pjkolektornota' => 'required|string|max:150',
                 'pjadminnota' => 'required|string|max:150',
             ];
 
             if ($this->nota != $data->nota) {
-                $rules['nota'] = ['required', 'string', 'min:15', 'max:15', 'unique:penjualanhds'];
+                $rules['nota'] = [
+                    'required', 'min:15', 'max:15',
+                    Rule::unique('penjualanhds')->where(function ($query) {
+                        return $query->where('nota', $this->nota)
+                            ->where('timsetupid', $this->timsetupid);
+                    })
+                ];
+            }
+
+            if ($this->setisinamalock) {
+                $rules['namalock'] = ['required', 'string', 'max:150'];
+            } else {
+                $rules['namalock'] = ['string', 'max:150'];
+            }
+
+            if ($this->fotoktp != $data->fotoktp) {
+                $rules['fotoktp'] = ['sometimes', 'image', 'max:1024'];
+            }
+
+            if ($this->fotonota != $data->fotonota) {
+                if ($this->setisifotonota) {
+                    $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
+                } else {
+                    $rules['fotonota'] = ['sometimes', 'image', 'max:1024'];
+                }
             }
             if ($this->fotonotarekap != $data->fotonotarekap) {
-                $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+                if ($this->setisifotonotarekap) {
+                    $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
+                } else {
+                    $rules['fotonotarekap'] = ['sometimes', 'image', 'max:1024'];
+                }
             }
 
             $validated = $this->validate($rules);
+
+            if (!is_string($this->fotoktp)) {
+                if ($this->fotoktp) {
+                    $validated['fotoktp'] = $this->fotoktp->storeAs('uploads', 'ktp-' . $this->nota . '.jpg', 'public');
+                }
+            }
+
+            if (!is_string($this->fotonota)) {
+                if ($this->fotonota) {
+                    $validated['fotonota'] = $this->fotonota->storeAs('uploads', 'nota-' . $this->nota . '.jpg', 'public');
+                }
+            }
+
             if (!is_string($this->fotonotarekap)) {
                 if ($this->fotonotarekap) {
                     $validated['fotonotarekap'] = $this->fotonotarekap->storeAs('uploads', 'notarekap-' . $this->nota . '.jpg', 'public');
@@ -268,6 +347,8 @@ class Index extends Component {
         $this->namadriver = "";
         $this->pjkolektornota = "";
         $this->pjadminnota = "";
+        $this->fotoktp = "";
+        $this->fotonota = "";
         $this->fotonotarekap = "";
         $this->penjualanhdid = "";
     }
@@ -276,6 +357,7 @@ class Index extends Component {
         $data = Penjualanhd::find($id);
         $this->penjualanhdid = $data->id;
         $this->timsetupid = $data->timsetupid;
+        $this->updatedtimsetupid($this->timsetupid);
         $this->nota = $data->nota;
         $this->kecamatan = $data->kecamatan;
         $this->tgljual = $data->tgljual;
@@ -290,6 +372,8 @@ class Index extends Component {
         $this->namadriver = $data->namadriver;
         $this->pjkolektornota = $data->pjkolektornota;
         $this->pjadminnota = $data->pjadminnota;
+        $this->fotoktp = $data->fotoktp;
+        $this->fotonota = $data->fotonota;
         $this->fotonotarekap = $data->fotonotarekap;
 
         $this->timsetupnama = $data->joinTimSetup->joinTim->nama;

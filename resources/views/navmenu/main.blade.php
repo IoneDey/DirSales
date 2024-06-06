@@ -19,7 +19,7 @@
                 <!-- menu penjualan -->
                 @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','ADMIN 2','LOCK']))
                 @php
-                $isActivePenjualan = Request::is('main/penjualan') || Request::is('main/penjualanentry') || Request::is('main/penjualanvalidasi') || Request::is('main/penjualanreport');
+                $isActivePenjualan = Request::is('main/penjualan') || Request::is('main/penjualanret') || Request::is('main/penjualanvalidasi') || Request::is('main/penjualanreport');
                 @endphp
                 <a class="{{ $isActivePenjualan ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsPenjualan" aria-expanded="false" aria-controls="collapseLayoutsPenjualan">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
@@ -31,6 +31,7 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','ADMIN 2']))
                         <a class="{{ Request::is('main/penjualan') ? 'active' : '' }} nav-link" href="{{ route('penjualan') }}">Entry Penjualan</a>
+                        <a class="{{ Request::is('main/penjualanret') ? 'active' : '' }} nav-link" href="{{ route('penjualanret') }}">Entry Retur Penjualan</a>
                         @endif
                         @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','LOCK']))
                         <a class="{{ Request::is('main/penjualanvalidasi') ? 'active' : '' }} nav-link" href="{{ route('penjualanvalidasi') }}">Validasi Penjualan</a>

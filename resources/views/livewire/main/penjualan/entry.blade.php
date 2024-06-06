@@ -20,16 +20,9 @@
 <div class="container col-10" style="padding: 3px; margin-bottom: 5px;">
     <div class="input-group">
         <div class="input-group-item">
-            <div x-data="{ isUpdate: @entangle('isUpdate') }" wire:ignore class="select2-container">
+            <div x-data="{ isUpdate: @entangle('isUpdate') }" wire:ignore>
                 <span class="input-label">Tim</span>
-                <select x-data="{
-                        item: @entangle('timsetupid')}
-                        " x-init="$($refs.select2ref).select2();
-                            $($refs.select2ref).on('change', function(){$wire.set('timsetupid', $(this).val());});
-                        " x-effect="
-                            $refs.select2ref.value = item;
-                            $($refs.select2ref).select2();
-                        " x-ref="select2ref" :disabled="isUpdate">
+                <select x-data="{item: @entangle('timsetupid')}" x-init="$($refs.select2ref).select2(); $($refs.select2ref).on('change', function(){$wire.set('timsetupid', $(this).val());});" x-effect="$refs.select2ref.value = item; $($refs.select2ref).select2();" x-ref="select2ref" :disabled="isUpdate" class="form-select input-group-item">
                     <option value=""></option>
                     @foreach ($dbTimsetups as $dbTimsetup)
                     <option value="{{ $dbTimsetup->id }}">{{ $dbTimsetup->joinTim->nama }} ({{ $dbTimsetup->joinTim->joinPt->nama }}) - {{ $dbTimsetup->joinKota->nama }}</option>
@@ -189,6 +182,36 @@
 <div class="container col-10" style="padding: 3px; margin-bottom: 0px;">
     <div class="input-group">
         <div class="input-group-item mb-0">
+            <span class="input-label" for="inputGroupKTP">Foto KTP</span>
+            <input wire:model="fotoktp" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupKTP">
+            <div wire:loading wire:target="fotoktp">Uploading...</div>
+            @error('fotoktp')
+            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+            @enderror
+            @if (is_string($fotoktp) && strlen($fotoktp) > 0)
+            <img src="{{ asset('storage/' . $fotoktp) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @else
+            @if ($fotoktp)
+            <img src="{{ $fotoktp->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @endif
+            @endif
+        </div>
+        <div class="input-group-item mb-0">
+            <span class="input-label" for="inputGroupNota">Foto Nota</span>
+            <input wire:model="fotonota" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNota">
+            <div wire:loading wire:target="fotonota">Uploading...</div>
+            @error('fotonota')
+            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+            @enderror
+            @if (is_string($fotonota) && strlen($fotonota) > 0)
+            <img src="{{ asset('storage/' . $fotonota) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @else
+            @if ($fotonota)
+            <img src="{{ $fotonota->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @endif
+            @endif
+        </div>
+        <div class="input-group-item mb-0">
             <span class="input-label" for="inputGroupNota">Foto Rekap Sales</span>
             <input wire:model="fotonotarekap" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupNotaRekap">
             @error('fotonotarekap')
@@ -303,31 +326,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function formatNota(event) {
-        let input = event.target;
-        let nota = input.value.replace(/\D/g, '');
-        let formattedNota = '';
-
-        if (nota.length > 2) {
-            formattedNota += nota.substring(0, 2) + '-';
-        }
-
-        if (nota.length > 4) {
-            formattedNota += nota.substring(2, 4) + '-';
-        }
-
-        if (nota.length > 8) {
-            formattedNota += nota.substring(4, 8) + '-';
-        }
-
-        if (nota.length > 12) {
-            formattedNota += nota.substring(8, 12);
-        }
-
-        input.value = formattedNota;
-    }
-
-    document.getElementById('nota').addEventListener('input', formatNota);
-</script>

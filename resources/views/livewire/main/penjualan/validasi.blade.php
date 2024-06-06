@@ -1,46 +1,14 @@
 <div>
     <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/style_alert_center_close.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/styleSelect2.css') }}" rel="stylesheet" />
+
     <style>
         @media (max-width: 768px) {
             .input-group-item {
                 flex: 1 1 100%;
                 /* Item akan menjadi satu baris pada layar kecil */
             }
-        }
-
-        .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1px;
-            padding: 1px;
-            /* background-color: #f0f0f0; */
-            box-shadow: none !important;
-        }
-
-        .input-group-item {
-            flex: 1 1 300px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: none !important;
-            border-color: black;
-        }
-
-        .input-label {
-            margin-bottom: 1px;
-            font-weight: normal;
-        }
-
-        input[type="date"] {
-            width: 250px;
-        }
-
-        .input-group input[type="date"] {
-            padding: 1px;
-        }
-
-        .btn-primary {
-            max-width: 150px;
         }
 
         .custom-divider {
@@ -50,9 +18,30 @@
             margin: 20px 0;
         }
 
+        /* untuk tabel scroll */
         table th,
         table td {
             white-space: nowrap;
+
+        }
+
+        .table-responsive {
+            max-height: 55vh;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        th {
+            position: sticky;
+            top: 0 !important;
+            background-color: #f8f9fa !important;
+            z-index: 10;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        td {
+            position: relative !important;
+            z-index: 1 !important;
         }
     </style>
 
@@ -89,7 +78,43 @@
         <h2 class="text-center">{{ $title }}</h2>
 
         <div class="container">
-            <div style="overflow-x: 100vh;">
+
+            <div class="row justify-content-center">
+                <div class="col-md-3 col-12 mb-1 p-1 g-0">
+                    <div class="input-group">
+                        <span class="input-group-text">Tgl Awal</span>
+                        <input wire:model.live.debounce.500ms="tglAwal" type="date" class="form-control" aria-label="Tgl Awal">
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-12 mb-1 p-1 g-0">
+                    <div class="input-group">
+                        <span class="input-group-text">Tgl Akhir</span>
+                        <input wire:model.live.debounce.500ms="tglAkhir" type="date" class="form-control" aria-label="Tgl Akhir">
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-12 mb-1 p-1 g-0">
+                    <div class="d-flex align-items-left" x-data="{ isUpdate: @entangle('isUpdate') }" wire:ignore>
+                        <span class="me-0 input-group-text" style="padding: 0.375rem 0.5rem; border-radius: 0.25rem 0 0 0; margin-right: -0.5rem; height: 38px;">Tim</span>
+                        <select x-data="{item: @entangle('timsetupid')}" x-init="$($refs.select2ref).select2(); $($refs.select2ref).on('change', function(){$wire.set('timsetupid', $(this).val());});" x-effect="$refs.select2ref.value = item; $($refs.select2ref).select2();" x-ref="select2ref" :disabled="isUpdate" class="form-select" aria-label="Tim">
+                            <option value='Semua'>Semua</option>
+                            @foreach ($dbTimsetups as $dbTimsetup)
+                            <option value="{{ $dbTimsetup->id }}">{{ $dbTimsetup->joinTim->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('timsetupid')
+                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+
+            <div class="col-12 mt-1 mb-1">
+                <input class="border rounded" wire:model.live.debounce.500ms="cari" type="text" id="cari" placeholder="cari nota/nama/no.telp ....">
+            </div>
+            <div class="table-responsive">
                 <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                     <thead>
                         <tr>
@@ -122,9 +147,9 @@
                         @foreach ($penjualanhds as $penjualanhd)
                         <tr>
                             <td>{{ $penjualanhd->joinTimSetup->jointim->nama }}</td>
+                            <td>{{ $penjualanhd->nota }}</td>
                             <td>{{ $penjualanhd->joinTimSetup->joinkota->nama }}</td>
                             <td>{{ $penjualanhd->kecamatan }}</td>
-                            <td>{{ $penjualanhd->nota }}</td>
                             <td>{{ $penjualanhd->tgljual }}</td>
                             <td>{{ $penjualanhd->customernama }}</td>
                             <td>{{ $penjualanhd->customeralamat }}</td>
@@ -155,8 +180,10 @@
                             <td>{{ $penjualanhd->joinUser->name }}</td>
                             <td>{{ $penjualanhd->updated_at }}</td>
                             <td>
-                                <a type="button" class="badge bg-warning bg-sm" href="{{ route('penjualanvalidasiedit', ['id' => $penjualanhd->id]) }}" title="Edit"><i class="bi bi-pencil-fill"></i></a>
-                                <a wire:click="cekValidasi('{{ $penjualanhd->nota }}')" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid" title="Validasi"><i class="bi bi-lock"></i></a>
+                                <a type="button" class="badge bg-warning bg-sm" href="{{ route('penjualanvalidasiedit', ['id' => $penjualanhd->id, 'tglAwal' => $tglAwal, 'tglAkhir' => $tglAkhir, 'cari' => $cari]) }}" title="Edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a wire:click="cekValidasi('{{ $penjualanhd->timsetupid }}','{{ $penjualanhd->nota }}')" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid" title="Validasi"><i class="bi bi-lock"></i></a>
                             </td>
                         </tr>
                         @endforeach
@@ -189,6 +216,7 @@
                     </tfoot>
                 </table>
             </div>
+            {{ $penjualanhds->links() }}
         </div>
 
         <!-- test wa dan spreadsheet -->

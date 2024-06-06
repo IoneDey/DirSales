@@ -47,7 +47,7 @@ class Login extends Component {
             $this->timerNotLogin = 0;
             $throttleKey = $this->throttlekey();
             Ratelimiter::hit($throttleKey);
-            if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
+            if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
                 $this->timerStart = true;
                 throw ValidationException::withMessages([
                     'username' => 'Anda telah mencoba login terlalu banyak.'

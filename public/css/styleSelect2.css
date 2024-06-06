@@ -1,45 +1,85 @@
 .select2-container {
-    width: 100% !important;
     padding: 0;
 }
 
 .select2-container .select2-selection--single {
     height: calc(2.25rem + 2px);
     border-radius: 0.35rem;
+    width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .select2-container .select2-selection--single .select2-selection__arrow {
     height: calc(2.25rem + 2px);
     right: 10px;
     top: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 
 .select2-results__option {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%;
 }
 
 .select2-container .select2-selection--single .select2-selection__rendered {
-    line-height: calc(2.25rem + 2px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: calc(100% - 30px);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(100% - 20px);
+    line-height: calc(2.25rem + 2px);
 }
 
 
-/* .select2-container--focus .select2-selection--single,
-.select2-container--closed .select2-selection--single,
-.select2-container--focus .select2-selection--single:focus,
-.select2-container--focus .select2-selection--single:active,
-.select2-container .select2-selection--single:focus,
-.select2-container .select2-selection--single:focus-within {
-    border-color: #ced4da !important;
-    outline: none !important;
-    box-shadow: none !important;
+
+/* ok */
+/* .select2-container .select2-selection--single {
+    height: 100%;
+    box-sizing: border-box;
 }
 
-.select2-container .select2-selection--single .select2-selection__rendered {
-    background-color: transparent !important;
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    height: calc(2.25rem + 2px);
+    border-radius: 0.35rem;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+}
+
+.form-select {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-item {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-label {
+    margin-bottom: 1px;
+    font-weight: normal;
+}
+
+.form-control, .form-select {
+    padding: 10px;
+    font-size: 1rem;
+    height: 38px;
+}
+
+@media (max-width: 768px) {
+    .input-group-item {
+        flex: 1 1 100%;
+    }
 } */

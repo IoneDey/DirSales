@@ -57,7 +57,7 @@
                                             $($refs.select2ref).on('change', function(){$wire.set('ptid', $(this).val());
                                         });" x-effect="
                                             $refs.select2ref.value = item;
-                                            $($refs.select2ref).select2();" x-ref="select2ref">
+                                            $($refs.select2ref).select2();" x-ref="select2ref" class="form-select input-group-item">
                                     <option value=""></option>
                                     @foreach ($dbPts as $dbPt)
                                     <option value={{ $dbPt->id }}>{{ $dbPt->nama }}</option>
@@ -69,6 +69,72 @@
                             @enderror
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-6 g-1">
+                            <span class="input-label">Setup Input Penjualan</span>
+                            <div class="form-control mb-1">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisinamalock" type="checkbox" id="setisinamalock" placeholder="" name="setisinamalock">
+                                    <span class="input-label">Nama Lock Wajib Diisi.</span>
+                                    @error('setisinamalock')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisifotonota" type="checkbox" value="false" id="setisifotonota" placeholder="" name="setisifotonota">
+                                    <span class="input-label">Foto Nota Wajib Diisi.</span>
+                                    @error('setisifotonota')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisifotonotarekap" type="checkbox" value="false" id="setisifotonotarekap" placeholder="" name="setisifotonotarekap">
+                                    <span class="input-label">Foto Rekap Sales Wajib Diisi.</span>
+                                    @error('setisifotonotarekap')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 g-1">
+                            <span class="input-label">Setup Input Validasi Penjualan</span>
+                            <div class="form-control mb-1">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisinamalockval" type="checkbox" id="setisinamalockval" placeholder="" name="setisinamalockval">
+                                    <span class="input-label">Nama Lock Wajib Diisi.</span>
+                                    @error('setisinamalockval')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisifotonotaval" type="checkbox" value="false" id="setisifotonotaval" placeholder="" name="setisifotonotaval">
+                                    <span class="input-label">Foto Nota Wajib Diisi.</span>
+                                    @error('setisifotonotaval')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" wire:model="setisifotonotarekapval" type="checkbox" value="false" id="setisifotonotarekapval" placeholder="" name="setisifotonotarekapval">
+                                    <span class="input-label">Foto Rekap Sales Wajib Diisi.</span>
+                                    @error('setisifotonotarekapval')
+                                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
                     @if ($isUpdate)
                     <button wire:click="update" wire:loading.attr="disabled" type="button" id="update" class="btn btn-primary">Update</button>
                     @else
@@ -90,6 +156,12 @@
                         <th>#</th>
                         <th class="sort @if ($sortColumn=='nama') {{ $sortDirection }} @endif" wire:click="sort('nama')">Nama</th>
                         <th class="sort @if ($sortColumn=='ptid') {{ $sortDirection }} @endif" wire:click="sort('ptid')">PT</th>
+                        <th>P1</th>
+                        <th>P2</th>
+                        <th>P3</th>
+                        <th>V1</th>
+                        <th>V2</th>
+                        <th>V3</th>
                         <th>Act</th>
                     </thead>
                     <tbody>
@@ -98,6 +170,12 @@
                             <td>{{ (($datas->currentPage()-1)*$datas->perPage()) + $loop->iteration }}</td>
                             <td>{{ $dbdata->nama }}</td>
                             <td>{{ $dbdata->joinPt->nama }}</td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisinamalock ? 'checked' : '' }}></td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisifotonota ? 'checked' : '' }}></td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisifotonotarekap ? 'checked' : '' }}></td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisinamalockval ? 'checked' : '' }}></td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisifotonotaval ? 'checked' : '' }}></td>
+                            <td class="rata-tengah"><input type="checkbox" disabled {{ $dbdata->setisifotonotarekapval ? 'checked' : '' }}></td>
                             <td>
                                 <a wire:click="edit({{ $dbdata->id }})" wire:loading.attr="disabled" type="button" class="badge bg-warning bg-sm" href="#top"><i class="bi bi-pencil-fill"></i></a>
                                 <a wire:click="confirmDelete({{ $dbdata->id }})" wire:loading.attr="disabled" class="badge bg-danger bg-sm" data-bs-toggle="modal" data-bs-target="#ModalDelete"><i class="bi bi-eraser"></i></a>

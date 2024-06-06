@@ -3,22 +3,39 @@
 namespace App\Livewire\Main\Penjualan;
 
 use App\Models\Penjualanhd;
+use App\Models\Timsetup;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Laporan extends Component {
+    use WithPagination;
     public $title = 'Laporan Penjualan';
     public $tglAwal;
     public $tglAkhir;
     public $isSpreadsheet;
 
-    public $status = true;
-    public $dbPenjualanhds;
+    public $status = 'Semua';
+    // public $dbPenjualanhds;
     public $nota;
+    public $timsetupid = 'Semua';
+
+    public $dbTimsetups;
 
     public $btnDisables = false;
+
+    //--cari + paginate
+    public $cari = '';
+    protected $paginationTheme = 'bootstrap';
+    public function paginationView() {
+        return 'vendor.livewire.bootstrap';
+    }
+    public function updatedcari() {
+        $this->resetPage();
+    }
+    //--end cari + paginate
 
     function esc_chars($input) {
         $special_chars = [
@@ -40,6 +57,7 @@ class Laporan extends Component {
     public function mount() {
         $this->tglAwal = date('Y-m-01'); // Mengambil tanggal pertama dari bulan ini
         $this->tglAkhir = date('Y-m-t'); // Mengambil tanggal terakhir dari bulan ini
+        $this->dbTimsetups = Timsetup::get();
     }
 
     public function updatedtglAwal() {
@@ -54,8 +72,14 @@ class Laporan extends Component {
         $this->refresh();
     }
 
-    public function confirmUploadToSpreadsheet($nota) {
+    public function updatedtimsetupid($id) {
+        $this->timsetupid = $id;
+        $this->refresh();
+    }
+
+    public function confirmUploadToSpreadsheet($timsetupid, $nota) {
         $this->nota = $nota;
+        $this->timsetupid = $timsetupid;
         $this->btnDisables = true;
     }
 
@@ -63,7 +87,7 @@ class Laporan extends Component {
         $this->btnDisables = false;
     }
 
-    public function dynamicSalesQueryPivot($nota) {
+    public function dynamicSalesQueryPivot($timsetupid, $nota) {
         // Initial query to set @sql variable to NULL
         $escNota = $this->esc_chars($nota);
         DB::statement("SET @sql = NULL");
@@ -93,6 +117,8 @@ class Laporan extends Component {
                 a.nota,
                 a.namasales,
                 a.customeralamat,
+                a.angsuranperiode,
+                a.angsuranhari,
                 a.fotonota,
                 a.fotonotarekap,
                 \"\" AS kecamatan,
@@ -118,10 +144,10 @@ class Laporan extends Component {
             LEFT JOIN kotas AS g ON f.kotaid = g.id
             LEFT JOIN users AS h ON a.userid = h.id
             WHERE
-                a.nota = ''$escNota''
+                a.nota = ''$escNota'' and a.timsetupid=''$timsetupid''
             GROUP BY
                 a.created_at,a.tgljual,a.customernama,a.customernotelp,a.nota,
-                a.namasales,a.customeralamat,a.fotonota,a.fotonotarekap,
+                a.namasales,a.customeralamat,a.angsuranperiode,a.angsuranhari,a.fotonota,a.fotonotarekap,
                 g.nama,h.name,a.namalock,a.pjadminnota,a.pjkolektornota');";
 
         DB::statement($sql3);
@@ -162,6 +188,7 @@ class Laporan extends Component {
                 'a.angsuranperiode'
             )
             ->where('a.nota', '=', $this->nota)
+            ->where('a.timsetupid', '=', $this->timsetupid)
             ->get();
 
         $dataArr = [];
@@ -185,7 +212,7 @@ class Laporan extends Component {
         }
         $jsonData1 = json_encode($dataArr);
 
-        $results2 = $this->dynamicSalesQueryPivot($this->nota);
+        $results2 = $this->dynamicSalesQueryPivot($this->timsetupid, $this->nota);
         $jsonData2 = json_encode($results2);
 
         $combinedData = array(
@@ -220,27 +247,43 @@ class Laporan extends Component {
     }
 
     public function refresh() {
+
         $startDate = Carbon::parse($this->tglAwal)->format('Y-m-d');
         $endDate = Carbon::parse($this->tglAkhir)->format('Y-m-d');
 
-        $this->dbPenjualanhds = Penjualanhd::withSum('joinPenjualandt', DB::raw('jumlah + jumlahkoreksi'))
+        $dbPenjualanhds = Penjualanhd::withSum('joinPenjualandt', DB::raw('jumlah + jumlahkoreksi'))
             ->whereBetween('tgljual', [$startDate, $endDate])
-            ->where(($this->status == 1 ? DB::raw(true) : 'status'), $this->status)
-            ->get();
+            ->where(($this->status == 'Semua' ? DB::raw('\'Semua\'') : 'status'), $this->status)
+            ->where(($this->timsetupid == 'Semua' ? DB::raw('\'Semua\'') : 'penjualanhds.timsetupid'), $this->timsetupid)
+            ->where(function ($query) {
+                $query->where('penjualanhds.nota', 'like', '%' . $this->cari . '%')
+                    ->orWhere('penjualanhds.customernama', 'like', '%' . $this->cari . '%')
+                    ->orWhere('penjualanhds.customernotelp', 'like', '%' . $this->cari . '%');
+            })
+            ->paginate(25);
+
+        return $dbPenjualanhds;
     }
 
     public function render() {
-        $this->refresh();
+        $penjualanhds = $this->refresh();
+        $this->resetPage();
 
         $gTotalJual = Penjualanhd::selectRaw('sum((b.jumlah+b.jumlahkoreksi)*c.hargajual) as totaljual')
             ->leftJoin('penjualandts as b', 'penjualanhds.id', '=', 'b.penjualanhdid')
             ->leftJoin('timsetuppakets as c', 'c.id', '=', 'b.timsetuppaketid')
             ->whereBetween('tgljual', [$this->tglAwal, $this->tglAkhir])
-            ->where(($this->status == 1 ? DB::raw(true) : 'status'), $this->status)
+            ->where(($this->status == 'Semua' ? DB::raw('\'Semua\'') : 'status'), $this->status)
+            ->where(($this->timsetupid == 'Semua' ? DB::raw('\'Semua\'') : 'penjualanhds.timsetupid'), $this->timsetupid)
+            ->where(function ($query) {
+                $query->where('penjualanhds.nota', 'like', '%' . $this->cari . '%')
+                    ->orWhere('penjualanhds.customernama', 'like', '%' . $this->cari . '%')
+                    ->orWhere('penjualanhds.customernotelp', 'like', '%' . $this->cari . '%');
+            })
             ->first();
         return view('livewire.main.penjualan.laporan', [
-            'penjualanhds' => $this->dbPenjualanhds,
             'grandTotal' => $gTotalJual,
+            'penjualanhds' => $penjualanhds,
         ])->layout('layouts.app-layout', [
             'menu' => 'navmenu.main',
             'title' => $this->title,

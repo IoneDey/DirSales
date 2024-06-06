@@ -14,6 +14,10 @@ class Penjualanhd extends Model {
         return $this->belongsTo(User::class, 'userid', 'id');
     }
 
+    public function joinUserLock() {
+        return $this->belongsTo(User::class, 'userlockid', 'id');
+    }
+
     public function joinTimSetup() {
         return $this->belongsTo(Timsetup::class, 'timsetupid', 'id');
     }

@@ -17,6 +17,12 @@ class Index extends Component {
     public $nama;
     #[Rule('required')]
     public $ptid;
+    public $setisinamalock = false;
+    public $setisifotonota = false;
+    public $setisifotonotarekap = false;
+    public $setisinamalockval = false;
+    public $setisifotonotaval = false;
+    public $setisifotonotarekapval = false;
 
     //--end field + validation set
 
@@ -49,6 +55,12 @@ class Index extends Component {
     public function clear() {
         $this->nama = "";
         $this->ptid = "";
+        $this->setisinamalock = false;
+        $this->setisifotonota = false;
+        $this->setisifotonotarekap = false;
+        $this->setisinamalockval = false;
+        $this->setisifotonotaval = false;
+        $this->setisifotonotarekapval = false;
         $this->isUpdate = false;
         $this->tmpId = null;
     }
@@ -59,7 +71,12 @@ class Index extends Component {
 
             $this->nama = $data->nama;
             $this->ptid = $data->ptid;
-
+            $this->setisinamalock = (bool) $data->setisinamalock;
+            $this->setisifotonota = (bool) $data->setisifotonota;
+            $this->setisifotonotarekap = (bool) $data->setisifotonotarekap;
+            $this->setisinamalockval = (bool) $data->setisinamalockval;
+            $this->setisifotonotaval = (bool) $data->setisifotonotaval;
+            $this->setisifotonotarekapval = (bool) $data->setisifotonotarekapval;
             $this->isUpdate = true;
             $this->tmpId = $id;
         }
@@ -83,7 +100,13 @@ class Index extends Component {
                         ->where('ptid', $this->ptid);
                 })
             ],
-            'ptid' => ['required']
+            'ptid' => ['required'],
+            'setisinamalock' => ['boolean'],
+            'setisifotonota' => ['boolean'],
+            'setisifotonotarekap' => ['boolean'],
+            'setisinamalockval' => ['boolean'],
+            'setisifotonotaval' => ['boolean'],
+            'setisifotonotarekapval' => ['boolean'],
         ]);
 
         $validatedData = $this->validate($rules, $this->messages);
@@ -104,7 +127,13 @@ class Index extends Component {
             $data = Tim::find($this->tmpId);
 
             $rules = [
-                'ptid' => 'required',
+                'ptid' => ['required'],
+                'setisinamalock' => ['boolean'],
+                'setisifotonota' => ['boolean'],
+                'setisifotonotarekap' => ['boolean'],
+                'setisinamalockval' => ['boolean'],
+                'setisifotonotaval' => ['boolean'],
+                'setisifotonotarekapval' => ['boolean'],
             ];
 
             if ($this->nama != $data->nama) {
