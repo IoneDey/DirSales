@@ -26,9 +26,15 @@
         }
 
         .table-responsive {
-            max-height: 55vh;
+            max-height: 72vh;
             overflow-y: auto;
             overflow-x: auto;
+        }
+
+        @media (max-height: 800px) {
+            .table-responsive {
+                max-height: 58vh;
+            }
         }
 
         th {

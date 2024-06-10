@@ -18,17 +18,31 @@
             margin: 20px 0;
         }
 
+        .custom-hover:hover {
+            background-color: black !important;
+            color: white;
+        }
+
+        .custom-hover:hover svg {
+            fill: white;
+        }
+
         /* untuk tabel scroll */
         table th,
         table td {
             white-space: nowrap;
-
         }
 
         .table-responsive {
-            max-height: 45vh;
+            max-height: 66vh;
             overflow-y: auto;
             overflow-x: auto;
+        }
+
+        @media (max-height: 800px) {
+            .table-responsive {
+                max-height: 42vh;
+            }
         }
 
         th {
@@ -246,6 +260,23 @@
         {{ $penjualanhds->links() }}
     </div>
 
+    @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
+    <div class="container">
+        <div class="col-md-4 col-12 mb-1 p-1 g-0">
+            <div class="input-group">
+                <span class="input-group-text">Download Excel</span>
+                <select wire:model="exportmode" class="form-control" aria-label="Download">
+                    <option value='penjualan'>Penjualan</option>
+                    <option value="penjualanrekap">Penjualan Rekap</option>
+                </select>
+                <button wire:click="exportExcel" wire:loading.attr="disabled" class="badge bg-success bg-sm d-flex justify-content-center align-items-center custom-hover" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
+                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z" />
+                    </svg></button>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- modal upload spreadsheet -->
     <div wire:ignore.self class="modal fade" id="ModalUploadSheet" tabindex="-1" aria-labelledby="ModalUploadLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -265,11 +296,11 @@
         </div>
     </div>
 
-    <script>
+    <!-- <script>
         function toggleDropdown(element) {
             element.parentElement.classList.toggle('show');
         }
-    </script>
+    </script> -->
 </div>
 
 </div>

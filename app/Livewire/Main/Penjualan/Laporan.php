@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Main\Penjualan;
 
+use App\Exports\Penjualan;
+use App\Exports\Penjualanrekap;
 use App\Models\Penjualanhd;
 use App\Models\Timsetup;
 use Carbon\Carbon;
@@ -9,6 +11,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Laporan extends Component {
     use WithPagination;
@@ -25,6 +28,8 @@ class Laporan extends Component {
     public $dbTimsetups;
 
     public $btnDisables = false;
+
+    public $exportmode = 'penjualan';
 
     //--cari + paginate
     public $cari = '';
@@ -121,7 +126,7 @@ class Laporan extends Component {
                 a.angsuranhari,
                 a.fotonota,
                 a.fotonotarekap,
-                \"\" AS kecamatan,
+                a.kecamatan,
                 g.nama AS kota,
                 h.name as user,
                 a.namalock,
@@ -132,7 +137,7 @@ class Laporan extends Component {
                 FROM penjualanhds x
                 LEFT JOIN penjualandts y ON x.id=y.penjualanhdid
                 LEFT JOIN timsetuppakets z ON z.id=y.timsetuppaketid
-                WHERE x.nota=a.nota) as omset,
+                WHERE x.nota=a.nota and x.timsetupid=a.timsetupid) as omset,
                 sum((b.jumlah + b.jumlahkoreksi) * d.hpp) AS hpp,
                 ', @sql, '
             FROM penjualanhds AS a
@@ -148,7 +153,7 @@ class Laporan extends Component {
             GROUP BY
                 a.created_at,a.tgljual,a.customernama,a.customernotelp,a.nota,
                 a.namasales,a.customeralamat,a.angsuranperiode,a.angsuranhari,a.fotonota,a.fotonotarekap,
-                g.nama,h.name,a.namalock,a.pjadminnota,a.pjkolektornota');";
+                a.kecamatan,g.nama,h.name,a.namalock,a.pjadminnota,a.pjkolektornota');";
 
         DB::statement($sql3);
 
@@ -156,6 +161,7 @@ class Laporan extends Component {
         $finalSql = DB::select("SELECT @sql AS final_sql");
         $finalSql = $finalSql[0]->final_sql;
 
+        dd($finalSql);
         // Execute the final SQL query
         $results = DB::select($finalSql);
 
@@ -231,7 +237,7 @@ class Laporan extends Component {
 
             if ($body == 'Data spreadsheet berhasil disimpan.') {
                 try {
-                    Penjualanhd::updateOrCreate(['nota' => $this->nota], ['sheet' => 1]);
+                    Penjualanhd::updateOrCreate(['nota' => $this->nota, 'timsetupid' => $this->timsetupid], ['sheet' => 1]);
                 } catch (\Exception $e) {
                     session()->flash('error', 'Kesalahan simpan: ' . $e->getMessage());
                 }
@@ -265,9 +271,136 @@ class Laporan extends Component {
         return $dbPenjualanhds;
     }
 
+    public function exportExcel() {
+        if ($this->exportmode == 'penjualan') {
+            $query = DB::table('penjualanhds as a')
+                ->leftJoin('penjualandts as b', 'b.penjualanhdid', '=', 'a.id')
+                ->leftJoin('timsetuppakets as c', 'c.id', '=', 'b.timsetuppaketid')
+                ->leftJoin('timsetupbarangs as d', 'd.timsetuppaketid', '=', 'c.id')
+                ->leftJoin('barangs as e', 'e.id', '=', 'd.barangid')
+                ->leftJoin('timsetups as f', 'a.timsetupid', '=', 'f.id')
+                ->leftJoin('kotas as g', 'f.kotaid', '=', 'g.id')
+                ->select(
+                    'a.created_at',
+                    'a.tgljual',
+                    'a.customernama',
+                    DB::raw("if(IFNULL(e.kode,'')<>'',e.kode,e.nama) AS namabarang"),
+                    DB::raw('(b.jumlah + b.jumlahkoreksi) AS jumlah'),
+                    'a.customernotelp',
+                    'a.nota',
+                    'a.namasales',
+                    'a.customeralamat',
+                    DB::raw("CONCAT('" . asset('storage/') . "/',a.fotonota) as fotonota"),
+                    'a.fotonotarekap',
+                    DB::raw("'' AS kecamatan"),
+                    'g.nama AS kota',
+                    'a.angsuranperiode'
+                )
+                ->whereBetween('a.tgljual', [$this->tglAwal, $this->tglAkhir])
+                ->orderBy('a.tgljual', 'asc')
+                ->orderBy('a.nota', 'asc');
+
+            // Tambahkan klausa where untuk status jika tidak 'Semua'
+            if ($this->timsetupid !== 'Semua') {
+                $query->where('a.timsetupid', $this->timsetupid);
+            }
+
+            if ($this->status !== 'Semua') {
+                $query->where('a.status', $this->status);
+            }
+
+            $data = $query->get();
+            return Excel::download(new Penjualan($data), 'Penjualan.xlsx');
+            // return Excel::download(new Penjualan, 'Penjualan.xlsx');
+            // return Excel::download(new ExportUser, 'user.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+        }
+        if ($this->exportmode == 'penjualanrekap') {
+            $query = DB::table('penjualanhds as a')
+                ->select(
+                    'i.nama as Tim',
+                    'a.tgljual',
+                    'a.nota',
+                    'a.customernama',
+                    'a.customernotelp',
+                    'a.namasales',
+                    'a.customeralamat',
+                    'a.kecamatan',
+                    'a.shareloc',
+                    DB::raw('(
+                        SELECT SUM((y.jumlah + y.jumlahkoreksi) * z.hargajual)
+                        FROM penjualanhds x
+                        LEFT JOIN penjualandts y ON x.id = y.penjualanhdid
+                        LEFT JOIN timsetuppakets z ON z.id = y.timsetuppaketid
+                        WHERE x.nota = a.nota AND x.timsetupid = a.timsetupid
+                    ) AS omset'),
+                    DB::raw('SUM((b.jumlah + b.jumlahkoreksi) * d.hpp) AS hpp'),
+                    'a.angsuranperiode',
+                    'a.angsuranhari',
+                    DB::raw("SUM(CASE WHEN e.nama = 'Kerudung' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Kerudung"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Kipas' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Kipas"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Presto' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Presto"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Regulator Tectum' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS RegulatorTectum"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Seal Clamp' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS SealClamp"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Selang 4 Lapis' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Selang4Lapis"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Selang Baja' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS SelangBaja"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Teapot' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Teapot"),
+                    DB::raw("SUM(CASE WHEN e.nama = 'Wajan' THEN (b.jumlah + b.jumlahkoreksi) ELSE 0 END) AS Wajan"),
+                    'h.name as user',
+                    'a.namalock',
+                    'a.pjadminnota',
+                    'a.pjkolektornota'
+                )
+                ->leftJoin('penjualandts as b', 'b.penjualanhdid', '=', 'a.id')
+                ->leftJoin('timsetuppakets as c', 'c.id', '=', 'b.timsetuppaketid')
+                ->leftJoin('timsetupbarangs as d', 'd.timsetuppaketid', '=', 'c.id')
+                ->leftJoin('barangs as e', 'e.id', '=', 'd.barangid')
+                ->leftJoin('timsetups as f', 'a.timsetupid', '=', 'f.id')
+                ->leftJoin('kotas as g', 'f.kotaid', '=', 'g.id')
+                ->leftJoin('users as h', 'a.userid', '=', 'h.id')
+                ->leftJoin('tims as i', 'f.timid', '=', 'i.id')
+                ->whereBetween('a.tgljual', [$this->tglAwal, $this->tglAkhir])
+                ->groupBy(
+                    'a.created_at',
+                    'a.tgljual',
+                    'a.customernama',
+                    'a.customernotelp',
+                    'a.nota',
+                    'a.namasales',
+                    'a.customeralamat',
+                    'a.angsuranperiode',
+                    'a.angsuranhari',
+                    'a.fotonota',
+                    'a.fotonotarekap',
+                    'a.kecamatan',
+                    'g.nama',
+                    'h.name',
+                    'a.namalock',
+                    'a.pjadminnota',
+                    'a.pjkolektornota',
+                    'a.timsetupid',
+                    'a.status'
+                )
+                ->orderBy('i.nama', 'asc')
+                ->orderBy('a.tgljual', 'asc')
+                ->orderBy('a.nota', 'asc');
+
+            // Tambahkan klausa where untuk status jika tidak 'Semua'
+            if ($this->timsetupid !== 'Semua') {
+                $query->where('a.timsetupid', $this->timsetupid);
+            }
+
+            if ($this->status !== 'Semua') {
+                $query->where('a.status', $this->status);
+            }
+
+            $data = $query->get();
+            return Excel::download(new Penjualanrekap($data), 'RekapPenjualan.xlsx');
+        }
+    }
+
     public function render() {
         $penjualanhds = $this->refresh();
-        $this->resetPage();
+        // $this->resetPage();
 
         $gTotalJual = Penjualanhd::selectRaw('sum((b.jumlah+b.jumlahkoreksi)*c.hargajual) as totaljual')
             ->leftJoin('penjualandts as b', 'penjualanhds.id', '=', 'b.penjualanhdid')
@@ -341,6 +474,7 @@ class Laporan extends Component {
 //           rowData.push(obj.fotonotarekap);
 //           rowData.push(obj.kecamatan);
 //           rowData.push(obj.kota);
+//           rowData.push(obj.angsuranperiode);
 //           newData.push(rowData);
 //         }
 //         sheet1.getRange(sheet1.getLastRow() + 1, 1, newData.length, newData[0].length).setValues(newData);
@@ -353,26 +487,29 @@ class Laporan extends Component {
 //         var range2 = sheet2.getRange("A:A");
 //         var lock2 = range2.protect();
 //         lock2.addEditor(Session.getEffectiveUser());
-
-//         sheet2.getRange(lastRow, 1).setValue(data2[0].tgljual);
-//         sheet2.getRange(lastRow, 2).setValue(data2[0].nota);
-//         sheet2.getRange(lastRow, 3).setValue(data2[0].namasales);
-//         sheet2.getRange(lastRow, 4).setValue(data2[0].customernama);
-//         sheet2.getRange(lastRow, 5).setValue(data2[0].Kerudung);
-//         sheet2.getRange(lastRow, 6).setValue(data2[0].Kipas);
-//         sheet2.getRange(lastRow, 7).setValue(data2[0].Presto);
-//         sheet2.getRange(lastRow, 8).setValue(data2[0].RegulatorTectum);
-//         sheet2.getRange(lastRow, 9).setValue(data2[0].SealClamp);
-//         sheet2.getRange(lastRow, 10).setValue(data2[0].Selang4Lapis);
-//         sheet2.getRange(lastRow, 11).setValue(data2[0].SelangBaja);
-//         sheet2.getRange(lastRow, 12).setValue(data2[0].Teapot);
-//         sheet2.getRange(lastRow, 13).setValue(data2[0].Wajan);
-//         sheet2.getRange(lastRow, 14).setValue(data2[0].omset);
-//         sheet2.getRange(lastRow, 15).setValue(data2[0].hpp);
-//         sheet2.getRange(lastRow, 16).setValue(data2[0].user);
-//         sheet2.getRange(lastRow, 17).setValue(data2[0].namalock);
-//         sheet2.getRange(lastRow, 18).setValue(data2[0].pjadminnota);
-//         sheet2.getRange(lastRow, 19).setValue(data2[0].pjkolektornota);
+//         sheet2.getRange(lastRow, 1).setValue("");
+//         sheet2.getRange(lastRow, 2).setValue(data2[0].tgljual);
+//         sheet2.getRange(lastRow, 3).setValue(data2[0].nota);
+//         sheet2.getRange(lastRow, 4).setValue(data2[0].namasales);
+//         sheet2.getRange(lastRow, 5).setValue(data2[0].customernama);
+//         sheet2.getRange(lastRow, 6).setValue(data2[0].customeralamat);
+//         sheet2.getRange(lastRow, 7).setValue(data2[0].omset);
+//         sheet2.getRange(lastRow, 8).setValue(data2[0].hpp);
+//         sheet2.getRange(lastRow, 9).setValue(data2[0].angsuranperiode);
+//         sheet2.getRange(lastRow, 10).setValue(data2[0].angsuranhari);
+//         sheet2.getRange(lastRow, 11).setValue(data2[0].Kerudung);
+//         sheet2.getRange(lastRow, 12).setValue(data2[0].Kipas);
+//         sheet2.getRange(lastRow, 13).setValue(data2[0].Presto);
+//         sheet2.getRange(lastRow, 14).setValue(data2[0].RegulatorTectum);
+//         sheet2.getRange(lastRow, 15).setValue(data2[0].SealClamp);
+//         sheet2.getRange(lastRow, 16).setValue(data2[0].Selang4Lapis);
+//         sheet2.getRange(lastRow, 17).setValue(data2[0].SelangBaja);
+//         sheet2.getRange(lastRow, 18).setValue(data2[0].Teapot);
+//         sheet2.getRange(lastRow, 19).setValue(data2[0].Wajan);
+//         sheet2.getRange(lastRow, 20).setValue(data2[0].user);
+//         sheet2.getRange(lastRow, 21).setValue(data2[0].namalock);
+//         sheet2.getRange(lastRow, 22).setValue(data2[0].pjadminnota);
+//         sheet2.getRange(lastRow, 23).setValue(data2[0].pjkolektornota);
 
 //         lock2.remove();
 
