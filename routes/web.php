@@ -44,6 +44,7 @@ Route::middleware(['checkroles:SUPERVISOR,ADMIN 1,ADMIN 2,LOCK'])->group(functio
 
 Route::middleware(['checkroles:SUPERVISOR,PENAGIHAN'])->group(function () {
     Route::get('/main/penagihan', App\Livewire\Main\Penagihan\index::class)->name('penagihan');
+    Route::get('/main/penagihanreport', App\Livewire\Main\Penagihan\laporan::class)->name('penagihanreport');
 });
 
 route::middleware('auth')->group(function () {

@@ -157,7 +157,7 @@
             <span class="input-label">Penanggung jawab Kolektor Nota</span>
             <select wire:model="pjkolektornota" type="text" class="form-select">
                 <option value=""></option>
-                @if($dbDrivers)
+                @if($dbKolektors)
                 @foreach ($dbKolektors as $dbKolektor)
                 <option value="{{ $dbKolektor->nama }}">{{ $dbKolektor->nama }}</option>
                 @endforeach

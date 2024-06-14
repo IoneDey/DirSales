@@ -46,7 +46,7 @@
                 <!-- menu penagihan -->
                 @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','PENAGIHAN']))
                 @php
-                $isActivePenagihan = Request::is('main/penagihan');
+                $isActivePenagihan = Request::is('main/penagihan') || Request::is('main/penagihanreport');
                 @endphp
                 <a class="{{ $isActivePenagihan ? 'active' : '' }} nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsPenagihan" aria-expanded="false" aria-controls="collapseLayoutsPenagihan">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-file-invoice"></i></div> Penagihan
@@ -58,6 +58,7 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         @if (in_array((auth()->user()->roles ?? ''), ['SUPERVISOR','PENAGIHAN']))
                         <a class="{{ Request::is('main/penagihan') ? 'active' : '' }} nav-link" href="{{ route('penagihan') }}">Entry Penagihan</a>
+                        <a class="{{ Request::is('main/penagihanreport') ? 'active' : '' }} nav-link" href="{{ route('penagihanreport') }}">Laporan Penagihan</a>
                         @endif
                     </nav>
                 </div>

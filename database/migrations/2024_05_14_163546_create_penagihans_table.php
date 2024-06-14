@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->date('tglpenagihan');
             $table->string('namapenagih', 150);
             $table->double('jumlah', 15, 8);
+            $table->string('fotokwitansi')->nullable();
             $table->unsignedBigInteger('userid');
             $table->timestamps();
             $table->foreign('timsetupid')->references('id')->on('timsetups');

@@ -24,7 +24,7 @@ return new class extends Migration {
             $table->foreign('timsetuppaketid')->references('id')->on('timsetuppakets');
             $table->foreign('barangid')->references('id')->on('barangs');
             $table->foreign('userid')->references('id')->on('users');
-            $table->unique(['noretur', 'timsetupid', 'nota']);
+            $table->unique(['noretur', 'timsetupid', 'nota', 'timsetuppaketid', 'barangid']);
         });
     }
 

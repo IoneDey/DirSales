@@ -22,9 +22,9 @@ class Penjualanrekap implements FromCollection, WithHeadings {
             'Tim',
             'Tanggal Jual',
             'Nota',
+            'Nama Sales',
             'Nama Customer',
             'No Telp Customer',
-            'Nama Sales',
             'Alamat Customer',
             'Kecamatan',
             'Share Location',
@@ -44,7 +44,8 @@ class Penjualanrekap implements FromCollection, WithHeadings {
             'User',
             'Nama Lock',
             'PJ Admin Nota',
-            'PJ Kolektor Nota'
+            'PJ Kolektor Nota',
+            'Status Entry'
         ];
     }
 

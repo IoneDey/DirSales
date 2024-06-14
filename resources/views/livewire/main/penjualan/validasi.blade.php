@@ -124,6 +124,9 @@
                 <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                     <thead>
                         <tr>
+                            @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
+                            <th>Act</th>
+                            @endif
                             <th>Tim</th>
                             <th>Nota</th>
                             <th>Kota</th>
@@ -152,6 +155,14 @@
                     <tbody>
                         @foreach ($penjualanhds as $penjualanhd)
                         <tr>
+                            @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
+                            <td>
+                                <a type="button" class="badge bg-warning bg-sm" href="{{ route('penjualanvalidasiedit', ['id' => $penjualanhd->id, 'tglAwal' => $tglAwal, 'tglAkhir' => $tglAkhir, 'cari' => $cari]) }}" title="Edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a wire:click="cekValidasi('{{ $penjualanhd->timsetupid }}','{{ $penjualanhd->nota }}')" type="button" class="badge bg-success bg-sm" data-bs-toggle="modal" data-bs-target="#ModalValid" title="Validasi"><i class="bi bi-lock"></i></a>
+                            </td>
+                            @endif
                             <td>{{ $penjualanhd->joinTimSetup->jointim->nama }}</td>
                             <td>{{ $penjualanhd->nota }}</td>
                             <td>{{ $penjualanhd->joinTimSetup->joinkota->nama }}</td>

@@ -314,15 +314,16 @@ class Laporan extends Component {
             // return Excel::download(new Penjualan, 'Penjualan.xlsx');
             // return Excel::download(new ExportUser, 'user.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
         }
+
         if ($this->exportmode == 'penjualanrekap') {
             $query = DB::table('penjualanhds as a')
                 ->select(
                     'i.nama as Tim',
                     'a.tgljual',
                     'a.nota',
+                    'a.namasales',
                     'a.customernama',
                     'a.customernotelp',
-                    'a.namasales',
                     'a.customeralamat',
                     'a.kecamatan',
                     'a.shareloc',
@@ -348,7 +349,8 @@ class Laporan extends Component {
                     'h.name as user',
                     'a.namalock',
                     'a.pjadminnota',
-                    'a.pjkolektornota'
+                    'a.pjkolektornota',
+                    'a.status'
                 )
                 ->leftJoin('penjualandts as b', 'b.penjualanhdid', '=', 'a.id')
                 ->leftJoin('timsetuppakets as c', 'c.id', '=', 'b.timsetuppaketid')

@@ -85,6 +85,35 @@
             white-space: nowrap;
             /* Mencegah pembungkusan teks */
         }
+
+        /* untuk option agar tinggi sesuai dan ada border */
+        .form-check-inline-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            height: calc(1.5em + 0.75rem + 2px);
+            /* height of input field */
+        }
+
+        .form-check-inline-group .form-check {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .form-check-inline-group .form-check-input {
+            margin-top: 0;
+            margin-right: 5px;
+            /* add some space between radio button and label */
+        }
+
+        .form-control,
+        .form-check-inline-group {
+            height: calc(1.5em + 0.75rem + 2px);
+            /* height of input field */
+        }
     </style>
 
     @if ($errors->any())
@@ -139,7 +168,7 @@
                     </thead>
                     <tbody>
                         @foreach($results as $result)
-                        <tr wire:click="selectNota('{{ $result->nota }}')" style="cursor: pointer;">
+                        <tr wire:click="selectNota('{{ $result->timsetupid }}','{{ $result->nota }}')" style="cursor: pointer;">
                             <td>{{ $result->nota }}</td>
                             <td>{{ $result->customernama }}</td>
                             <td>{{ $result->customeralamat }}</td>
@@ -183,6 +212,37 @@
                 </div>
             </div>
         </div>
+
+        <!-- info angsuran -->
+        <div class="table-responsive input-group">
+            <div class="input-group-item">
+                <div>Informasi Angsuran</div>
+            </div>
+            <table class="table table-sm table-hover table-striped table-bordered border-primary-subtle mt-1" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Ke</th>
+                        <th>Tgl Angsuran</th>
+                        <th class="rata-kanan">Angsuran</th>
+                        <th>Tgl Penagihan</th>
+                        <th class="rata-kanan">Jml Penagihan</th>
+                        <th>Nama Penagih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($dbInfoAngsuran as $item)
+                    <tr>
+                        <td>{{ $item->angsuranke }}</td>
+                        <td>{{ $item->tglangsuran }}</td>
+                        <td class="rata-kanan">{{ number_format(($item->perangsuran ?? 0), 0, ',', '.') }}</td>
+                        <td>{{ $item->tglpenagihan }}</td>
+                        <td class="rata-kanan">{{ number_format(($item->jmlpenagihan ?? 0), 0, ',', '.') }}</td>
+                        <td>{{ $item->namapenagih }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div class="custom-divider mt-2 mb-3"></div>
@@ -191,19 +251,42 @@
         <div class="input-group">
             <div class="input-group p-0 g-0 m-0">
                 <div class="input-group-item">
-                    <span class="input-label" id="tglretur">Tgl Retur</span>
-                    <input wire:model="tglretur" type="date" class="form-control" disabled>
-                </div>
-                <div class="input-group-item">
                     <span class="input-label">Barang</span>
                     <input wire:model="namabarang" type="text" class="form-control" disabled>
+                    @error('namabarang')
+                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class="input-group-item">
                     <span class="input-label">Jumlah Max Retur</span>
                     <input wire:model="maxretur" type="text" class="form-control" disabled>
                 </div>
+                <div class="input-group-item">
+                    <span class="input-label">Jenis Retur</span>
+                    <div class="form-check-inline-group">
+                        <div class="form-check form-check-inline">
+                            <input wire:model="optJenisRetur" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Paket">
+                            <label class="form-check-label" for="inlineRadio1">Paket</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input wire:model="optJenisRetur" class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Ecer">
+                            <label class="form-check-label" for="inlineRadio2">Ecer</label>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+
             <div class="input-group p-0 g-0 m-0">
+                <div class="input-group-item">
+                    <span class="input-label" id="tglretur">Tgl Retur</span>
+                    <input wire:model="tglretur" type="date" class="form-control">
+                    @error('tglretur')
+                    <span style="font-size: smaller; color: red;">{{ $message }}</span>
+                    @enderror
+                </div>
+
                 <div class="input-group-item">
                     <span class="input-label">Qty Retur</span>
                     <input wire:model.live="qty" type="text" class="form-control">
