@@ -56,7 +56,9 @@ class Laporan extends Component {
             })
             ->leftJoin('timsetups as c', 'b.timsetupid', '=', 'c.id')
             ->leftJoin('tims as d', 'c.timid', '=', 'd.id')
+            ->leftJoin('users as e', 'a.userid', '=', 'e.id')
             ->select(
+                'a.id',
                 'a.timsetupid',
                 'd.nama as tim',
                 'a.created_at',
@@ -68,7 +70,8 @@ class Laporan extends Component {
                 'a.jumlahbayar',
                 'a.biayakomisi',
                 'a.biayaadmin',
-                DB::raw('a.jumlahbayar + a.biayakomisi + a.biayaadmin as total')
+                DB::raw('a.jumlahbayar + a.biayakomisi + a.biayaadmin as total'),
+                'e.name',
             )
             ->whereBetween('tglpenagihan', [$startDate, $endDate])
             ->where(function ($query) {

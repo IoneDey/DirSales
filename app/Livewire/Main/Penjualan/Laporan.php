@@ -9,6 +9,8 @@ use App\Models\Timsetup;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Request;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
@@ -399,6 +401,12 @@ class Laporan extends Component {
             return Excel::download(new Penjualanrekap($data), 'RekapPenjualan.xlsx');
         }
     }
+
+    // public function cetakinvoice($id) {
+    //     $url = route('cetakinvoice', ['id' => $id]);
+    //     return Redirect::to($url)->with('newTab', true);
+    //     // return redirect()->route('cetakinvoice', ['id' => $id]);
+    // }
 
     public function render() {
         $penjualanhds = $this->refresh();

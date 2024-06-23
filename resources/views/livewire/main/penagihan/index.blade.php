@@ -205,14 +205,14 @@
                     <div class="input-group-item" x-data="{ Jumlahbayar: @entangle('jumlahbayar') }">
                         <span class="input-label">Jumlah Pembayaran
                         </span>
-                        <input wire:model.live="jumlahbayar" type="text" inputmode="text" class="form-control text-right" x-model="jumlahbayar" x-on:input="formatAngka($event)">
+                        <input wire:model.live="jumlahbayar" type="text" inputmode="text" class="form-control text-right" x-model="Jumlahbayar" x-on:input="formatAngka($event)">
                         @error('jumlahbayar')
                         <span style="font-size: smaller; color: red;">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="input-group-item" x-data="{ Biayaadmin: @entangle('biayaadmin')}">
-                        <span class="input-label">Biaya Admin/ongkos koordinator (jika Transfer)</span>
+                        <span class="input-label">Biaya Admin/ongkos koordinator</span>
                         <input wire:model.live="biayaadmin" type="text" inputmode="text" class="form-control text-right" x-model="Biayaadmin" x-on:input="formatAngka($event)">
                         @error('biayaadmin')
                         <span style="font-size: smaller; color: red;">{{ $message }}</span>
@@ -221,12 +221,11 @@
 
                     <div class="input-group-item" x-data="{ Biayakomisi: @entangle('biayakomisi')}">
                         <span class="input-label">Potongan Komisi Penagihan Warga</span>
-                        <input wire:model.live="biayakomisi" type="text" inputmode="text" class="form-control text-right" x-model="Biayakomisi" x-bind:disabled="isDisabled" x-on:input="formatAngka($event)" {{ ($angsuranperiode ?? 0) == ($dbInfoSPK->angsuranke ?? 0) ? '' : 'disabled' }}>
+                        <input wire:model.live="biayakomisi" type="text" inputmode="text" class="form-control text-right" x-model="Biayakomisi" x-bind:disabled="isDisabled" x-on:input="formatAngka($event)" {{ (($angsuranperiode ?? 0) == ($dbInfoSPK->angsuranke ?? 0) || ($tglpenagihan >= $tglAngsuranAkhir)) ? '' : 'disabled' }}>
                         @error('biayakomisi')
                         <span style="font-size: smaller; color: red;">{{ $message }}</span>
                         @enderror
                     </div>
-
 
                     <div class="input-group-item" x-data="{ Jumlah: @entangle('jumlah') }">
                         <span class="input-label">Jumlah Total</span>
@@ -256,7 +255,11 @@
                     </div>
                 </div>
                 <div>
+                    @if ($isUpdate)
+                    <button wire:click="update" type="button" class="btn btn-primary mt-1">Update</button>
+                    @else
                     <button wire:click="create" type="button" class="btn btn-primary mt-1">Simpan</button>
+                    @endif
                     <button wire:click="clear" type="button" class="btn btn-secondary mt-1">Bersihkan</button>
                 </div>
             </div>

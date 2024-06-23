@@ -15,3 +15,15 @@
     transform: translateX(-50%);
     z-index: 9999;
 }
+
+.alert-success {
+    background-color: #d4edda; /* Warna hijau untuk pesan sukses */
+    border-color: #c3e6cb; /* Warna border yang cocok */
+    color: #155724; /* Warna teks yang cocok */
+}
+
+.alert-danger {
+    background-color: #f8d7da; /* Warna merah untuk pesan kesalahan */
+    border-color: #f5c6cb; /* Warna border yang cocok */
+    color: #721c24; /* Warna teks yang cocok */
+}

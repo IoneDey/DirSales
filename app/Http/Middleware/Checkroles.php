@@ -15,9 +15,7 @@ class Checkroles {
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next, ...$roles): Response {
-        //dd(Auth::user()->username, $roles);
         if (!in_array(Auth::user()->roles ?? '', $roles)) {
-            // Jika pengguna tidak memiliki role yang diperlukan, redirect ke halaman utama
             return redirect('/');
         }
 

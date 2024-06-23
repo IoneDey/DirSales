@@ -23,36 +23,43 @@ class Login extends Component {
         $this->resetErrorBag();
     }
 
-    public function countDown() {
-        if ($this->timerStart) {
-            $this->secondsRemaining = RateLimiter::availableIn($this->throttleKey());
-            if ($this->secondsRemaining == 0) {
-                $this->timerStart = false;
-                $this->resetErrors();
-            }
-        }
-        $this->timerNotLogin++;
-        if ($this->timerNotLogin > 120) {
-            $this->timerNotLogin = 0;
-            return redirect(route('main'));
-        }
-    }
+    // di view
+    // <script>
+    //     setInterval(() => {
+    //         $wire.call('countDown')
+    //     }, 1000)
+    // </script>
 
-    public function throttlekey() {
-        return Str::lower($this->username) . '|' . request()->ip();
-    }
+    // public function countDown() {
+    //     if ($this->timerStart) {
+    //         $this->secondsRemaining = RateLimiter::availableIn($this->throttleKey());
+    //         if ($this->secondsRemaining == 0) {
+    //             $this->timerStart = false;
+    //             $this->resetErrors();
+    //         }
+    //     }
+    //     $this->timerNotLogin++;
+    //     if ($this->timerNotLogin > 120) {
+    //         $this->timerNotLogin = 0;
+    //         return redirect(route('main'));
+    //     }
+    // }
+
+    // public function throttlekey() {
+    //     return Str::lower($this->username) . '|' . request()->ip();
+    // }
 
     public function login() {
         try {
-            $this->timerNotLogin = 0;
-            $throttleKey = $this->throttlekey();
-            Ratelimiter::hit($throttleKey);
-            if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
-                $this->timerStart = true;
-                throw ValidationException::withMessages([
-                    'username' => 'Anda telah mencoba login terlalu banyak.'
-                ]);
-            }
+            // $this->timerNotLogin = 0;
+            // $throttleKey = $this->throttlekey();
+            // Ratelimiter::hit($throttleKey);
+            // if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            //     $this->timerStart = true;
+            //     throw ValidationException::withMessages([
+            //         'username' => 'Anda telah mencoba login terlalu banyak.'
+            //     ]);
+            // }
 
             $credentials = $this->only('username', 'password');
             if (!Auth::attempt($credentials)) {
@@ -60,7 +67,7 @@ class Login extends Component {
                     'password' => 'Kombinasi nama pengguna dan kata sandi tidak valid.'
                 ]);
             }
-            RateLimiter::clear($throttleKey);
+            // RateLimiter::clear($throttleKey);
             return redirect(route('main'));
         } catch (ValidationException $e) {
             // Tangani pengecualian validasi

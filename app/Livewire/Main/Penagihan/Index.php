@@ -5,6 +5,7 @@ namespace App\Livewire\Main\Penagihan;
 use App\Models\Penagihan;
 use App\Models\Penjualanhd;
 use App\customClass\myNumber;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -14,6 +15,11 @@ class Index extends Component {
     use WithFileUploads;
     public $title = 'Penagihan';
 
+    //untuk edit piutang
+    public $id;
+    public $isUpdate = false;
+
+    // field
     public $timsetupid;
     public $nota = '';
     public $tim;
@@ -34,6 +40,7 @@ class Index extends Component {
     public $jmljual;
     public $angsuranperiode;
     public $angsuranhari;
+    public $tglAngsuranAkhir;
 
     // pencarian by nota
     public $isNota = false;
@@ -55,8 +62,32 @@ class Index extends Component {
         }
     }
 
-    public function mount() {
+    public function mount($id) {
+        $this->id = $id;
+        $this->title = 'Penagihan' . ($id == 0 ? '' : ' - Update');
+        if ($this->id != 0) {
+            $this->isUpdate = true;
+            $this->getDataPiutang($this->id);
+        }
+
         $this->dbKolektors = DB::select("SELECT nama FROM `karyawans` where void=0 and flagkolektor=1");
+    }
+
+    public function getDataPiutang($id) {
+        $data = Penagihan::find($id);
+        if ($data) {
+            $this->timsetupid = $data->timsetupid;
+            $this->nota = $data->nota;
+            $this->selectNota($this->timsetupid, $this->nota);
+
+            $this->tglpenagihan = $data->tglpenagihan;
+            $this->namapenagih = $data->namapenagih;
+            $this->jumlahbayar = number_format(floatval($data->jumlahbayar), 0, '', '.');
+            $this->biayakomisi = number_format(floatval($data->biayakomisi), 0, '', '.');
+            $this->biayaadmin = number_format(floatval($data->biayaadmin), 0, '', '.');
+            $this->jumlah = number_format(floatval($data->jumlahbayar + $data->biayakomisi + $data->biayaadmin), 0, '', '.');
+            $this->fotokwitansi = $data->fotokwitansi;
+        }
     }
 
     public function updatedtglpenagihan() {
@@ -77,6 +108,12 @@ class Index extends Component {
             group by timsetupid,nota,angsuranke,tglangsuran,angsuranhari
         ";
         $result = db::select($query);
+
+        $this->tglAngsuranAkhir = new DateTime($this->tgljual);
+        $interval = ($this->angsuranhari * $this->angsuranperiode) . ' days';
+        $this->tglAngsuranAkhir->modify($interval);
+        $this->tglAngsuranAkhir = $this->tglAngsuranAkhir->format('Y-m-d');
+
         if (!empty($result)) {
             $result = $result[0];
         }
@@ -98,7 +135,6 @@ class Index extends Component {
         $jumlahbayar = myNumber::str2Float($this->jumlahbayar ?? 0) + myNumber::str2Float($this->biayakomisi ?? 0) + myNumber::str2Float($this->biayaadmin ?? 0);
         $this->jumlah = number_format($jumlahbayar, 0, '', '.');
     }
-
 
     public function resetErrors() {
         $this->resetErrorBag();
@@ -715,7 +751,8 @@ class Index extends Component {
                 }
             ],
             'namapenagih' => ['required', 'string', 'max:150'],
-            'jumlahbayar' => ['required', 'numeric', 'min:1'],
+            'jumlah' => ['required', 'numeric', 'min:1'],
+            'jumlahbayar' => ['required', 'numeric', 'min:0'],
             'biayakomisi' => ['required', 'numeric', 'min:0'],
             'biayaadmin' => ['required', 'numeric', 'min:0'],
             'fotokwitansi' => ['required', 'sometimes', 'image', 'max:1024'],
@@ -743,8 +780,11 @@ class Index extends Component {
         }
     }
 
+    public function update() {
+        dd('masih dalam pengembangan');
+    }
+
     public function render() {
-        //dd("Masih dalam pengembangan");
 
         $this->getKartuPiutangNota($this->nota);
         $this->getInformasiAngsuran($this->nota);

@@ -36,6 +36,7 @@ class Validasiedit extends Component {
     public $pjkolektornota;
     public $pjadminnota;
     public $fotoktp;
+    public $fotosuratundian;
     public $fotonota;
     public $fotonotarekap;
     public $catatan = '';
@@ -168,6 +169,10 @@ class Validasiedit extends Component {
                 $rules['fotoktp'] = ['sometimes', 'image', 'max:1024'];
             }
 
+            if ($this->fotosuratundian != $data->fotosuratundian) {
+                $rules['fotosuratundian'] = ['sometimes', 'image', 'max:1024'];
+            }
+
             if ($this->fotonota != $data->fotonota) {
                 if ($this->setisifotonotaval) {
                     $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
@@ -183,20 +188,16 @@ class Validasiedit extends Component {
                 }
             }
 
-            // if ($this->fotoktp != $data->fotoktp) {
-            //     $rules['fotoktp'] = ['required', 'sometimes', 'image', 'max:1024'];
-            // }
-            // if ($this->fotonota != $data->fotonota) {
-            //     $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
-            // }
-            // if ($this->fotonotarekap != $data->fotonotarekap) {
-            //     $rules['fotonotarekap'] = ['required', 'sometimes', 'image', 'max:1024'];
-            // }
-
             $validated = $this->validate($rules);
             if (!is_string($this->fotoktp)) {
                 if ($this->fotoktp) {
                     $validated['fotoktp'] = $this->fotoktp->storeAs('uploads', 'ktp-' . $this->nota . '.jpg', 'public');
+                }
+            }
+
+            if (!is_string($this->fotosuratundian)) {
+                if ($this->fotosuratundian) {
+                    $validated['fotosuratundian'] = $this->fotosuratundian->storeAs('upsurat', 'und-' . $this->nota . '.jpg', 'public');
                 }
             }
 
@@ -271,6 +272,7 @@ class Validasiedit extends Component {
         $this->pjkolektornota = $data->pjkolektornota;
         $this->pjadminnota = $data->pjadminnota;
         $this->fotoktp = $data->fotoktp;
+        $this->fotosuratundian = $data->fotosuratundian;
         $this->fotonota = $data->fotonota;
         $this->fotonotarekap = $data->fotonotarekap;
         $this->catatan = $data->catatan ?? '';

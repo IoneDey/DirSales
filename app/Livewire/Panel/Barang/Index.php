@@ -66,6 +66,11 @@ class Index extends Component {
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->stream();
         }, 'document.pdf');
+
+        // return response($pdf->stream(), 200, [
+        //     'Content-Type' => 'application/pdf',
+        //     'Content-Disposition' => 'inline; filename="document.pdf"'
+        // ]);
     }
 
     public function getDataBarang($id) {

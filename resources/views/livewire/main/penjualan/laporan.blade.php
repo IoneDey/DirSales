@@ -149,6 +149,9 @@
                 <thead>
                     <tr>
                         @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
+                        <th>Prn</th>
+                        @endif
+                        @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
                         <th>Sheet</th>
                         @endif
                         <th>Tim</th>
@@ -179,6 +182,9 @@
                 <tbody>
                     @foreach ($penjualanhds as $penjualanhd)
                     <tr>
+                        @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
+                        <td class="rata-tengah"><a href="cetakinvoice/{{ $penjualanhd->id }}" target="_blank" type="button" class="badge bg-info bg-sm" title="Cetak Invoice"><i class="bi bi-printer-fill"></i></a></td>
+                        @endif
                         @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
                         <td class="rata-tengah">
                             @if ($penjualanhd->sheet)
@@ -295,12 +301,4 @@
             </div>
         </div>
     </div>
-
-    <!-- <script>
-        function toggleDropdown(element) {
-            element.parentElement.classList.toggle('show');
-        }
-    </script> -->
-</div>
-
 </div>

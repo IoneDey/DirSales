@@ -157,7 +157,7 @@
             <span class="input-label">Penanggung jawab Kolektor Nota</span>
             <select wire:model="pjkolektornota" type="text" class="form-select">
                 <option value=""></option>
-                @if($dbKolektors)
+                @if($dbDrivers)
                 @foreach ($dbKolektors as $dbKolektor)
                 <option value="{{ $dbKolektor->nama }}">{{ $dbKolektor->nama }}</option>
                 @endforeach
@@ -223,6 +223,21 @@
             @else
             @if ($fotonotarekap)
             <img src="{{ $fotonotarekap->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @endif
+            @endif
+        </div>
+        <div class="input-group-item mb-0">
+            <span class="input-label" for="inputGroupSuratUndian">Foto Surat Undian</span>
+            <input wire:model="fotosuratundian" accept="image/png, image/jpeg" type="file" class="form-control" id="inputGroupSuratUndian">
+            @error('fotosuratundian')
+            <span style="font-size: smaller; color: red;">{{ $message }}</span>
+            @enderror
+            <div wire:loading wire:target="fotosuratundian">Uploading...</div>
+            @if (is_string($fotosuratundian) && strlen($fotosuratundian) > 0)
+            <img src="{{ asset('storage/' . $fotosuratundian) }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
+            @else
+            @if ($fotosuratundian)
+            <img src="{{ $fotosuratundian->temporaryUrl() }}" class="img-fluid rounded mx-auto d-block mt-2" alt="...">
             @endif
             @endif
         </div>

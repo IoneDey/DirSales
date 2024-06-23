@@ -36,6 +36,7 @@ class Index extends Component {
     public $pjkolektornota;
     public $pjadminnota;
     public $fotoktp;
+    public $fotosuratundian;
     public $fotonota;
     public $fotonotarekap;
 
@@ -165,6 +166,7 @@ class Index extends Component {
             'pjkolektornota' => 'required|string|max:150',
             'pjadminnota' => 'required|string|max:150',
             'fotoktp' => 'sometimes|image|max:1024',
+            'fotosuratundian' => 'sometimes|image|max:1024',
         ];
 
         if ($this->setisinamalock) {
@@ -188,6 +190,9 @@ class Index extends Component {
         $validated = $this->validate($rules);
         if ($this->fotoktp) {
             $validated['fotoktp'] = $this->fotoktp->storeAs('uploads', 'ktp-' . $this->nota . '.jpg', 'public');
+        }
+        if ($this->fotosuratundian) {
+            $validated['fotosuratundian'] = $this->fotosuratundian->storeAs('upsurat', 'und-' . $this->nota . '.jpg', 'public');
         }
         if ($this->fotonota) {
             $validated['fotonota'] = $this->fotonota->storeAs('uploads', 'nota-' . $this->nota . '.jpg', 'public');
@@ -255,6 +260,10 @@ class Index extends Component {
                 $rules['fotoktp'] = ['sometimes', 'image', 'max:1024'];
             }
 
+            if ($this->fotosuratundian != $data->fotosuratundian) {
+                $rules['fotosuratundian'] = ['sometimes', 'image', 'max:1024'];
+            }
+
             if ($this->fotonota != $data->fotonota) {
                 if ($this->setisifotonota) {
                     $rules['fotonota'] = ['required', 'sometimes', 'image', 'max:1024'];
@@ -275,6 +284,12 @@ class Index extends Component {
             if (!is_string($this->fotoktp)) {
                 if ($this->fotoktp) {
                     $validated['fotoktp'] = $this->fotoktp->storeAs('uploads', 'ktp-' . $this->nota . '.jpg', 'public');
+                }
+            }
+
+            if (!is_string($this->fotosuratundian)) {
+                if ($this->fotosuratundian) {
+                    $validated['fotosuratundian'] = $this->fotosuratundian->storeAs('upsurat', 'und-' . $this->nota . '.jpg', 'public');
                 }
             }
 
@@ -348,6 +363,7 @@ class Index extends Component {
         $this->pjkolektornota = "";
         $this->pjadminnota = "";
         $this->fotoktp = "";
+        $this->fotosuratundian = "";
         $this->fotonota = "";
         $this->fotonotarekap = "";
         $this->penjualanhdid = "";
@@ -373,6 +389,7 @@ class Index extends Component {
         $this->pjkolektornota = $data->pjkolektornota;
         $this->pjadminnota = $data->pjadminnota;
         $this->fotoktp = $data->fotoktp;
+        $this->fotosuratundian = $data->fotosuratundian;
         $this->fotonota = $data->fotonota;
         $this->fotonotarekap = $data->fotonotarekap;
 

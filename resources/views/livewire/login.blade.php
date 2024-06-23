@@ -25,11 +25,5 @@
             </div>
         </div>
     </div>
-    @script
-    <script>
-        setInterval(() => {
-            $wire.call('countDown')
-        }, 1000)
-    </script>
-    @endscript
+
 </div>

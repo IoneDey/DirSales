@@ -1,4 +1,5 @@
 <div>
+    {{-- Close your eyes. Count to one. That is how long forever feels. --}}
     <link href="{{ asset('css/styles_table_res.css') }}" rel="stylesheet" />
     <style>
         @media (max-width: 768px) {
@@ -48,7 +49,6 @@
     </style>
     {{-- A good traveler has no fixed plans and is not intent upon arriving. --}}
     <link href="{{ asset('css/styleSelect2.css') }}" rel="stylesheet" />
-
     <div class="container">
         <h2 class="text-center">{{ $title }}</h2>
 
@@ -94,71 +94,41 @@
                 <thead>
                     <tr>
                         <th>Tim</th>
-                        <th>Timestamp</th>
+                        <th>Tgl Retur</th>
+                        <th>No. Retur</th>
                         <th>Nota</th>
                         <th>Nama Customer</th>
-                        <th>Tgl Penagihan</th>
-                        <th>Nama Penagih</th>
-                        <th>Foto Kwitansi</th>
-                        <th class="rata-kanan">Jumlah Pembayaran</th>
-                        <th class="rata-kanan">Biaya Komisi</th>
-                        <th class="rata-kanan">Biaya Admin</th>
-                        <th class="rata-kanan">Total</th>
-                        <th> User Entry</th>
+                        <th class="rata-kanan">Total Retur</th>
                         <th>Act</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($penagihans as $penagihan)
+                    @foreach ($penjualanreturs as $penjualanretur)
                     <tr>
-                        <td>{{ $penagihan->tim }}</td>
-                        <td>{{ $penagihan->created_at }}</td>
-                        <td>{{ $penagihan->nota }}</td>
-                        <td>{{ $penagihan->customernama }}</td>
-                        <td>{{ $penagihan->tglpenagihan }}</td>
-                        <td>{{ $penagihan->namapenagih }}</td>
-                        <td><a href="{{ asset('storage/' . $penagihan->fotokwitansi ) }}" target="_blank">{{ $penagihan->fotokwitansi }}</a></td>
-                        <td class="rata-kanan">{{ number_format(($penagihan->jumlahbayar ?? 0), 0, ',', '.') }}</td>
-                        <td class="rata-kanan">{{ number_format(($penagihan->biayakomisi ?? 0), 0, ',', '.') }}</td>
-                        <td class="rata-kanan">{{ number_format(($penagihan->biayaadmin ?? 0), 0, ',', '.') }}</td>
-                        <td class="rata-kanan">{{ number_format(($penagihan->total ?? 0), 0, ',', '.') }}</td>
-                        <td>{{ $penagihan->name }}</td>
-                        <td>
-                            @if ((auth()->user()->roles ?? '')== 'SUPERVISOR')
-                            <a type="button" class="badge bg-warning bg-sm" href="{{ route('penagihan',['id' => $penagihan->id]) }}" title="Edit">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            @endif
-                        </td>
+                        <td>{{ $penjualanretur->tim }}</td>
+                        <td>{{ $penjualanretur->tglretur }}</td>
+                        <td>{{ $penjualanretur->noretur }}</td>
+                        <td>{{ $penjualanretur->nota }}</td>
+                        <td>{{ $penjualanretur->customernama }}</td>
+                        <td class="rata-kanan">{{ number_format(($penjualanretur->totalretur ?? 0), 0, ',', '.') }}</td>
+                        <td></td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <td></td>
-                        <td>#{{ $penagihans->count() }}</td>
-                        <td></td>
-                        <td></td>
+                        <td>#{{ $penjualanreturs->count() }}</td>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td class="rata-kanan"></td>
-                        <td class="rata-kanan"></td>
-                        <td class="rata-kanan"></td>
-                        <td class="rata-kanan">{{ number_format(($penagihanTotal->total ?? 0), 0, ',', '.') }}</td>
                         <td></td>
                     </tr>
                 </tfoot>
             </table>
 
         </div>
-        {{ $penagihans->links() }}
-
-        <button wire:click="exportExcel" wire:loading.attr="disabled" class="badge bg-success bg-sm d-flex justify-content-center align-items-center custom-hover mt-2" type="button" title="Export Excel"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
-                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z" />
-            </svg></button>
-
+        {{ $penjualanreturs->links() }}
     </div>
-
-
 </div>
